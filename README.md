@@ -23,7 +23,7 @@ Improved window for your professions for World of Warcraft Vanilla
   ![Search commands face](https://user-images.githubusercontent.com/40469927/189532786-b064c4fe-b156-42df-b45f-09bed5b6e3d3.png)
   
   ATSW has a search function built-in. If you type some text into the search box then ATSW will filter the recipe list according to your entry or the following parameters: **:reagent**, **:level**, **:quality**, **:possible**, **:possibletotal**. You can even combine multiple parameters and a text for a name search, like this:
-"**leather :level 20+ :quality uncommon+**" - shows recipes with the word "leather" in their name, a minimum level requirement of 20 and a minimum quality of "green".
+"**leather :level 20+ :quality uncommon+**" - show recipes with the word "leather" in their name, a minimum level requirement of 20 and a minimum quality of "green".
   
   
   ### Necessary reagents list
