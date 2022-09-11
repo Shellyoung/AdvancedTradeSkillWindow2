@@ -1,20 +1,21 @@
 # Advanced Trade Skill Window
 Improved window for your professions for World of Warcraft Vanilla
 
-![Face](https://user-images.githubusercontent.com/40469927/189529196-10ca5079-3f8d-4746-9e1d-cea1d3b16a02.png)
+![Face](https://user-images.githubusercontent.com/40469927/189531923-4ea38437-110e-48d6-bd1b-358b9478964a.png)
+
 
   Advanced Trade Skill Window is a replacement for the standard tradeskill window.
   
   Most buttons in ATSW are self-explaining.
   
-  ###### Task progress timer
+  ## Task progress timer
   
   ![Progress face](https://user-images.githubusercontent.com/40469927/189531527-6954507e-4045-41e7-b704-4d146013e196.png)
   
   Task progress timer represents overall completion of a task. When crafting start, the progress timer will appear under the task.
 
 
-  ###### Search commands
+  ## Search commands
   
   ![Search commands face](https://user-images.githubusercontent.com/40469927/189531260-e6b3b716-f785-4b52-b7f1-f7d405e3f768.png)
   
@@ -22,23 +23,23 @@ Improved window for your professions for World of Warcraft Vanilla
 "leather :level 20+ :quality uncommon+" - recipes with the word "leather" in their name, a minimum level requirement of 20 and a minimum quality of "green".
   
   
-  ###### Necessary reagents list
+  ## Necessary reagents list
 
   The "Reagents" button will show you a list of reagents required to craft items in the task list, how many of the reagents you have in your inventory, in your bank, on alternative characters on the same server and if a reagent can be bought from a merchant. By hovering a cursor over the reagent count on alternative characters, you get a list of all alts currently possessing the item in question.
 
   ATSW can also automatically buy necessary items from a merchant when speaking to him - either manually by clicking a button in the reagents window or automatically when opening the merchant window.
   
   
-  ###### Linking
+  ## Linking
 
   By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window.
 
 
-###### Installation
+  ## Installation
 
 Place the folder named 	"Advanced Trade Skill Window" into the folder named 	"..World of Warcraft\Interface\AddOns".
 
 
-###### Configuration
+  ## Configuration
 
 ATSW can be configured via built-in options menu. The menu can be shown using **/atsw config** command.
