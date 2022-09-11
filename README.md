@@ -69,4 +69,4 @@ Improved window for your professions for World of Warcraft Vanilla
   [**laytya**](https://github.com/laytya) in 2017
   
   ###### Modified:
-  [**Shellyoung**](https://github.com/Shellyoung) (Dreamios on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
+  [**Shellyoung**](https://github.com/Shellyoung) ([Dreamios](https://armory.turtle-wow.org/#!/character/Dreamios) on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
