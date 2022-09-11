@@ -38,6 +38,12 @@ Improved window for your professions for World of Warcraft Vanilla
   
   Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list. ATSW is compatible with [aux](https://github.com/shirsig/aux-addon-vanilla).
   
+  ## Custom categories
+  
+  ![Custom face](https://user-images.githubusercontent.com/40469927/189538423-2dc6329e-a606-424c-9feb-6adb6e6b8fe1.png)
+
+  You can create categories and put recipes in them.
+  
   
   ## Reporting
 
