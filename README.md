@@ -1,4 +1,4 @@
-# Advanced Trade Skill Window
+# Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft Vanilla
 
 ![Face](https://user-images.githubusercontent.com/40469927/189532764-5301b7d0-448b-4f64-9e36-8d4f0850558c.png)
@@ -36,21 +36,31 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![Shopping list face](https://user-images.githubusercontent.com/40469927/189533362-11b26c25-e929-4da5-a89a-39200e7d4507.png)
   
-  Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list. ATSW is compatible with [aux]([url](https://github.com/shirsig/aux-addon-vanilla)).
+  Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list. ATSW is compatible with [aux](https://github.com/shirsig/aux-addon-vanilla).
   
   
   ## Reporting
 
-  By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window.
-
-
-  ## Installation
-
-  Place the folder named 	"**Advanced Trade Skill Window**" into the folder named 	"**..World of Warcraft\Interface\AddOns**".
-
-
+  By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window. ATSW is compatible with [WIM](https://github.com/shirsig/WIM).
+  
   ## Configuration
   
   ![options face](https://user-images.githubusercontent.com/40469927/189533127-e298a512-2d4f-4edf-ac79-599cbf9875cb.png)
 
   ATSW can be configured via built-in options menu. The menu can be shown using **/atsw config** command.
+
+
+  ## Installation
+
+  Place the folder named 	"**Advanced Trade Skill Window**" into the folder named 	"**..World of Warcraft\Interface\AddOns**".
+  
+  ## Credits
+  
+  ###### Original idea:
+  **Rene Schneider** (**Slarti** on EU-Blackhand) in 2006 
+  
+  ###### Fixes prior version 2.0.0:
+  [**laytya**](https://github.com/laytya) in 2017
+  
+  ###### Modified:
+  [**Shellyoung**](https://github.com/Shellyoung) in 2022
