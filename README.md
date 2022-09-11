@@ -47,7 +47,7 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![options face](https://user-images.githubusercontent.com/40469927/189533127-e298a512-2d4f-4edf-ac79-599cbf9875cb.png)
 
-  ATSW can be configured via built-in options menu. The menu can be shown using **/atsw config** command.
+  ATSW can be configured via built-in options menu. The menu can be shown using command **/atsw config**.
 
 
   ## Installation
