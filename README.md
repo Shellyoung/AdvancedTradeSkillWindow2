@@ -47,7 +47,7 @@ Improved window for your professions for World of Warcraft Vanilla
 
   ## Installation
 
-  Place the folder named 	"Advanced Trade Skill Window" into the folder named 	"..World of Warcraft\Interface\AddOns".
+  Place the folder named 	"**Advanced Trade Skill Window**" into the folder named 	"**..World of Warcraft\Interface\AddOns**".
 
 
   ## Configuration
