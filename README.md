@@ -30,7 +30,7 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![Necessaries face](https://user-images.githubusercontent.com/40469927/189532793-dc72aceb-4eac-4e72-9b86-9cdec2fc4e3e.png)
   
-  The "Reagents" button will show you a list of reagents required to craft items in the task list, how many of the reagents you have in your inventory, in your bank, on alternative characters on the same server and if a reagent can be bought from a merchant. By hovering a cursor over the reagent count on alternative characters, you get a list of all alts currently possessing the item in question.
+  The "Reagents" button will show you a list of reagents required to craft items in the task list, how many of the reagents you have in your inventory, in your bank, on alternative characters on the same server and if a reagent can be bought from a merchant. By hovering a cursor over the reagent count on alternative characters, you get a list of all alts currently possessing the reagent.
 
   ATSW can also automatically buy necessary items from a merchant when speaking to him - either manually by clicking a button in the reagents window or automatically when opening the merchant window.
   
@@ -56,7 +56,7 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![Key bind](https://user-images.githubusercontent.com/40469927/189544429-c2a3bbe9-2eb8-44c1-b03f-5460f954513c.png)
   
-  Hot key can be used to show ATSW.
+  You can assign a key to call ATSW.
   
   
   ### Configuration
