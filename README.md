@@ -65,8 +65,8 @@ Improved window for your professions for World of Warcraft Vanilla
   ###### Original idea:
   **Rene Schneider** (**Slarti** on EU-Blackhand) in 2006 
   
-  ###### Fixes prior version 2.0.0:
+  ###### Fixes prior to version 2.0.0:
   [**laytya**](https://github.com/laytya) in 2017
   
   ###### Modified:
-  [**Shellyoung**](https://github.com/Shellyoung) in 2022
+  [**Shellyoung**](https://github.com/Shellyoung) (Dreamios on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
