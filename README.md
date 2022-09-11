@@ -9,6 +9,9 @@ Improved window for your professions for World of Warcraft Vanilla
   Most buttons in ATSW are self-explaining.
   
   ## Features
+  ### Tasks
+  Selected recipe can be placed into the task list for later craft by clicking on the "Task" button.
+  
   ### Task progress timer
   ![Progress face](https://user-images.githubusercontent.com/40469927/189532773-1d745b82-9a98-4db6-919d-4ba86f0b4ab2.png)
   
@@ -52,15 +55,16 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![options face](https://user-images.githubusercontent.com/40469927/189533127-e298a512-2d4f-4edf-ac79-599cbf9875cb.png)
   
-  ATSW can be configured via built-in options menu. The menu can be shown using command **/atsw config**.
+  ATSW can be configured via built-in options menu. The menu can be shown by entering chat command **/atsw config**.
 
 
   ### Localization
   Supported languages: English, Русский, Español, Français, Deutsch
 
   ## Installation
-
-  Place the folder named 	"**Advanced Trade Skill Window**" into the folder named 	"**..World of Warcraft\Interface\AddOns**".
+  1. Download the following archive: [AdvancedTradeSkillWindow.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.0.0/AdvancedTradeSkillWindow.rar)
+  
+  2. Extract the folder named 	"**AdvancedTradeSkillWindow**" from the archive and place it into the folder named 	"**..\Interface\AddOns**" in your World of Warcraft directory.
   
   ## Credits
   
