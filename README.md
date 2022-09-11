@@ -72,7 +72,7 @@ Improved window for your professions for World of Warcraft Vanilla
   **Rene Schneider** (**Slarti** on EU-Blackhand) in 2006 
   
   ###### Fixes prior to version 2.0.0:
-  [**laytya**](https://github.com/laytya) in 2017
+  [**LaYt**](https://github.com/laytya) in 2017
   
   ###### Author of version 2.0.0:
   [**Shellyoung**](https://github.com/Shellyoung) ([**Dreamios**](https://armory.turtle-wow.org/#!/character/Dreamios) on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
