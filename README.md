@@ -27,8 +27,7 @@ Improved window for your professions for World of Warcraft Vanilla
   ## Necessary reagents list
   
   ![Necessaries face](https://user-images.githubusercontent.com/40469927/189532793-dc72aceb-4eac-4e72-9b86-9cdec2fc4e3e.png)
-
-
+  
   The "Reagents" button will show you a list of reagents required to craft items in the task list, how many of the reagents you have in your inventory, in your bank, on alternative characters on the same server and if a reagent can be bought from a merchant. By hovering a cursor over the reagent count on alternative characters, you get a list of all alts currently possessing the item in question.
 
   ATSW can also automatically buy necessary items from a merchant when speaking to him - either manually by clicking a button in the reagents window or automatically when opening the merchant window.
@@ -37,10 +36,10 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![Shopping list face](https://user-images.githubusercontent.com/40469927/189533362-11b26c25-e929-4da5-a89a-39200e7d4507.png)
   
-  Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list.
+  Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list. ATSW is compatible with [aux]([url](https://github.com/shirsig/aux-addon-vanilla)).
   
   
-  ## Linking
+  ## Reporting
 
   By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window.
 
