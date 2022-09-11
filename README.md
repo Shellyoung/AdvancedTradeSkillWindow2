@@ -13,7 +13,7 @@ Improved window for your professions for World of Warcraft Vanilla
   ![Progress face](https://user-images.githubusercontent.com/40469927/189532773-1d745b82-9a98-4db6-919d-4ba86f0b4ab2.png)
   
   
-  Task progress timer represents overall completion of a task. When crafting start, the progress timer will appear under the task.
+  Task progress timer represents overall completion of a task. When you start crafting, the progress timer will appear under the task.
 
 
   ## Search commands
