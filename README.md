@@ -35,7 +35,7 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ## Auction shopping list
   
-  ![Shopping list face](https://user-images.githubusercontent.com/40469927/189533321-95ddbd82-3cdf-4cd8-a9a1-f46682a68cf6.png)
+  ![Shopping list face](https://user-images.githubusercontent.com/40469927/189533362-11b26c25-e929-4da5-a89a-39200e7d4507.png)
   
   Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list.
   
