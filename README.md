@@ -51,6 +51,14 @@ Improved window for your professions for World of Warcraft Vanilla
 
   By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window. ATSW is compatible with [WIM](https://github.com/shirsig/WIM).
   
+  
+  ### Key bind
+  
+  ![Key bind](https://user-images.githubusercontent.com/40469927/189544429-c2a3bbe9-2eb8-44c1-b03f-5460f954513c.png)
+  
+  Hot key can be used to show ATSW.
+  
+  
   ### Configuration
   
   ![options face](https://user-images.githubusercontent.com/40469927/189533127-e298a512-2d4f-4edf-ac79-599cbf9875cb.png)
