@@ -56,7 +56,7 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ![Key bind](https://user-images.githubusercontent.com/40469927/189544429-c2a3bbe9-2eb8-44c1-b03f-5460f954513c.png)
   
-  You can assign a key to call ATSW.
+  A key can be assigned to call ATSW.
   
   
   ### Configuration
