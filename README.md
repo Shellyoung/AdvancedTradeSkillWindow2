@@ -83,4 +83,4 @@ Improved window for your professions for World of Warcraft Vanilla
   [**LaYt**](https://github.com/laytya) in 2017
   
   ###### Author of version 2.0.0:
-  [**Shellyoung**](https://github.com/Shellyoung) ([**Dreamios**](https://armory.turtle-wow.org/#!/character/Dreamios) on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
+  [**Alexander Shelokhnev**](https://github.com/Shellyoung) ([**Dreamios**](https://armory.turtle-wow.org/#!/character/Dreamios) on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
