@@ -82,5 +82,8 @@ Improved window for your professions for World of Warcraft Vanilla
   ###### Fixes prior to version 2.0.0:
   [**LaYt**](https://github.com/laytya) in 2017
   
-  ###### Author of version 2.0.0:
-  [**Alexander Shelokhnev**](https://github.com/Shellyoung) ([**Dreamios**](https://armory.turtle-wow.org/#!/character/Dreamios) on [Turtle-WoW](https://turtle-wow.org/) ) in 2022
+  ###### Blizzard Interface source code:
+  https://www.townlong-yak.com/framexml/1.12.1
+  
+  ###### API Documentation:
+  https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
