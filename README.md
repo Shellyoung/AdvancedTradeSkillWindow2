@@ -87,3 +87,13 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ###### API Documentation:
   https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
+
+  ## Grow plan
+  
+  ### Patch:
+  **Graphical errors:** first day of the month
+  
+  **Logical errors:** immediately after they are found and fixed
+  
+  ### Minor version:
+  **Developement ideas:** first day of the month
