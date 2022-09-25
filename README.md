@@ -91,9 +91,9 @@ Improved window for your professions for World of Warcraft Vanilla
   ## Grow plan
   
   ### Patch release date:
-  **Graphical errors:** first day of the month
+  **Graphical errors:** first day of a month
   
   **Logical errors:** immediately after they are found and fixed
   
   ### Minor version release date:
-  **Developement ideas:** first day of the month
+  **Developement ideas:** first day of a month
