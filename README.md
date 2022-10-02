@@ -1,6 +1,8 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft Vanilla
 
+<sub>version 2.0.1</sub>
+
 ![Face](https://user-images.githubusercontent.com/40469927/189532764-5301b7d0-448b-4f64-9e36-8d4f0850558c.png)
 
 
