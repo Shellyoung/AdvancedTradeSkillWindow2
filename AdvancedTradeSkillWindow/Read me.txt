@@ -244,12 +244,26 @@ v0.5.5b:
 - fix ruRU locale
 
 v2.0.0 (Year 2022)
-- Full code rework: no more errors, no more freezes, no more memory overload
-- Interface enhancement: 
-	items have icons, 
-	crafting requirements and queue have graphical art, 
-	queue have progress bar, 
-	main window have tabs for professions
-- Filter parameters names are changed to: :level, :rarity, :quality, :possible, :possibletotal
-- Filter rarity can now receive parameters of rarity names (example: :rarity epic, :rarity uncommon)
-- Removed compatibility with LS3D craft info, Fizzwidgets ReagentCost
+• Full code rework: no more errors, no more freezes, no more memory overload
+• Interface enhancement: 
+	- Items have icons
+	- Crafting requirements and queue have graphical art
+	- Queue have progress bar
+	- Main window have tabs for professions
+• Filter parameters names are changed to: :level, :rarity, :quality, :possible, :possibletotal
+• Filter rarity can now receive parameters of rarity names (example: :rarity epic, :rarity uncommon)
+• Removed compatibility with LS3D craft info, Fizzwidgets ReagentCost
+
+v2.0.1
+• Graphical error fixes:
+	- Recipes scroll bar was not updating on ATSWFrame show.
+	- Flash appearance and disappearance animation speed was incorrect
+	- Progress stop button was not hiding if task was completed
+	- Recipe tooltip reagents posession was rendering disaligned
+	- Progress bar flash texture was becoming white if video mode was changing
+• Data flow fixes:
+	- Reagent quantity data was not flowing into necessary items list if the list was invisible.
+	- Reagent quantity data was not flowing into bank column if bank slots was changing.
+	- Auction shopping list was not updating if necessary items list was changing.
+	- "(buyable)" label was not showing in recipe tooltip.
+	- Possible creation amount calculated not considering merchant items.

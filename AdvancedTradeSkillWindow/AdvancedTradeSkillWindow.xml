@@ -586,7 +586,7 @@
 		</Anchors>
 	</Frame>
 	
-	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent" frameStrata="LOW">
+	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent">
 		<HitRectInsets>
 			<AbsInset left="12" right="35" top="12" bottom="12"/>
 		</HitRectInsets>
@@ -1633,6 +1633,7 @@
 			</OnEvent>
 			<OnShow>
 				ATSWUpdaterFrame:Show()
+				ATSW_UpdateListScroll()
 			</OnShow>
 			<OnHide>
 				if ATSW_SwitchingToEditor then

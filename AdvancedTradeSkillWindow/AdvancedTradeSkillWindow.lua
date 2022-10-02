@@ -26,8 +26,8 @@ ATSW_CAST 										= 1
 ATSW_FLASH 									= 2
 ATSW_FADEOUT 								= 3
 
-ATSW_FLASH_TIME							= 0.045
-ATSW_FADEOUT_TIME						= 0.172
+ATSW_FLASH_TIME							= 5/60
+ATSW_FADEOUT_TIME						= 10/60
 
 ERR_LEARN_RECIPE_PATTERN 			= string.gsub(ERR_LEARN_RECIPE_S, 			"%%s", "(.+)"		)
 ERR_LEARN_SPELL_PATTERN 				= string.gsub(ERR_LEARN_SPELL_S, 			"%%s", "(.+)"		)
@@ -139,6 +139,7 @@ local LoadingProfessions 						= false
 local UpdateCount								= 0
 local LastCastName 							= nil
 local NoDropDownUpdate					= false
+local BankFrameOpened						= false
 ATSW_Debug 									= false
 ATSW_SwitchingToEditor					= false
 ATSW_SwitchingToMain						= false
@@ -681,6 +682,8 @@ ReplaceTradeEnchant = MyReplaceTradeEnchant
 --Utility functions
 
 local function SetVisible(Frame, State)
+	if not Frame then return end
+	
 	if State then
 		Frame:Show()
 	else
@@ -689,6 +692,8 @@ local function SetVisible(Frame, State)
 end
 
 local function SetEnabled(Frame, State)
+	if not Frame then return end
+	
 	if State then
 		Frame:Enable()
 	else
@@ -1291,6 +1296,7 @@ function ATSW_OnLoad()
     ATSWFrame:		RegisterEvent(	"UNIT_PET_TRAINING_POINTS"		)
     ATSWFrame:		RegisterEvent(	"BAG_UPDATE"								)
     ATSWFrame:		RegisterEvent(	"BANKFRAME_OPENED"					)
+    ATSWFrame:		RegisterEvent(	"BANKFRAME_CLOSED"					)
     ATSWFrame:		RegisterEvent(	"MERCHANT_SHOW"						)
     ATSWFrame:		RegisterEvent(	"MERCHANT_UPDATE"						)
     ATSWFrame:		RegisterEvent(	"MERCHANT_CLOSED"						)
@@ -1327,21 +1333,6 @@ end
 
 local function InitializeOnShow()
 	if InitializedOnShow then return end
-	
-	local function HideFrame(frame)
-		if frame then
-			frame:SetAlpha(0)
-			frame:EnableMouse(false)
-			frame:SetFrameStrata("BACKGROUND")
-			
-			for _,child in ipairs({frame:GetChildren()}) do
-				HideFrame(child)
-			end
-		end
-	end
-	
-	HideFrame(TradeSkillFrame)
-	HideFrame(CraftFrame)
 	
 	ATSW_CreateListButtons()
 	
@@ -1629,18 +1620,17 @@ function ATSW_OnUpdate(TimePassed)
 		elseif Bar.Mode == ATSW_FLASH then 		-- Glow appearing
 			local Alpha = Glow:GetAlpha() + TimePassed / ATSW_FLASH_TIME
 			
-			if Alpha < 1 then
-				Glow:	SetAlpha(math.min(Alpha, 1))
+			Glow:			SetAlpha(math.min(Alpha, 1))
+			
+			if Spark:IsVisible() then
+				local Min, Max = Bar:GetMinMaxValues()
 				
-				if Spark:IsVisible() then
-					local Min, Max = Bar:GetMinMaxValues()
-					
-					Bar:SetValue(Max)
-					Stop:Hide()
-					Spark:Hide()
-				end
-			else
-				Glow:	SetAlpha(math.min(Alpha, 1))
+				Bar:		SetValue(Max)
+				Stop:	Hide()
+				Spark:	Hide()
+			end
+			
+			if Alpha >= 1 then
 				Bar.Mode = ATSW_FADEOUT
 			end
 		elseif Bar.Mode == ATSW_FADEOUT then 	-- Glow disappearing
@@ -1654,7 +1644,7 @@ function ATSW_OnUpdate(TimePassed)
 					Bar.TaskItem:SetAlpha(Alpha)
 				end
 			else
-				ATSW_TaskComplete()
+				ATSW_CompleteTask()
 				Bar:		Hide()
 			end
 		end
@@ -1827,10 +1817,8 @@ function ATSW_SwitchToFrame(Frame)
 		end
 	end
 	
-	if not Frame then
-		if Processing then
-			ProcessingStop = true
-		end
+	if not Frame and Processing then
+		ProcessingStop = true
 	end
 end
 
@@ -2117,27 +2105,26 @@ function ATSW_OnEvent()
 		ChatFrame1:AddMessage("ATSW Debug: |cffB0B0B0event|r = " .. "|cffFFD100" .. tostring(event) .. "|r" .. s)
 	end
 	
-    if 			event == "UNIT_PET"								then
+    if 			event == "UNIT_PET"									then
 	
 		ATSW_ShowTrainingPoints()
 		
-    elseif 			event == "UNIT_PET_TRAINING_POINTS" then
+    elseif 	event == "UNIT_PET_TRAINING_POINTS" 		then
 	
 		ATSW_ShowTrainingPoints()
 	
-    elseif 			event == "BANKFRAME_OPENED"		then
-	
+    elseif 	event == "BANKFRAME_OPENED"
+    or 		event == "PLAYERBANKSLOTS_CHANGED"
+    or 		event == "PLAYERBANKBAGSLOTS_CHANGED" 	then
+		
+		BankFrameOpened = true
         ATSW_SaveBank()
 	
-    elseif 	event == "PLAYERBANKSLOTS_CHANGED"	then
+    elseif 	event == "BANKFRAME_CLOSED" 					then
 	
-        ATSW_SaveBank()
+		BankFrameOpened = false
 	
-    elseif 	event == "PLAYERBANKBAGSLOTS_CHANGED" then
-	
-        ATSW_SaveBank()
-	
-    elseif 	event == "MERCHANT_SHOW" 					then
+    elseif 	event == "MERCHANT_SHOW" 						then
 		
         ATSW_UpdateMerchant()
         
@@ -2147,23 +2134,24 @@ function ATSW_OnEvent()
 			ATSW_SetBuyFrameVisible()
 		end
 	
-    elseif 	event == "MERCHANT_CLOSED" 					then
+    elseif 	event == "MERCHANT_CLOSED" 						then
 	
 		ATSWBuyNecessaryFrame:Hide()
 	
-    elseif 	event == "MERCHANT_UPDATE" 					then
+    elseif 	event == "MERCHANT_UPDATE" 						then
 	
 		ATSW_UpdateMerchant()
 	
-    elseif 	event == "AUCTION_HOUSE_SHOW" 			then
+    elseif 	event == "AUCTION_HOUSE_SHOW" 				then
 	
         ATSW_ShowAuctionShoppingList()
 	
-    elseif 	event == "AUCTION_HOUSE_CLOSED" 		then
+    elseif 	event == "AUCTION_HOUSE_CLOSED" 			then
 	
         ATSWShoppingListFrame:Hide()
 	
-    elseif 	event == "BAG_UPDATE" 							then
+    elseif 	event == "BAG_UPDATE" 								then
+		ATSW_SaveBank()
 		ATSW_SaveBag(arg1)
 		
 		if ATSWFrame:IsVisible() then
@@ -2200,17 +2188,17 @@ function ATSW_OnEvent()
 																			
 		if RecipeSelected()								then 	ATSW_SelectRecipe(RecipeSelected()) 	end end
 		
-		if ATSWReagentsFrame:		IsVisible() 	then 	ATSW_UpdateNecessaryReagents	() 	end
+		ATSW_UpdateNecessaryReagents()
 		if MerchantFrame:				IsVisible() 	then 	ATSW_SetBuyFrameVisible			() 	end
 		if ATSWShoppingListFrame:	IsVisible() 	then 	ATSW_UpdateAuctionList			() 	end
 		
     elseif 	event == "TRADE_SKILL_UPDATE"
-	or 		event == "CRAFT_UPDATE" 						then
+	or 		event == "CRAFT_UPDATE" 							then
 		
 		UpdateCount = UpdateCount + 1
 	
 	
-    elseif 	event == "SPELLCAST_START"  					then
+    elseif 	event == "SPELLCAST_START"  						then
 		
 		if arg1 == ProcessingRecipe and not Processing then
 			ProcessingRecipeTime = arg2 / 1000
@@ -2226,11 +2214,11 @@ function ATSW_OnEvent()
 			ATSW_StartProcessing()
 		end
 		
-	elseif	event == "SPELLCAST_INTERRUPTED"			then
+	elseif	event == "SPELLCAST_INTERRUPTED"				then
 		
 		ATSW_StopProcessing()
 		
-	elseif 	event == "PLAYER_ENTERING_WORLD" 		then
+	elseif 	event == "PLAYER_ENTERING_WORLD" 			then
 		
 		ATSW_SaveBag(0)
 		
@@ -2259,7 +2247,7 @@ function ATSW_OnEvent()
 			Class		= class
 		})
 	
-	elseif 	event == "CHAT_MSG_SYSTEM" 					then
+	elseif 	event == "CHAT_MSG_SYSTEM" 						then
 	
 		if string.find(arg1, ERR_LEARN_RECIPE_PATTERN)
 		or string.find(arg1, ERR_LEARN_SPELL_PATTERN) then 				-- Learn new recipe
@@ -2298,7 +2286,7 @@ function ATSW_OnEvent()
 				end
 			end
 		end
-	elseif 	event == "CHAT_MSG_LOOT" 					then
+	elseif 	event == "CHAT_MSG_LOOT" 						then
 		
 		-- Task completion
 		if Processing then
@@ -2306,10 +2294,10 @@ function ATSW_OnEvent()
 				Bar = ATSWProgressBar
 				
 				if ProcessingAmount > 1 then
-					ATSW_TaskComplete() -- Complete current task
+					ATSW_CompleteTask()
 				else
 					if ProcessingStop then
-						ATSW_TaskComplete() -- Complete immediately
+						ATSW_CompleteTask() -- Complete immediately
 					else
 						Bar.Mode = ATSW_FLASH -- Start flash animation
 					end
@@ -2326,7 +2314,7 @@ function ATSW_OnEvent()
 			end
 		end
 	
-	elseif 	event == "CHAT_MSG_SKILL" 						then
+	elseif 	event == "CHAT_MSG_SKILL" 							then
 	
 		if string.find(arg1, ERR_SKILL_UP_PATTERN) then						-- Increase profession rank
 			local _, _, Skill = string.find(arg1, ERR_SKILL_UP_PATTERN)
@@ -2343,13 +2331,15 @@ function ATSW_OnEvent()
 		elseif string.find(arg1, ERR_SKILL_GAINED_PATTERN) then 			-- Learn new profession
 			ATSW_ConfigureSkillButtons()
 		end
-	elseif 	event == "CVAR_UPDATE" 							then
+	elseif 	event == "CVAR_UPDATE" 								then
 		if arg1 		== "USE_UISCALE" 		then
 			ATSWRecipeTooltip:SetScale(GetCVar("uiscale"))
 		elseif arg1	== "WINDOWED_MODE"	then
 			-- Fix for ButtonPanel texture becomes white if toggling windowed mode
 			ATSWButtonPanel:SetTexture(nil)
 			ATSWButtonPanel:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow\\Textures\\ButtonPanel")
+			ATSWProgressBarGlow:SetTexture(nil)
+			ATSWProgressBarGlow:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow\\Textures\\ProgressBarFlash")
 		end
     end
 end
@@ -3808,8 +3798,8 @@ function ATSW_HowManyItemsArePossibleToCreate(Name, ...)
 		end
 		
 		if Param(ATSW_POSSIBLE_MERCHANT) then
-			if ATSW_IsInMerchant(Name) and TotalAmount < RAmount then 
-				TotalAmount 	= RAmount
+			if ATSW_IsInMerchant(RName) and TotalAmount < RAmount then 
+				TotalAmount 	= math.max(PossibleAmountTotal or 0, RAmount)
 			end
 		end
 		
@@ -3863,6 +3853,16 @@ function ATSW_SetNecessary(Name, Amount, Link, Texture, NecessaryReagentMode)
 	
 	if MerchantFrame:IsVisible() then
 		ATSW_SetBuyFrameVisible()
+	end
+	
+	if NecessaryReagentsSize() > 0 then
+		if ATSWShoppingListFrame:IsVisible() then
+			ATSW_UpdateAuctionList()
+		else
+			ATSW_ShowAuctionShoppingList()
+		end
+	else
+		ATSWShoppingListFrame:Hide()
 	end
 end
 
@@ -4034,7 +4034,7 @@ function ATSW_StopProcessing()
 	ATSW_UpdateCreateButton()
 end
 
-function ATSW_TaskComplete()
+function ATSW_CompleteTask()
 	ATSW_DeleteTask(ProcessingRecipe, 1, ProcessingProfession)
 	ProcessingAmount 			= ProcessingAmount - 1
 	ProcessingComplete 		= ProcessingComplete + 1
@@ -4055,7 +4055,7 @@ end
 -- Auction/Necessaries functions
 
 function ATSW_ShowAuctionShoppingList()
-    if AuctionFrame:IsVisible() and 
+    if (AuctionFrame:IsVisible() or aux_frame:IsVisible()) and 
 	NecessaryReagentsSize() > 0 and 
 	ATSW_DisplayShoppingList then
 		for A = 1, ATSW_AUCTION_ITEMS_DISPLAYED do --Create auction shopping frame buttons
@@ -4070,8 +4070,6 @@ function ATSW_ShowAuctionShoppingList()
 			end
 		end
 		
-        ATSW_UpdateAuctionList() -- Update
-		
 		--Attach (Compatible with aux)
         if not aux_frame and AuctionFrame then
             ATSWShoppingListFrame:SetPoint("TOPLEFT", "AuctionFrame", "TOPLEFT", 348, -435.5)
@@ -4081,6 +4079,8 @@ function ATSW_ShowAuctionShoppingList()
         end
 		
         ATSWShoppingListFrame:Show()
+		
+		ATSW_UpdateAuctionList() -- Update
     end
 end
 
@@ -4113,7 +4113,7 @@ local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
 		SetVisible(Button, false) --It is needed for tooltip update if button text is changed
 		SetVisible(Button, R)
 		
-        if R then
+        if R and Button then
 			local Color				= LinkToColor(R.Link) or "ffffff"
             local AmountBags 	= ATSW_GetBagsAmount	(R.Name)
             local AmountBank 	= ATSW_GetBankAmount	(R.Name)
@@ -4405,7 +4405,7 @@ function ATSW_DisplayRecipeTooltip()
 				local BagStr, BankStr, AltsStr = Bags, Bank, Alts
 				
 				local function AddSpace(S)
-					if string.len(S) 	== 1 then S = S .. " " end
+					if string.len(S) 	== 1 then S = S .. "  " end
 					
 					return S
 				end
@@ -4426,7 +4426,7 @@ function ATSW_DisplayRecipeTooltip()
 				local cR, cG, cB = GetLinkColorRGB(Reagents[I].Link)
 				
                 ATSWRecipeTooltip:AddDoubleLine(
-					Reagents[I].Name or "" .. Amountstring .. Merchant, 
+					(Reagents[I].Name or "") .. Amountstring .. Merchant, 
 					"(" .. ATSW_TOOLTIP_INBAGS 	.. " " .. BagStr 	.. "  " ..
 							ATSW_TOOLTIP_INBANK 	.. " " .. BankStr 	.. "  " ..
 							ATSW_TOOLTIP_ONALTS 	.. " " .. AltsStr 	.. ")",	 cR, cG, cB)
@@ -4521,6 +4521,8 @@ end
 ATSW_Bank = {}
 
 function ATSW_SaveBank()
+	if not BankFrameOpened then return end
+	
 	if not ATSW_Bank[realm] then
 		ATSW_Bank[realm] = {}
 	end
