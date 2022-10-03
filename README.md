@@ -1,4 +1,5 @@
-# `The addon is no longer available`. I will continue to support the addon on the following term: Stop censoring people on Turtle-WoW, no matter what they say: racist slur, doxxing, flexxing, boxxing, sexting, pasting passwords, trolling, hating, loving, etc. I think nobody cares about my ultimatum, so I guess it is 95% probability that I will never return to Turtle-WoW. I was nice to give you fresh addon ideas, whoever used this addon. Good bye.
+# `Advanced Trade Skill Window 2 is no longer available`
+## I will continue to support the addon on the following term: Stop censoring people on Turtle-WoW, no matter what they say: racist slur, doxxing, flexxing, boxxing, sexting, pasting passwords, trolling, hating, loving, etc. I think nobody cares about my ultimatum, so I guess it is 95% probability that I will never return to Turtle-WoW. I was nice to give you fresh addon ideas, whoever used this addon. Good bye.
 
 
 
