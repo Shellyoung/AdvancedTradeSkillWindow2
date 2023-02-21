@@ -1,8 +1,3 @@
-# `Advanced Trade Skill Window 2 is no longer available`
-## I wonder why they supress political talks on Turtle-WoW.
-
-
-
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft Vanilla
 
