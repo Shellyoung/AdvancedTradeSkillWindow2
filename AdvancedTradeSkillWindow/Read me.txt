@@ -1,4 +1,3 @@
-
 Advanced Trade Skill Window v2.0.0 for Vanilla
 a World of Warcraft UI Addon
 Written by Rene Schneider (Slarti on EU-Blackhand) in 2006
@@ -245,24 +244,24 @@ v0.5.5b:
 - fix ruRU locale
 
 v2.0.0 (Year 2022)
-â€¢ Full code rework: no more errors, no more freezes, no more memory overload
-â€¢ Interface enhancement: 
+• Full code rework: no more errors, no more freezes, no more memory overload
+• Interface enhancement: 
 	- Items have icons
 	- Crafting requirements and queue have graphical art
 	- Queue have progress bar
 	- Main window have tabs for professions
-â€¢ Filter parameters names are changed to: :level, :rarity, :quality, :possible, :possibletotal
-â€¢ Filter rarity can now receive parameters of rarity names (example: :rarity epic, :rarity uncommon)
-â€¢ Removed compatibility with LS3D craft info, Fizzwidgets ReagentCost
+• Filter parameters names are changed to: :level, :rarity, :quality, :possible, :possibletotal
+• Filter rarity can now receive parameters of rarity names (example: :rarity epic, :rarity uncommon)
+• Removed compatibility with LS3D craft info, Fizzwidgets ReagentCost
 
 v2.0.1
-â€¢ Graphical error fixes:
+• Graphical error fixes:
 	- Recipes scroll bar was not updating on ATSWFrame show.
 	- Flash appearance and disappearance animation speed was incorrect
 	- Progress stop button was not hiding if task was completed
 	- Recipe tooltip reagents posession was rendering disaligned
 	- Progress bar flash texture was becoming white if video mode was changing
-â€¢ Data flow fixes:
+• Data flow fixes:
 	- Reagent quantity data was not flowing into necessary items list if the list was invisible.
 	- Reagent quantity data was not flowing into bank column if bank slots was changing.
 	- Auction shopping list was not updating if necessary items list was changing.
@@ -270,3 +269,7 @@ v2.0.1
 	- Possible creation amount calculated not considering merchant items.
 	
 v2.0.2
+I nearly added poison interface for rogues but got banned on Turtle-WoW for the silly joke in the World chat
+
+• Data flow fixes:
+	- Crafting button didn't check for AuctionFrame variable existence before checking it for visibility

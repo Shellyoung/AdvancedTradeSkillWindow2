@@ -1,5 +1,4 @@
-
--- Advanced Trade Skill Window version 2.0.0 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.0.2 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Turtle-WoW) in year 2022
 
@@ -2968,6 +2967,7 @@ function ATSW_Sort(Table, Size, SortingFunction)
 end
 
 function ATSW_UpdateRecipes()
+	ChatFrame1:AddMessage("ATSW_UpdateRecipes")
 	local ScrollOffset 				= ATSW_ScrollOffset[player][Profession()] / ATSW_TRADESKILL_HEIGHT
 	
 	for I = 1, ATSW_RECIPES_DISPLAYED do
@@ -4061,7 +4061,7 @@ end
 -- Auction/Necessaries functions
 
 function ATSW_ShowAuctionShoppingList()
-    if (AuctionFrame:IsVisible() or aux_frame:IsVisible()) and 
+    if (AuctionFrame and AuctionFrame:IsVisible() or aux_frame and aux_frame:IsVisible()) and 
 	NecessaryReagentsSize() > 0 and 
 	ATSW_DisplayShoppingList then
 		for A = 1, ATSW_AUCTION_ITEMS_DISPLAYED do --Create auction shopping frame buttons
