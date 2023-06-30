@@ -1,4 +1,3 @@
-
 -- Language file
 
 -- German and English Language by Rene Schneider, Alexander Sheloknev
@@ -63,7 +62,7 @@ if GetLocale()=="deDE" then
 	
 	ATSW_CSBUTTON 						= "Editor"
 	ATSWCS_TITLE 							= "Benutzerdefinierter Sortiereditor"
-	ATSWCS_TRADESKILLISTTITLE 	= "Rezepturen"
+	ATSWCS_TRADESKILLLISTTITLE 	= "Rezepturen"
 	ATSWCS_CATEGORYLISTTITLE 	= "Kategorien"
 	ATSWCS_ADDCATEGORYLABEL 	= "Geben Sie den Kategorienamen ein"
 	ATSWCS_ADD 							= "Addieren"
@@ -141,7 +140,7 @@ elseif GetLocale()=="frFR" then
 	
 	ATSW_CSBUTTON 						= "Editeur"
 	ATSWCS_TITLE 							= "Editeur de Classement personnel"
-	ATSWCS_TRADESKILLISTTITLE 	= "Recettes"
+	ATSWCS_TRADESKILLLISTTITLE 	= "Recettes"
 	ATSWCS_CATEGORYLISTTITLE 	= "Catégories"
 	ATSWCS_ADDCATEGORYLABEL 	= "Saisissez le nom de la catégorie"
 	ATSWCS_ADD 							= "Ajouter"
@@ -220,7 +219,7 @@ elseif GetLocale()=="esES" then
 	
 	ATSW_CSBUTTON 						= "Editor"
 	ATSWCS_TITLE 							= "Editor de clasificación personalizado"
-	ATSWCS_TRADESKILLISTTITLE 	= "Recetas"
+	ATSWCS_TRADESKILLLISTTITLE 	= "Recetas"
 	ATSWCS_CATEGORYLISTTITLE 	= "Categorías"
 	ATSWCS_ADDCATEGORYLABEL 	= "Introduce el nombre de la categoría"
 	ATSWCS_ADD 							= "Agregar"
@@ -299,7 +298,7 @@ elseif GetLocale()=="ruRU" then
 	
 	ATSW_CSBUTTON 						= "Редактор"
 	ATSWCS_TITLE 							= "Редактор сортировки рецептов"
-	ATSWCS_TRADESKILLISTTITLE 	= "Рецепты"
+	ATSWCS_TRADESKILLLISTTITLE 	= "Рецепты"
 	ATSWCS_CATEGORYLISTTITLE	= "Категории"
 	ATSWCS_ADDCATEGORYLABEL 	= "Введи имя категории"
 	ATSWCS_ADD 							= "Добавить"
