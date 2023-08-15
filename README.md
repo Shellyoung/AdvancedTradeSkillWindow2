@@ -72,7 +72,7 @@ Improved window for your professions for World of Warcraft Vanilla
   Supported languages: English, Русский, Español, Français, Deutsch
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.0.2/AdvancedTradeSkillWindow.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.0.3/AdvancedTradeSkillWindow.rar)
   
   2. Extract the folder named 	"**AdvancedTradeSkillWindow**" from the archive and place it into the folder named 	"**..\Interface\AddOns**" in your World of Warcraft directory.
   
