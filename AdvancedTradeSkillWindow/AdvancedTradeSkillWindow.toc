@@ -5,7 +5,7 @@
 ## Version: 2.0.3
 ## SavedVariables: ATSW_Characters, ATSW_Profession, ATSW_SelectedRecipe, ATSW_SortBy, ATSW_SearchString, ATSW_SubClassFilter, ATSW_InvSlotFilter, ATSW_ScrollOffset, ATSW_PreviousRecipes, ATSW_Tasks, ATSW_NecessaryReagents, ATSW_ContractedCategories, ATSW_Amount, ATSW_Bags, ATSW_Bank, ATSW_Merchant, ATSW_ConsiderBank, ATSW_ConsiderAlts, ATSW_ConsiderMerchants, ATSW_AutoBuy, ATSW_Unified, ATSW_RecipeTooltip, ATSW_DisplayShoppingList, ATSW_CustomCategories, ATSW_CSOpenCategory, ATSW_Debug
 
-## X-ReleaseDate: $Date: 25/06/2023 $
+## X-ReleaseDate: $Date: 15/08/2023 $
 ## X-Email: shellyoung@protonmail.com
 ## X-Category: Tradeskill
 ## X-Website: https://github.com/Shellyoung/Advanced-Trade-Skill-Window
