@@ -273,3 +273,7 @@ I nearly added poison interface for rogues but got banned on Turtle-WoW for the 
 
  Data flow fixes:
 	- Crafting button didn't check for AuctionFrame variable existence before checking it for visibility
+	
+v2.0.3
+• Graphical error fixes:
+	- ATSWCS_TRADESKILLLISTTITLE was missing one "L" letter in Localization.lua
