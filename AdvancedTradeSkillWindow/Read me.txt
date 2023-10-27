@@ -2,7 +2,7 @@ Advanced Trade Skill Window 2 v2.0.3 for Vanilla
 a World of Warcraft UI Addon
 Written by Rene Schneider (Slarti on EU-Blackhand) in 2006
 Fixed by laytya in 2017
-Modified by Alexander Shelokhnev (Dreamius on Turtle-WoW) in 2022
+Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 ----------------------------------------------------------------
 
 Advanced Trade Skill Window is a replacement for the standard tradeskill window.
