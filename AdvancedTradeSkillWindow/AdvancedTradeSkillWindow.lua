@@ -1,6 +1,6 @@
 -- Advanced Trade Skill Window version 2.0.2 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
--- Modified by Alexander Shelokhnev (Dreamios on Turtle-WoW) in year 2022
+-- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
 ATSW_MAX_TRADESKILL_TABS 			= 8
 ATSW_TRADESKILL_HEIGHT 				= 18
