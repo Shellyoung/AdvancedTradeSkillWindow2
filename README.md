@@ -89,3 +89,5 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ###### API Documentation:
   https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
+
+I don't have mental energy to include Poisons profession. If somebody can do it, then your name will absolutely in credits.
