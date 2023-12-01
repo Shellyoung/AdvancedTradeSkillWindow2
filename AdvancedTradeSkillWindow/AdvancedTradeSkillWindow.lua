@@ -2967,7 +2967,6 @@ function ATSW_Sort(Table, Size, SortingFunction)
 end
 
 function ATSW_UpdateRecipes()
-	ChatFrame1:AddMessage("ATSW_UpdateRecipes")
 	local ScrollOffset 				= ATSW_ScrollOffset[player][Profession()] / ATSW_TRADESKILL_HEIGHT
 	
 	for I = 1, ATSW_RECIPES_DISPLAYED do
