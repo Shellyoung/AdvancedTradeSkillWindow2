@@ -305,3 +305,4 @@ v2.1.0
 	- Required reagents amount calculation for alternative characters was searching for the characters on another server
 	- Possible craft amount calculation was wrong if calculated for 2 or more required merchant buyable reagents while not kept at player's bag
 	- Difficulty color of custom recipe that located in category was not changing if profession level was changing
+	- Time left for a task was calculating 1 second lower
