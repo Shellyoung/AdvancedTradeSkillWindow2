@@ -63,7 +63,9 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ### Key bind
   
-  ![Key bind](https://user-images.githubusercontent.com/40469927/189544429-c2a3bbe9-2eb8-44c1-b03f-5460f954513c.png)
+  ![Key bind](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/62774995-5b4c-4c32-88b1-7367ea3de545)
+
+
   
   A key can be assigned to call ATSW.
   
