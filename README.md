@@ -5,7 +5,7 @@ Improved window for your professions for World of Warcraft Vanilla
 
 ![Attention](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/1b3981c8-1722-451a-a5c9-34d21bb247b1)
 
-**Your settings are NOT GONE**. Folder name is changed from AdvancedTradeSkillWindow to AdvancedTradeSkillWindow2. Rename the file AdvancedTradeSkillWindow.lua into AdvancedTradeSkillWindow2.lua inside the folder **..WTF\Account\ACCOUNT NAME\SavedVariables**.
+**Your settings are SAFE**. Folder name is changed from AdvancedTradeSkillWindow to AdvancedTradeSkillWindow2. Rename the file AdvancedTradeSkillWindow.lua into AdvancedTradeSkillWindow2.lua inside the folder **..WTF\Account\ACCOUNT NAME\SavedVariables**.
 
 
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/24348679-806b-4025-ac97-86c9200eb3a6)
