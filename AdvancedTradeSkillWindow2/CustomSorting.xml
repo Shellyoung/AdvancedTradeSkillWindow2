@@ -376,7 +376,7 @@
 				</Layers>
 			</Frame>
 			
-			<Button name="ATSWCSRenameButton" inherits="UIPanelButtonTemplate" text="Umbenennen" enabled="false">
+			<Button name="ATSWCSRenameButton" inherits="UIPanelButtonTemplate" text="ATSWCS_RENAME" enabled="false">
 				<Size x="89" y="22"/>
 				<Anchors>
 					<Anchor point="CENTER" relativeTo="ATSWCSFrame" relativePoint="CENTER">
@@ -391,7 +391,7 @@
 				</Scripts>
 			</Button>
 			
-			<Button name="ATSWCSAddButton" inherits="UIPanelButtonTemplate" text="Addieren" enabled="false">
+			<Button name="ATSWCSAddButton" inherits="UIPanelButtonTemplate" text="ATSWCS_ADD" enabled="false">
 				<Size x="70" y="22"/>
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="ATSWCSRenameButton" relativePoint="LEFT">
