@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="SHOWHIDE" header="ATSW">
+		ATSW_ShowFrame()
+	</Binding>
+</Bindings>

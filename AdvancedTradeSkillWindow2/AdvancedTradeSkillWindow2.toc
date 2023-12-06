@@ -1,0 +1,13 @@
+## Interface: 11200
+## Title: Advanced Trade Skill Window 2 v2.1.0
+## Notes: Improved window for your professions for World of Warcraft Vanilla
+## Version: 2.1.0
+## SavedVariables: ATSW_Characters, ATSW_Profession, ATSW_SelectedRecipe, ATSW_SortBy, ATSW_SearchString, ATSW_SubClassFilter, ATSW_InvSlotFilter, ATSW_ScrollOffset, ATSW_PreviousRecipes, ATSW_Tasks, ATSW_TimeCost, ATSW_NecessaryReagents, ATSW_ContractedCategories, ATSW_Amount, ATSW_Bags, ATSW_Bank, ATSW_Merchant, ATSW_ConsiderBank, ATSW_ConsiderAlts, ATSW_ConsiderMerchants, ATSW_AutoBuy, ATSW_Unified, ATSW_RecipeTooltip, ATSW_DisplayShoppingList, ATSW_CustomCategories, ATSW_CSOpenCategory, ATSW_CSSelected, ATSW_Debug
+
+## X-ReleaseDate: $Date: 15/08/2023 $
+## X-Email: shellyoung@protonmail.com
+## X-Category: Tradeskill
+## X-Website: https://github.com/Shellyoung/Advanced-Trade-Skill-Window
+
+AdvancedTradeSkillWindow2.xml
+CustomSorting.xml
