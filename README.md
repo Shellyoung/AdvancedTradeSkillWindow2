@@ -1,12 +1,13 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft Vanilla
 
-<sub>version 2.0.3</sub>
+<sub>version 2.1.0</sub>
 
-![Face](https://user-images.githubusercontent.com/40469927/189532764-5301b7d0-448b-4f64-9e36-8d4f0850558c.png)
+![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/24348679-806b-4025-ac97-86c9200eb3a6)
 
 
-  Advanced Trade Skill Window is a replacement for the standard tradeskill window.
+
+  Advanced Trade Skill Window 2 is a replacement for the standard tradeskill window.
   
   Most buttons in ATSW are self-explaining.
   
@@ -44,7 +45,8 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ### Custom categories
   
-  ![Custom face](https://user-images.githubusercontent.com/40469927/189538423-2dc6329e-a606-424c-9feb-6adb6e6b8fe1.png)
+  ![Custom face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/3cfb59b4-be79-4edf-867f-b5fafac297ee)
+
 
   You can create categories and put recipes in them.
   
@@ -63,7 +65,8 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ### Configuration
   
-  ![options face](https://user-images.githubusercontent.com/40469927/189533127-e298a512-2d4f-4edf-ac79-599cbf9875cb.png)
+  ![Config face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/14bb999e-3cf2-4657-8dfd-728f545a7169)
+
   
   ATSW can be configured via built-in options menu. The menu can be shown by entering chat command **/atsw config**.
 
@@ -72,9 +75,9 @@ Improved window for your professions for World of Warcraft Vanilla
   Supported languages: English, Русский, Español, Français, Deutsch
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.0.3/AdvancedTradeSkillWindow.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.0/AdvancedTradeSkillWindow2.rar)
   
-  2. Extract the folder named 	"**AdvancedTradeSkillWindow**" from the archive and place it into the folder named 	"**..\Interface\AddOns**" in your World of Warcraft directory.
+  2. Extract the folder named 	"**AdvancedTradeSkillWindow2**" from the archive and place it into the folder named 	"**..\Interface\AddOns**" in your World of Warcraft directory.
   
   ## Credits
   
@@ -89,5 +92,3 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ###### API Documentation:
   https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
-
-I don't have mental energy to include Poisons profession. If somebody can do it, then your name will absolutely in credits.
