@@ -1841,7 +1841,7 @@ function ATSW_OnUpdate(TimePassed)
 			local TimeLeft 	= Bar.EndTime - GetTime()
 			local FourDigits 	= true
 			
-			ATSWProgressBarStopSubText:SetText(ShortFormatCooldown(TimeLeft, FourDigits))
+			ATSWProgressBarStopSubText:SetText(ShortFormatCooldown(TimeLeft+1, FourDigits))
 		elseif Bar.Mode == ATSW_FLASH then 		-- Glow appearing
 			local Alpha = Glow:GetAlpha() + TimePassed / ATSW_FLASH_TIME
 			
