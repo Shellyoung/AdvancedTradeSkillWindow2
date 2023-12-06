@@ -101,4 +101,4 @@ Improved window for your professions for World of Warcraft Vanilla
   https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
 
   ###### Thank you
-  [MasterBruin](https://github.com/MasterBruin), [shikulja](https://github.com/shikulja), [TerrorBlades](https://github.com/TerrorBlades) for bug reporting and suggestions.
+  [MasterBruin](https://github.com/MasterBruin), [shikulja](https://github.com/shikulja), [TerrorBlades](https://github.com/TerrorBlades) for bug reporting and suggestions
