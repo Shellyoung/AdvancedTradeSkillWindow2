@@ -244,24 +244,24 @@ v0.5.5b:
 - fix ruRU locale
 
 v2.0.0 (Year 2022)
-• Full code rework: no more errors, no more freezes, no more memory overload
-• Interface enhancement: 
+Â• Full code rework: no more errors, no more freezes, no more memory overload
+Â• Interface enhancement: 
 	- Items have icons
 	- Crafting requirements and queue have graphical art
 	- Queue have progress bar
 	- Main window have tabs for professions
-• Filter parameters names are changed to: :level, :rarity, :quality, :possible, :possibletotal
-• Filter rarity can now receive parameters of rarity names (example: :rarity epic, :rarity uncommon)
-• Removed compatibility with LS3D craft info, Fizzwidgets ReagentCost
+Â• Filter parameters names are changed to: :level, :rarity, :quality, :possible, :possibletotal
+Â• Filter rarity can now receive parameters of rarity names (example: :rarity epic, :rarity uncommon)
+Â• Removed compatibility with LS3D craft info, Fizzwidgets ReagentCost
 
 v2.0.1
-• Graphical error fixes:
+Â• Graphical error fixes:
 	- Recipes scroll bar was not updating on ATSWFrame show
 	- Flash appearance and disappearance animation speed was incorrect
 	- Progress stop button was not hiding if task was completed
 	- Recipe tooltip reagents posession was rendering disaligned
 	- Progress bar flash texture was becoming white if video mode was changing
-• Data flow fixes:
+Â• Data flow fixes:
 	- Reagent quantity data was not flowing into necessary items list if the list was invisible
 	- Reagent quantity data was not flowing into bank column if bank slots was changing
 	- Auction shopping list was not updating if necessary items list was changing
@@ -271,32 +271,33 @@ v2.0.1
 v2.0.2
 I nearly added poison interface for rogues but got account-banned on Turtle-WoW for the silly joke "Who is Nate Higgers?" in the World chat
 
-• Data flow fixes:
+Â• Data flow fixes:
 	- Crafting button didn't check for AuctionFrame variable existence before checking it for visibility
 	
 v2.0.3
-• Graphical error fixes:
+Â• Graphical error fixes:
 	- ATSWCS_TRADESKILLLISTTITLE was missing one "L" letter in Localization.lua
 
 v2.1.0
-• Tasks remember craft time
-• Skill-up levels from AtlasLoot addon are used by difficulty sort and recipe tooltip
-• Custom category rename button have been added
-• Custom category name edit box 20 letters limit has been removed
-• Custom categories manage buttons moved into a panel
-• Custom sorting editor show a tooltip for an item if a cursor is hovering over it
-• Recipes which are added into custom category add into beginning of category item list
-• Reagent name font color changed to black
-• Caption shows specialization
-• Amount can be set by mouse wheel
-• Background pictures for professions have been added
-• Smelting progress bar is colorized into the color of an appropriate ore
+Â•â€¢ New features:
+	-  Tasks remember craft time
+	-  Skill-up levels from AtlasLoot addon are used by difficulty sort and recipe tooltip
+	-  Custom category rename button have been added
+	-  Custom category name edit box 20 letters limit has been removed
+	-  Custom categories manage buttons moved into a panel
+	-  Custom sorting editor show a tooltip for an item if a cursor is hovering over it
+	-  Recipes which are added into custom category add into beginning of category item list
+	-  Reagent name font color changed to black
+	-  Caption shows specialization
+	-  Amount can be set by mouse wheel
+	-  Background pictures for professions
+	-  Smelting progress bar is colorized into the color of an appropriate ore
 
-• Graphical error fixes:
+â€¢ Graphical error fixes:
 	- Custom recipe items' left alignment was 22 pixels to the right instead of 0
 	- Custom recipe items' width was not related to its texts' width
 	
-• Data flow fixes:
+â€¢ Data flow fixes:
 	- ATSW_Characters[realm] table did not create if a character on a new realm was created
 	- Progress bar was not reacting on crafting errors like "Inventory is full."
 	- Custom categories frame was not updating after a recipe craft
