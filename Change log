@@ -1,3 +1,47 @@
+Advanced Trade Skill Window 2 v2.1.0 for Vanilla
+a World of Warcraft UI Addon
+Written by Rene Schneider (Slarti on EU-Blackhand) in 2006
+Fixed by laytya in 2017
+Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
+----------------------------------------------------------------
+
+Advanced Trade Skill Window is a replacement for the standard tradeskill window.
+
+Most buttons in ATSW are self-explaining.
+
+Features:
+
+1) Task progress timer
+Task progress timer represents overall completion of a task. When you start crafting, the progress timer will appear under the task.
+
+2) Search commands
+ATSW has a search function built-in. If you type some text into the search box then ATSW will filter the recipe list according to your entry or the following parameters: :reagent, :level, :quality, :possible, :possibletotal. You can even combine multiple parameters and a text for a name search, like this:
+"leather :level 20+ :quality uncommon+" - recipes with the word "leather" in their name, a minimum level requirement of 20 and a minimum quality of "green".
+
+3) Necessary reagents list
+The "Reagents" button will show you a list of reagents required to craft items in the task list, how many of the reagents you have in your inventory, in your bank, on alternative characters on the same server and if a reagent can be bought from a merchant. By hovering a cursor over the reagent count on alternative characters, you get a list of all alts currently possessing the item in question.
+
+ATSW can also automatically buy necessary items from a merchant when speaking to him - either manually by clicking a button in the reagents window or automatically when opening the merchant window.
+
+4) Auction shopping list
+Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list.
+
+5) Reporting
+By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window.
+
+6) Compatibility
+ATSW is compatible with WIM (WoW Instant Messenger), aux.
+
+---------------------------------------------------------------------------------
+
+1) Installation
+Place the folder named "Advanced Trade Skill Window" into the folder named "..World of Warcraft\Interface\AddOns".
+
+2) Configuration
+ATSW can be configured via built-in options menu. The menu can be shown using command /atsw config.
+
+3) Changelog
+
 v0.1 
 - initial version
 
@@ -212,20 +256,20 @@ v2.0.0 (Year 2022)
 
 v2.0.1
 • Graphical error fixes:
-	- Recipes scroll bar was not updating on ATSWFrame show.
+	- Recipes scroll bar was not updating on ATSWFrame show
 	- Flash appearance and disappearance animation speed was incorrect
 	- Progress stop button was not hiding if task was completed
 	- Recipe tooltip reagents posession was rendering disaligned
 	- Progress bar flash texture was becoming white if video mode was changing
 • Data flow fixes:
-	- Reagent quantity data was not flowing into necessary items list if the list was invisible.
-	- Reagent quantity data was not flowing into bank column if bank slots was changing.
-	- Auction shopping list was not updating if necessary items list was changing.
-	- "(buyable)" label was not showing in recipe tooltip.
-	- Possible creation amount calculated not considering merchant items.
+	- Reagent quantity data was not flowing into necessary items list if the list was invisible
+	- Reagent quantity data was not flowing into bank column if bank slots was changing
+	- Auction shopping list was not updating if necessary items list was changing
+	- "(buyable)" label was not showing in recipe tooltip
+	- Possible creation amount calculated not considering merchant items
 	
 v2.0.2
-I nearly added poison interface for rogues but got banned on Turtle-WoW for the silly joke in the World chat
+I nearly added poison interface for rogues but got account-banned on Turtle-WoW for the silly joke "Who is Nate Higgers?" in the World chat
 
 • Data flow fixes:
 	- Crafting button didn't check for AuctionFrame variable existence before checking it for visibility
@@ -233,3 +277,31 @@ I nearly added poison interface for rogues but got banned on Turtle-WoW for the 
 v2.0.3
 • Graphical error fixes:
 	- ATSWCS_TRADESKILLLISTTITLE was missing one "L" letter in Localization.lua
+
+v2.1.0
+• New features:
+	-  Tasks remember craft time
+	-  Skill-up levels from AtlasLoot addon are used by difficulty sort and recipe tooltip
+	-  Custom category rename button have been added
+	-  Custom category name edit box 20 letters limit has been removed
+	-  Custom categories manage buttons moved into a panel
+	-  Custom sorting editor show a tooltip for an item if a cursor is hovering over it
+	-  Recipes which are added into custom category add into beginning of category item list
+	-  Reagent name font color changed to black
+	-  Caption shows specialization
+	-  Amount can be set by mouse wheel
+	-  Background pictures for professions
+	-  Smelting progress bar is colorized into the color of an appropriate ore
+
+• Graphical error fixes:
+	- Custom recipe items' left alignment was 22 pixels to the right instead of 0
+	- Custom recipe items' width was not related to its texts' width
+	
+• Data flow fixes:
+	- ATSW_Characters[realm] table did not create if a character on a new realm was created
+	- Progress bar was not reacting on crafting errors like "Inventory is full."
+	- Custom categories frame was not updating after a recipe craft
+	- Required reagents amount calculation did not consider item production amount from a single recipe
+	- Required reagents amount calculation for alternative characters was searching for the characters on another server
+	- Possible craft amount calculation was wrong if calculated for 2 or more required merchant buyable reagents while not kept at player's bag
+	- Difficulty color of custom recipe that located in category was not changing if profession level was changing
