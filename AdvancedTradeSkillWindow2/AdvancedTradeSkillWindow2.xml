@@ -199,11 +199,11 @@
 	<Button name="ATSWTaskButtonTemplate" hidden="true" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
-				<FontString name="$parentSubText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
-				<FontString name="$parentTimeCost" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+				<FontString name="$parentSubText" inherits="GameFontHighlightSmall" justifyH="LEFT"/>
+				<FontString name="$parentTimeCost" inherits="GameFontHighlightSmall" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentSubText" relativePoint="RIGHT">
-							<Offset x="287" y="0.5"/>
+						<Anchor point="LEFT">
+							<Offset x="255.5" y="0"/>
 						</Anchor>
 					</Anchors>
 				</FontString>
@@ -647,7 +647,7 @@
 				<FontString name="$parentSubText" inherits="GameFontHighlightSmall" justifyH="RIGHT">
 					<Anchors>
 						 <Anchor point="RIGHT" relativePoint="LEFT">
-							<Offset x="-3" y="0"/>
+							<Offset x="-3" y="-0.1"/>
 						</Anchor>
 					</Anchors>
 				</FontString>
