@@ -1,7 +1,7 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft Vanilla
 
-<sub>version 2.1.0</sub>
+<sub>version 2.1.1</sub>
 
 ![Attention](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/1b3981c8-1722-451a-a5c9-34d21bb247b1)
 
