@@ -52,7 +52,7 @@ Improved window for your professions for World of Warcraft Vanilla
   ![Custom face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/3cfb59b4-be79-4edf-867f-b5fafac297ee)
 
 
-  You can create categories and put recipes in them.
+  You can create categories and put recipes into them.
   
   
   ### Reporting
