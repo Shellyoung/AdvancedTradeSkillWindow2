@@ -187,22 +187,6 @@
                         </Anchor>
                     </Anchors>
         		</Texture>
-	      	</Layer>
-	        <Layer level="BORDER">
-                <Texture file="Interface\TaxiFrame\UI-TaxiFrame-TopLeft">
-                    <Size x="256" y="256"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT"/>
-                    </Anchors>
-                </Texture>
-                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-BotLeftReplacement">
-                    <Size x="256" y="256"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT">
-                            <Offset x="0" y="-256"/>
-                        </Anchor>
-                    </Anchors>
-                </Texture>
                 <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween1">
                     <Size x="128" y="512"/>
                     <Anchors>
@@ -211,11 +195,11 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween2">
-                    <Size x="256" y="512"/>
+				<Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-BotLeftReplacement">
+                    <Size x="256" y="256"/>
                     <Anchors>
                         <Anchor point="TOPLEFT">
-                            <Offset x="384" y="0"/>
+                            <Offset x="0" y="-256"/>
                         </Anchor>
                     </Anchors>
                 </Texture>
@@ -235,6 +219,22 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+	      	</Layer>
+	        <Layer level="BORDER">
+                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween2">
+                    <Size x="514" y="512"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="255" y="0"/>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <Texture file="Interface\TaxiFrame\UI-TaxiFrame-TopLeft">
+                    <Size x="256" y="256"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                </Texture>
                 <FontString name="ATSWCSFrameTitleText" inherits="GameFontNormal" text="ATSWCS_TITLE">
                     <Size x="600" y="14"/>
                     <Anchors>
@@ -245,17 +245,6 @@
                 </FontString>
             </Layer>
 			<Layer level="ARTWORK">
-				<Texture name="ATSWCSButtonPanel" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\ButtonPanel">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="346" y="-469"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="-45" y="17"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.028" right="0.972" top="0.228" bottom="0.796"/>
-				</Texture>
 				<Texture name="ATSWCSHorizontalBar2Left" file="Interface\ClassTrainerFrame\UI-ClassTrainer-HorizontalBar">
 					<Size x="292.5" y="16"/>
 					<Anchors>

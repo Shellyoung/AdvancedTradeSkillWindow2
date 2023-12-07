@@ -690,9 +690,7 @@
                         </Anchor>
                     </Anchors>
         		</Texture>
-			</Layer>
-			<Layer level="BORDER">
-                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween1">
+				<Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween1">
                     <Size x="128" y="512"/>
                     <Anchors>
                         <Anchor point="TOPLEFT">
@@ -700,21 +698,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween2">
-                    <Size x="256" y="512"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT">
-                            <Offset x="384" y="0"/>
-                        </Anchor>
-                    </Anchors>
-                </Texture>
-				<Texture file="Interface\TaxiFrame\UI-TaxiFrame-TopLeft">
-                    <Size x="256" y="256"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT"/>
-                    </Anchors>
-                </Texture>
-                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-BotLeftReplacement">
+				<Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-BotLeftReplacement">
                     <Size x="256" y="256"/>
                     <Anchors>
                         <Anchor point="TOPLEFT">
@@ -738,6 +722,22 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+			</Layer>
+			<Layer level="BORDER">
+                <Texture file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-TaxiFrame-InBetween2">
+                    <Size x="514" y="512"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="255" y="0"/>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+				<Texture file="Interface\TaxiFrame\UI-TaxiFrame-TopLeft">
+                    <Size x="256" y="256"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                </Texture>
 	      	</Layer>
 			<Layer level="ARTWORK">
 				<Texture name="ATSWBackground">
@@ -751,8 +751,6 @@
 					</Anchors>
 					<TexCoords left="0.126" right="0.846" top="0.002" bottom="0.998"/>
 				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
 				<Texture name="ATSWParchment" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\Parchment">
 					<Anchors>
 						<Anchor point="TOPRIGHT">
@@ -764,8 +762,6 @@
 					</Anchors>
 					<TexCoords left="0.034" right="0.968" top="0.173" bottom="0.83"/>
 				</Texture>
-			</Layer>
-			<Layer level="ARTWORK">
 				<Texture name="ATSWScrollBackgroundTop" file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar">
 					<Size x="28" y="117"/>
 					<Anchors>
@@ -793,8 +789,6 @@
 					</Anchors>
 					<TexCoords left="0.53125" right="0.99" top="0.03125" bottom="1.0"/>
 				</Texture>
-			</Layer>
-			<Layer level="OVERLAY">
 				<Texture name="ATSWWeb" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\Web">
 					<Anchors>
 						<Anchor point="TOPLEFT">
@@ -806,6 +800,8 @@
 					</Anchors>
 					<TexCoords left="0.064" right="0.935" top="0.289" bottom="0.71"/>
 				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
 				<Texture name="ATSWHorizontalBar1Left" file="Interface\ClassTrainerFrame\UI-ClassTrainer-HorizontalBar">
 					<Size x="293.5" y="14"/>
 					<Anchors>
@@ -839,17 +835,6 @@
 						<Anchor point="LEFT" relativeTo="ATSWHorizontalBar2Left" relativePoint="RIGHT"/>
 					</Anchors>
 					<TexCoords left="0" right="0.29296875" top="0.25" bottom="0.5"/>
-				</Texture>
-				<Texture name="ATSWButtonPanel" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\ButtonPanel">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="346" y="-469"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="-45" y="17"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.028" right="0.972" top="0.228" bottom="0.796"/>
 				</Texture>
 				<FontString name="ATSWRecipeName" inherits="ATSWFont" justifyH="CENTER">
 					<Size x="480" y="0"/>
@@ -1689,22 +1674,22 @@
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar">
-							<Size x="30" y="80"/>
+							<Size x="28" y="80"/>
 							<Anchors>
 								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-									<Offset x="-3" y="2"/>
+									<Offset x="1" y="3"/>
 								</Anchor>
 							</Anchors>
-							<TexCoords left="0" right="0.46875" top="0.0234375" bottom="0.6"/>
+							<TexCoords left="0" right="0.46375" top="0.0234375" bottom="0.6"/>
 						</Texture>
 						<Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar">
-							<Size x="30" y="80"/>
+							<Size x="28" y="80"/>
 							<Anchors>
 								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
-									<Offset x="-3" y="-2"/>
+									<Offset x="1" y="-3"/>
 								</Anchor>
 							</Anchors>
-							<TexCoords left="0.53125" right="1.0" top="0.4" bottom="1.0"/>
+							<TexCoords left="0.53125" right="0.995" top="0.385" bottom="1.0"/>
 						</Texture>
 					</Layer>
 				</Layers>
@@ -1717,10 +1702,10 @@
 						<Offset x="0" y="1.5"/>
 					</Anchor>
 					<Anchor point="BOTTOM" relativeTo="ATSWHorizontalBar2LeftAddon" relativePoint="TOP">
-						<Offset x="0" y="-3"/>
+						<Offset x="0" y="-4"/>
 					</Anchor>
 					<Anchor point="RIGHT" relativeTo="ATSWFrame" relativePoint="RIGHT">
-						<Offset x="-69.5" y="0"/>
+						<Offset x="-66" y="0"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>

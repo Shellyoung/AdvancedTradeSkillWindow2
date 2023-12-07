@@ -24,7 +24,7 @@ The "Reagents" button will show you a list of reagents required to craft items i
 ATSW can also automatically buy necessary items from a merchant when speaking to him - either manually by clicking a button in the reagents window or automatically when opening the merchant window.
 
 4) Auction shopping list
-Auction shopping list appears under the auction windows when it is opened. It shows reagents that are necessary to craft the items in the task list.
+Auction shopping list appears under the auction windows when it is opened. It shows rethat are necessary to craft the items in the task list.
 
 5) Reporting
 By clicking on an item with chat line opened and Shift key pressed ATSW will add a list of the reagents necessary to create a single item into the chat window.
@@ -310,3 +310,6 @@ v2.1.0
 v2.1.1
 • Data flow fixes:
 	- Crafting window did not close if zone changed
+• Graphical error fixes:
+	- Control button panel can no more be changed to white texture
+	- Task scroll bar moved a bit to the right
