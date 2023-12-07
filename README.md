@@ -11,7 +11,6 @@ Improved window for your professions for World of Warcraft Vanilla
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/029d78fc-1a30-41ed-b591-02a74bd6bdea)
 
 
-
   Advanced Trade Skill Window 2 is a replacement for the standard tradeskill window.
   
   Most buttons in ATSW are self-explaining.
