@@ -8,7 +8,8 @@ Improved window for your professions for World of Warcraft Vanilla
 **Your settings are SAFE**. Folder name is changed from AdvancedTradeSkillWindow to AdvancedTradeSkillWindow2. Rename the file AdvancedTradeSkillWindow.lua into AdvancedTradeSkillWindow2.lua inside the folder **..WTF\Account\ACCOUNT NAME\SavedVariables**.
 
 
-![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/029d78fc-1a30-41ed-b591-02a74bd6bdea)
+![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
+
 
 
   Advanced Trade Skill Window 2 is a replacement for the standard tradeskill window.
@@ -49,7 +50,8 @@ Improved window for your professions for World of Warcraft Vanilla
   
   ### Custom categories
   
-  ![Custom face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/3cfb59b4-be79-4edf-867f-b5fafac297ee)
+  ![Custom face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/c526b0c1-c03d-4619-bb4a-2b9d86d99f40)
+
 
 
   You can create categories and put recipes into them.
