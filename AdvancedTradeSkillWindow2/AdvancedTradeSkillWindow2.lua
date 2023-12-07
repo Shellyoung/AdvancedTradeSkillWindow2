@@ -1,4 +1,4 @@
--- Advanced Trade Skill Window version 2.1.0 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.1 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -2520,6 +2520,7 @@ function ATSW_OnEvent()
 	elseif 	event == "PLAYER_ENTERING_WORLD" 			then
 		
 		ATSW_SaveBag(0)
+		ATSW_Hide()
 		
 		local function InitializeTable(Table, Value, Prof)
 			if Table == nil then
@@ -2553,7 +2554,7 @@ function ATSW_OnEvent()
 			Name 	= player,
 			Class		= class
 		})
-	
+		
 	elseif 	event == "CHAT_MSG_SYSTEM" 						then
 	
 		if string.find(arg1, ERR_LEARN_RECIPE_PATTERN)
