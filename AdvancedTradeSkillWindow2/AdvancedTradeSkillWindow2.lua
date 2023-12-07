@@ -2642,9 +2642,7 @@ function ATSW_OnEvent()
 		if arg1 		== "USE_UISCALE" 		then
 			ATSWRecipeTooltip:SetScale(GetCVar("uiscale"))
 		elseif arg1	== "WINDOWED_MODE"	then
-			-- Fix for ButtonPanel texture becomes white if toggling windowed mode (do not work in some ways)
-			ATSWButtonPanel:SetTexture(nil)
-			ATSWButtonPanel:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\ButtonPanel")
+			-- Fix for BarGlow texture becomes white if toggling windowed mode
 			ATSWProgressBarGlow:SetTexture(nil)
 			ATSWProgressBarGlow:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\ProgressBarFlash")
 		end
