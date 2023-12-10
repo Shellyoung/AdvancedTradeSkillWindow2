@@ -1,5 +1,5 @@
 # Advanced Trade Skill Window 2
-Improved window for your professions for World of Warcraft Vanilla
+Improved window for your professions for World of Warcraft vanilla
 
 <sub>version 2.1.1</sub>
 
