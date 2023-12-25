@@ -167,7 +167,7 @@
 		</Frames>
     </Frame>
 
-	<Frame name="ATSWCSFrame" movable="true" parent="UIParent" enableMouse="true" hidden="true" frameStrata="LOW">
+	<Frame name="ATSWCSFrame" movable="true" parent="UIParent" enableMouse="true" hidden="true" frameStrata="HIGH">
 		<HitRectInsets>
 			<AbsInset left="12" right="35" top="12" bottom="12"/>
 		</HitRectInsets>
