@@ -422,7 +422,6 @@ elseif GetLocale() == "zhCN" then
 	ATSW_TOOLTIP_SAYREAGENTS	        = "\n|cff1eff00Shift + 左键|r: |cffffffff|聊天(/s)说列出所需要的材料清单|r"
 	ATSW_TOOLTIP_TO					    = " |cffffffffto|r "
 	ATSW_TOOLTIP_ADDITEM		    	= "\n|cff1eff00Shift + 左键|r: |cffffffff|添加所有项至任务制作清单中|r"
-	ATSW_BUYBUTTON_TOPTEXT 	            = "This merchant sells reagents that are necessary for tasks for"
 	ATSW_BUYBUTTON_TOPTEXT 	            = "商人出售如下制作清单中所需的材料"
 	ATSW_BUYBUTTON_TEXT 		    	= "购买材料"
 	ATSW_SHOPPINGLISTTITLE 		        = "当前制作清单中所有项目所需的材料清单:"
