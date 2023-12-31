@@ -669,8 +669,7 @@
 			</Anchor>
 		</Anchors>
 	</Frame>
-	
-	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent">
+	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent" frameStrata="DIALOG">
 		<HitRectInsets>
 			<AbsInset left="12" right="35" top="12" bottom="12"/>
 		</HitRectInsets>
@@ -1961,7 +1960,7 @@
 		</Scripts>
     </Frame>
 
-	<Frame name="ATSWConfigFrame" inherits="ATSWDialogBoxFrame_OnlyOK" toplevel="true" frameStrata="DIALOG" parent="UIParent">
+	<Frame name="ATSWConfigFrame" inherits="ATSWDialogBoxFrame_OnlyOK" toplevel="true" frameStrata="HIGH" parent="UIParent">
 		<Size x="395" y="470"/>
 		<Layers>
 			<Layer level="ARTWORK">
