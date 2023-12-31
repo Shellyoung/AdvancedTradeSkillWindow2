@@ -353,15 +353,14 @@
 			</OnUpdate>
 			<OnClick>
 				local RecipeIndex, ReagentIndex = ATSW_GetPositionFromGame(ATSW_RecipeSelected()), this:GetID()
-				local Link
 				
 				if ATSW_TradeSkill() then
-					Link = GetTradeSkillReagentItemLink(RecipeIndex, ReagentIndex)
+					this.Link = GetTradeSkillReagentItemLink(RecipeIndex, ReagentIndex)
 				else
-					Link = GetCraftReagentItemLink(RecipeIndex, ReagentIndex)
+					this.Link = GetCraftReagentItemLink(RecipeIndex, ReagentIndex)
 				end
 				
-				ATSWRecipe_OnClick(Link)
+				ATSWRecipe_OnClick()
 			</OnClick>
 		</Scripts>
 	</Button>
@@ -395,7 +394,7 @@
 			<Button name="$parentBags" inherits="ATSWRFTextTemplate_60">
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="$parentItem" relativePoint="RIGHT">
-                        <Offset x="13" y="0"/>
+                        <Offset x="-16" y="0"/>
                     </Anchor>
                 </Anchors>
             </Button>
@@ -659,6 +658,9 @@
 				ATSW_StopProcessing()
 			</OnClick>
 		</Scripts>
+		<HighlightFont>
+			<Color r="1" g="0.82" b="0"/>
+		</HighlightFont>
 	</Button>
 	
 	<Frame name="ATSWFrameSideTabsFrame" parent="ATSWFrame">
@@ -669,7 +671,8 @@
 			</Anchor>
 		</Anchors>
 	</Frame>
-	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent" frameStrata="DIALOG">
+	
+	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent" frameStrata="HIGH">
 		<HitRectInsets>
 			<AbsInset left="12" right="35" top="12" bottom="12"/>
 		</HitRectInsets>
@@ -967,22 +970,20 @@
 						else
 							CloseCraft()
 						end
-						
-						PlaySound("igCharacterInfoClose")
 					</OnClick>
 				</Scripts>
             </Button>
 			
-			<CheckButton name="ATSWCategorySortCheckbox" checked="true">
+			<CheckButton name="ATSWCategorySortCheckbox" checked="true" inherits="UIRadioButtonTemplate">
                 <Size x="20" y="20"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="ATSWFrame">
-                        <Offset x="142" y="-34"/>
+                        <Offset x="142" y="-33"/>
                     </Anchor>
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="ATSWCategorySortCheckboxText" inherits="GameFontHighlightSmall" text="ATSW_SORTBYCATEGORY">
+                        <FontString name="$parentText2" inherits="GameFontHighlightSmall" text="ATSW_SORTBYCATEGORY">
                             <Anchors>
                                 <Anchor point="LEFT" relativePoint="RIGHT">
                                     <Offset x="-2" y="1"/>
@@ -1006,14 +1007,9 @@
 						ATSW_SortCheckbox_OnClick()
                     </OnClick>
                 </Scripts>
-                <NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-                <PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-                <HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-                <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-                <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
             </CheckButton>
 			
-			<CheckButton name="ATSWDifficultySortCheckbox">
+			<CheckButton name="ATSWDifficultySortCheckbox" inherits="UIRadioButtonTemplate" text="ATSW_SORTBYDIFFICULTY">
                 <Size x="20" y="20"/>
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="ATSWCategorySortCheckbox"  relativeto="RIGHT">
@@ -1022,7 +1018,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="ATSWDifficultySortCheckboxText" inherits="GameFontHighlightSmall" text="ATSW_SORTBYDIFFICULTY">
+                        <FontString name="$parentText2" inherits="GameFontHighlightSmall" text="ATSW_SORTBYDIFFICULTY">
                             <Anchors>
                                 <Anchor point="LEFT" relativePoint="RIGHT">
                                     <Offset x="-2" y="1"/>
@@ -1039,14 +1035,9 @@
 						ATSW_SortCheckbox_OnClick()
                     </OnClick>
                 </Scripts>
-                <NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-                <PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-                <HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-                <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-                <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
             </CheckButton>
 
-			<CheckButton name="ATSWNameSortCheckbox">
+			<CheckButton name="ATSWNameSortCheckbox" inherits="UIRadioButtonTemplate">
                 <Size x="20" y="20"/>
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="ATSWDifficultySortCheckbox" relativeto="RIGHT">
@@ -1055,7 +1046,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="ATSWNameSortCheckboxText" inherits="GameFontHighlightSmall" text="ATSW_SORTBYNAMES">
+                        <FontString name="$parentText2" inherits="GameFontHighlightSmall" text="ATSW_SORTBYNAMES">
                             <Anchors>
                                 <Anchor point="LEFT" relativePoint="RIGHT">
                                     <Offset x="-2" y="1"/>
@@ -1072,14 +1063,9 @@
 						ATSW_SortCheckbox_OnClick()
                     </OnClick>
                 </Scripts>
-                <NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-                <PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-                <HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-                <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-                <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
             </CheckButton>
 
-			<CheckButton name="ATSWCustomSortCheckbox">
+			<CheckButton name="ATSWCustomSortCheckbox" inherits="UIRadioButtonTemplate">
                 <Size x="20" y="20"/>
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="ATSWNameSortCheckbox"  relativeto="RIGHT">
@@ -1088,7 +1074,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString name="ATSWCustomSortCheckboxText" inherits="GameFontHighlightSmall" text="ATSW_CUSTOMSORTING">
+                        <FontString name="$parentText2" inherits="GameFontHighlightSmall" text="ATSW_CUSTOMSORTING">
                             <Anchors>
                                 <Anchor point="LEFT" relativePoint="RIGHT">
                                     <Offset x="-2" y="1"/>
@@ -1105,11 +1091,6 @@
 						ATSW_SortCheckbox_OnClick()
                     </OnClick>
                 </Scripts>
-                <NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-                <PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-                <HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-                <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-                <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
             </CheckButton>
 			
 			<Button name="ATSWCustomEditorButton" inherits="UIPanelButtonTemplate" text="ATSW_CSBUTTON" hidden="true">
@@ -1127,6 +1108,9 @@
 						ATSW_SwitchToFrame(ATSWCSFrame)
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 
 			<EditBox name="ATSWSearchBox" letters="100" historyLines="0" autoFocus="false">
@@ -1174,14 +1158,14 @@
 					<OnTextChanged>
 						local text = this:GetText()
 						
-						ATSW_SetSearch(text)
+						ATSWSearchBox_OnTextChanged(text)
 						
-						if text ~= "" then
+						if text == "" then
+							ATSWSearchBoxClear:Hide()
+						else
 							ATSWSearchBoxClear:Show()
 							ATSWSearchLabel:Hide()
 							ATSWSearchIcon:Hide()
-						else
-							ATSWSearchBoxClear:Hide()
 						end
 					</OnTextChanged> 
 					<OnEditFocusLost>
@@ -1189,12 +1173,12 @@
 						
 						this:HighlightText(0, 0)
 						
-						if text ~= "" then
-							ATSWSearchLabel:Hide()
-							ATSWSearchIcon:Hide()
-						else
+						if text == "" then
 							ATSWSearchLabel:Show()
 							ATSWSearchIcon:Show()
+						else
+							ATSWSearchLabel:Hide()
+							ATSWSearchIcon:Hide()
 						end
 					</OnEditFocusLost>
 					<OnEditFocusGained>
@@ -1222,6 +1206,9 @@
 						end
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			
 			<Frame name="ATSWSearchHelpFrame" inherits="ATSWDialogBoxFrame_OnlyOK" frameStrata="HIGH" hidden="true">
@@ -1285,6 +1272,9 @@
 						ATSWSearchIcon:Show()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			
 			<Frame name="ATSWSubClassDropDown" inherits="UIDropDownMenuTemplate" id="1">
@@ -1456,7 +1446,7 @@
 				<Size x="90" y="22"/>
 				<Anchors>
 					<Anchor point="BOTTOM" relativeTo="ATSWFrame" relativePoint="BOTTOM">
-						<Offset x="11" y="20"/>
+						<Offset x="9" y="19.5"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -1467,6 +1457,9 @@
 						ATSWReagentsButton_OnClick()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			
 			<Frame name="ATSWTrainingPointsFrame">
@@ -1511,10 +1504,14 @@
 						this:SetFont("Fonts\\FRIZQT__.ttf", 13.5)
 					</OnLoad>
 					<OnClick>
-						ATSWCreateButton_OnClick()
 						ATSWAmountBox:ClearFocus()
+						ATSWCreateButton_OnClick()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
+				<PushedTexture inherits="UIPanelButtonDisabledDownTexture"/>
 			</Button>
 			
 			<Button name="ATSWTaskButton" inherits="UIPanelButtonTemplate" text="ATSW_TASK">
@@ -1530,6 +1527,9 @@
 						ATSWAmountBox:ClearFocus()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			
 			<Button name="ATSWIncrementButton">
@@ -1631,7 +1631,7 @@
 				<Size x="23" y="23"/>
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="ATSWAmountBox" relativePoint="LEFT">
-						<Offset x="-3" y="0"/>
+						<Offset x="-3" y="-0.5"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -1767,7 +1767,7 @@
     </Button>
 
 	<Button name="ATSWRFTextTemplate_300" virtual="true">
-      <Size x="180" y="16"/>
+      <Size x="210" y="16"/>
 	  	<Scripts>
 			<OnEnter>
                 ATSWItemButton_OnEnter()
@@ -1777,7 +1777,7 @@
             </OnLeave>
         </Scripts>
         <ButtonText name="$parentText" inherits="GameFontNormal" justifyH="left">
-            <Size x="180" y="12"/>
+            <Size x="210" y="12"/>
             <Anchors>
                 <Anchor point="LEFT"/>
             </Anchors>
@@ -1960,7 +1960,7 @@
 		</Scripts>
     </Frame>
 
-	<Frame name="ATSWConfigFrame" inherits="ATSWDialogBoxFrame_OnlyOK" toplevel="true" frameStrata="HIGH" parent="UIParent">
+	<Frame name="ATSWConfigFrame" inherits="ATSWDialogBoxFrame_OnlyOK" toplevel="true" frameStrata="DIALOG" parent="UIParent">
 		<Size x="395" y="470"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -1994,7 +1994,7 @@
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<CheckButton name="ATSWOFUnifiedButton" virtual="true">
+					<CheckButton name="ATSWOFUnifiedButton" virtual="true" inherits="UIRadioButtonTemplate">
 						<Size x="20" y="20"/>
 						<Anchors>
 							<Anchor point="TOPLEFT">
@@ -2037,14 +2037,9 @@
 								this:SetChecked()
 							</OnClick>
 						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 					</CheckButton>
 					
-					<CheckButton name="ATSWOFSeparateButton" virtual="true">
+					<CheckButton name="ATSWOFSeparateButton" virtual="true" inherits="UIRadioButtonTemplate">
 						<Size x="20" y="20"/>
 						<Anchors>
 							<Anchor point="LEFT" relativeTo="ATSWOFUnifiedButton" relativePoint="RIGHT">
@@ -2086,11 +2081,6 @@
 								this:SetChecked()
 							</OnClick>
 						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 					</CheckButton>
 				</Frames>
 				<Scripts>
@@ -2110,7 +2100,7 @@
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<CheckButton name="ATSWOFIncludeBankButton" virtual="true">
+					<CheckButton name="ATSWOFIncludeBankButton" virtual="true" inherits="UICheckButtonTemplate">
 						<Size x="20" y="20"/>
 						<Anchors>
 							<Anchor point="TOPLEFT">
@@ -2143,14 +2133,9 @@
 								end
 							</OnClick>
 						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 					</CheckButton>
 
-					<CheckButton name="ATSWOFIncludeAltsButton" virtual="true">
+					<CheckButton name="ATSWOFIncludeAltsButton" inherits="UICheckButtonTemplate" virtual="true">
 						<Size x="20" y="20"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="ATSWOFIncludeBankButton" relativePoint="BOTTOMLEFT"/>
@@ -2181,14 +2166,9 @@
 								end
 							</OnClick>
 						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 					</CheckButton>
 
-					<CheckButton name="ATSWOFIncludeMerchantsButton" virtual="true">
+					<CheckButton name="ATSWOFIncludeMerchantsButton" inherits="UICheckButtonTemplate" virtual="true">
 						<Size x="20" y="20"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="ATSWOFIncludeAltsButton" relativePoint="BOTTOMLEFT"/>
@@ -2219,11 +2199,6 @@
 								end
 							</OnClick>
 						</Scripts>
-						<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-						<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-						<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-						<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-						<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 					</CheckButton>
 				</Frames>
 				<Scripts>
@@ -2235,7 +2210,7 @@
 				</Scripts>
 			</Frame>
 			
-			<CheckButton name="ATSWOFAutoBuyButton" virtual="true">
+			<CheckButton name="ATSWOFAutoBuyButton" inherits="UICheckButtonTemplate" virtual="true">
 				<Size x="20" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="ATSWConfigFrame">
@@ -2268,14 +2243,9 @@
 						end
 					</OnClick>
 				</Scripts>
-				<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-				<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-				<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-				<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-				<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
-			</CheckButton>			
+			</CheckButton>
 			
-			<CheckButton name="ATSWOFTooltipButton" virtual="true">
+			<CheckButton name="ATSWOFTooltipButton" inherits="UICheckButtonTemplate" virtual="true">
 				<Size x="20" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="ATSWOFAutoBuyButton" relativePoint="BOTTOMLEFT">
@@ -2304,14 +2274,9 @@
 						end
 					</OnClick>
 				</Scripts>
-				<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-				<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-				<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-				<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-				<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 			</CheckButton>
 			
-			<CheckButton name="ATSWOFShoppingListButton" virtual="true">
+			<CheckButton name="ATSWOFShoppingListButton" inherits="UICheckButtonTemplate" virtual="true">
 				<Size x="20" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="ATSWOFTooltipButton" relativePoint="BOTTOMLEFT">
@@ -2340,11 +2305,6 @@
 						end
 					</OnClick>
 				</Scripts>
-				<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
-				<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
-				<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
-				<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
-				<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
 			</CheckButton>
 			
 			<Frame name="ATSWOptionsAddonsCompat" inherits="OptionFrameBoxTemplate">
@@ -3124,6 +3084,9 @@
 						ATSW_BuyFromMerchant()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			<Frame name="ATSWBuyPrice" inherits="ATSWSmallMoneyFrameTemplate">
 				<Anchors>
@@ -3177,7 +3140,7 @@
 			<Button name="$parentBags" inherits="ATSWRFTextTemplate_60">
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="$parentItem" relativePoint="RIGHT">
-                        <Offset x="13" y="0"/>
+                        <Offset x="-16" y="0"/>
                     </Anchor>
                 </Anchors>
             </Button>

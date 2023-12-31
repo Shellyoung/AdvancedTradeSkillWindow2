@@ -378,6 +378,9 @@
 						ATSWCSNewCategoryBox:ClearFocus()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			
 			<Button name="ATSWCSAddButton" inherits="UIPanelButtonTemplate" text="ATSWCS_ADD" enabled="false">
@@ -397,6 +400,9 @@
 						ATSWCSNewCategoryBox:ClearFocus()
 					</OnClick>
 				</Scripts>
+				<HighlightFont>
+					<Color r="1" g="0.82" b="0"/>
+				</HighlightFont>
 			</Button>
 			
 			<EditBox name="ATSWCSNewCategoryBox" historyLines="0" numeric="false" autoFocus="false">
@@ -507,7 +513,7 @@
 				<Size x="18" y="18"/>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
-						<Offset x="-100" y="22"/>
+						<Offset x="-100" y="21"/>
 					</Anchor>
 				</Anchors>
 				<Scripts>
@@ -634,5 +640,8 @@
 				ATSW_SwitchToFrame(ATSWFrame)
 			</OnHide>
 		</Scripts>
+		<HighlightFont>
+			<Color r="1" g="0.82" b="0"/>
+		</HighlightFont>
 	</Frame>
 </Ui>

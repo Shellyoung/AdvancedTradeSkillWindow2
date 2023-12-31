@@ -141,8 +141,6 @@ local function GetCategoryItemByItemName(Name)
 			end
 		end
 	end
-	
-	return nil, nil
 end
 
 local function CategoryExist(Name)
@@ -176,9 +174,9 @@ local function IsFirst(Name)
 	else
 		local C = GetCategoryItemByItemName(Name)
 		
-		if not C then return false end
-		
-		return Item(C, 1).Name .. ATSW_SubNameToString(Item(C, 1).SubName) == Name
+		if C then
+			return Item(C, 1).Name .. ATSW_SubNameToString(Item(C, 1).SubName) == Name
+		end
 	end
 end
 
@@ -188,9 +186,9 @@ local function IsLast(Name)
 	else
 		local C = GetCategoryItemByItemName(Name)
 		
-		if not C then return false end
-		
-		return Item(C, ItemsSize(C)).Name .. ATSW_SubNameToString(Item(C, ItemsSize(C)).SubName) == Name
+		if C then
+			return Item(C, ItemsSize(C)).Name .. ATSW_SubNameToString(Item(C, ItemsSize(C)).SubName) == Name
+		end
 	end
 end
 
@@ -301,7 +299,9 @@ function ATSWCSRecipeButton_OnClick(Name, SubName, Type, Texture)
 	local ItemCount = 0
 	local Position = 0
 	
-    if CatIndex == 0 then return end
+    if CatIndex == 0 then
+		return
+	end
 	
 	ItemCount = ItemsSize(CatIndex)
 	
@@ -325,7 +325,9 @@ function ATSWCSRecipeButton_OnClick(Name, SubName, Type, Texture)
 end
 
 function ATSWCSCategoryButton_OnClick(Name, Type, Index, CatIndex)
-	if not Index then return end
+	if not Index then
+		return
+	end
 	
 	local PrevCategory = ""
 	
@@ -511,15 +513,15 @@ function ATSWCS_IsCategorized(Name, SubName)
 			
 			local LSubName = SubName
 			
-			if LSubName == "" then LSubName = nil end
+			if LSubName == "" then
+				LSubName = nil
+			end
 			
 			if R.Name == Name and (LSubName and R.SubName == LSubName or LSubName == nil) then
 				return true
 			end
 		end
 	end
-	
-    return false
 end
 
 function ATSWCS_UpdateATSWFrame()
@@ -644,7 +646,7 @@ function ATSWCS_UpdateCategories()
 			ButtonHighlight:	SetTexCoord		(0+HighlightSize, 		1-HighlightSize,	0+HighlightSize,	1-HighlightSize)
 			ButtonHighlight:	SetDesaturated	(Type ~= "header")
 			
-			local Width = math.min(Button:GetTextWidth() + 20, 270)
+			local Width = math.min(Button:GetTextWidth() + 20, 280)
 			
 			Button:				SetWidth			(Width)
 			ButtonText:		SetWidth			(Width)

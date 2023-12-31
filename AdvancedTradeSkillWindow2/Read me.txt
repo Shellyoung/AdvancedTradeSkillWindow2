@@ -1,4 +1,4 @@
-Advanced Trade Skill Window 2 v2.1.1 for Vanilla
+Advanced Trade Skill Window 2 v2.1.2 for Vanilla
 a World of Warcraft UI Addon
 Written by Rene Schneider (Slarti on EU-Blackhand) in 2006
 Fixed by laytya in 2017
@@ -313,3 +313,27 @@ v2.1.1
 • Graphical error fixes:
 	- Control button panel can no more be changed to white texture
 	- Task scroll bar moved a bit to the right
+	
+v2.1.2
+• New features:
+	- Chinese language translation
+	
+• Graphical changes:
+	- Create button stay pushed if creating something
+	- Buttons highlight font color is same as normal font color
+	- Sort, Unified, Separated buttons type are radio button, not checkbox
+	- New background for cooking profession
+	
+• Data flow fixes:
+	- Calculation of estimated time of craft was too high
+	- Necessary reagents for a craftable reagent did not fill if the reagent was stored in a bag
+	- Unified look did not consider options for possible count
+	- Conversion of links to IDs for time cost memorization was working only for "item" link types
+	- Shift button is not required for inserting any item into aux addon search field
+	- Saying reagents that require to craft an item require dialog confirmation
+	
+• Graphical error fixes:
+	- Custom editor category width was less then recipe category width
+	- Necessary reagent item was not long enough
+	- Merchant frame was overlapping over the main frame
+	- Main Frame was drawing under Luna Unit Frames and NotGrid addons

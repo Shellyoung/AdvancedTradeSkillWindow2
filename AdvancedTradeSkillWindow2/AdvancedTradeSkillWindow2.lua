@@ -1,4 +1,4 @@
--- Advanced Trade Skill Window version 2.1.1 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.2 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -276,15 +276,15 @@ local LastCastName 							= nil
 local NoDropDownUpdate					= false
 local BankFrameOpened						= false
 
-local s 				= ERR_USE_LOCKED_WITH_ITEM_S -- "Requires %s"
-local sRequires 	= string.sub(s, 1, string.find(s, "%s")) -- Delete %s
+local s 				= ERR_USE_LOCKED_WITH_ITEM_S 		-- "Requires %s"
+local sRequires 	= string.sub(s, 1, string.find(s, "%s")) 	-- Delete %s
 
 ATSW_Debug 									= false
 
 ATSW_SwitchingToEditor					= false
 ATSW_SwitchingToMain						= false
 
---Selected
+-- Selected
 ATSW_Profession 								= {}
 ATSW_Profession[realm]						= {}
 ATSW_Profession[realm][player] 			= nil
@@ -292,7 +292,7 @@ ATSW_SelectedRecipe 						= {}
 ATSW_SelectedRecipe[realm]				= {}
 ATSW_SelectedRecipe[realm][player]	= {}
 
---Top control panel
+-- Top control panel
 ATSW_SortBy 									= {}
 ATSW_SortBy[realm] 							= {}
 ATSW_SortBy[realm][player] 				= {}
@@ -307,7 +307,7 @@ ATSW_InvSlotFilter 							= {}
 ATSW_InvSlotFilter[realm] 					= {}
 ATSW_InvSlotFilter[realm][player] 		= {}
 
---Recipes auxiliary arrays
+-- Recipes auxiliary arrays
 ATSW_ContractedCategories 				= {}
 ATSW_ContractedCategories[realm] 		= {}
 ATSW_ContractedCategories[realm][player] = {}
@@ -318,12 +318,12 @@ ATSW_NeedToUpdate 						= {}
 ATSW_NeedToUpdate[realm] 				= {}
 ATSW_NeedToUpdate[realm][player] 	= {}
 
---Previous recipes
+-- Previous recipes
 ATSW_PreviousRecipes 						= {}
 ATSW_PreviousRecipes[realm] 				= {}
 ATSW_PreviousRecipes[realm][player] 	= {}
 
---Tasks
+-- Tasks
 ATSW_Tasks 										= {}
 ATSW_Tasks[realm] 							= {}
 ATSW_Tasks[realm][player] 					= {}
@@ -332,23 +332,24 @@ ATSW_NecessaryReagents[realm] 		= {}
 ATSW_NecessaryReagents[realm][player] = {}
 ATSW_TimeCost									= {}
 
---Bottom control panel
+-- Bottom control panel
 ATSW_Amount 									= {}
 ATSW_Amount[realm] 						= {}
 ATSW_Amount[realm][player] 				= {}
 
---Processing
+-- Processing
 local Processing 									= false
 local ProcessingProfession					= nil
 local ProcessingRecipe 						= nil
 local ProcessingTexture						= nil
 local ProcessingRecipeTime					= 0
 local ProcessingAmount 						= 0
+local ProcessingTime							= 0
 local ProcessingDelay							= 0
 local ProcessingComplete						= 0
 local ProcessingStop							= false
 
---Options
+-- Options
 ATSW_Unified 									= true
 ATSW_ConsiderBank 							= false
 ATSW_ConsiderAlts 							= false
@@ -357,7 +358,7 @@ ATSW_RecipeTooltip 							= true
 ATSW_AutoBuy 									= false
 ATSW_DisplayShoppingList 					= true
 
---Controllable tables instead of standard tables do not leave garbage if they change in the game
+-- Controllable tables instead of standard tables do not leave garbage if they change in the game
 ATSW_Recipes 									= {}
 ATSW_Recipes[realm] 						= {}
 ATSW_Recipes[realm][player] 				= {}
@@ -373,7 +374,28 @@ ATSW_RecipesSortedSize[realm][player] = {}
 
 local UncategorizedHeader 					= {}
 
---Game information get functions
+local function Debug(Message)
+	if ATSW_Debug then
+		ChatFrame1:AddMessage("ATSW Debug: " .. (Message or "nil"))
+	end
+end
+
+local function Ctrl()
+	return IsControlKeyDown()
+end
+
+local function Shift()
+	return IsShiftKeyDown()
+end
+
+local function Alt()
+	return IsAltKeyDown()
+end
+
+local Delayed										= false
+ATSW_InTime									= 0
+
+-- Game information get functions
 
 local function GetCraftCaption()
 	local Skill, Rank, MaxRank, Name
@@ -431,8 +453,7 @@ local function GetCraftMinMax				(Index)
 end
 
 local function GetCraftCooldown			(Index)
-	if TradeSkill	then	return GetTradeSkillCooldown(Index)
-						else	return nil end
+	if TradeSkill	then	return GetTradeSkillCooldown(Index) end
 end
 
 local function GetReagentCount			(Index)
@@ -500,7 +521,11 @@ local function TransformSettings(Table) -- Transition to v2.1.0
 		local temp = Table[player]
 		
 		Table[player] = nil
-		if not Table[realm] then Table[realm] = {} end
+		
+		if not Table[realm] then
+			Table[realm] = {}
+		end
+		
 		Table[realm][player] = temp
 	end
 end
@@ -526,15 +551,11 @@ function ATSW_RecipeSelected()
 end
 
 local function Recipes(Prof)
-	if Prof == nil then Prof = Profession() end
-	
-	return ATSW_Recipes[realm][player][Prof]
+	return ATSW_Recipes[realm][player][Prof or Profession()]
 end
 
 local function RecipesSize(Prof)
-	if Prof == nil then Prof = Profession() end
-	
-	return ATSW_RecipesSize[realm][player][Prof] or 0
+	return ATSW_RecipesSize[realm][player][Prof or Profession()] or 0
 end
 
 local function SetRecipesSize(Value)
@@ -544,9 +565,7 @@ local function SetRecipesSize(Value)
 end
 
 local function Recipe(I, Prof)
-	if Prof == nil then Prof = Profession() end
-	
-	return Recipes(Prof)[I]
+	return Recipes(Prof or Profession() )[I]
 end
 
 function ATSW_Recipe(I)
@@ -600,7 +619,9 @@ local function AddRecipe(Index)
 		Rt.Name, Rt.Texture, Rt.Amount, Rt.PlayerAmount, Rt.Link = GetReagentData(Index, I)
 	end
 	
-	if R.Cooldown then R.Cooldown = R.Cooldown + GetTime() end
+	if R.Cooldown then
+		R.Cooldown = GetTime() + R.Cooldown
+	end
 	
 	SetRecipesSize(Size)
 end
@@ -636,7 +657,7 @@ local function AddRecipeSorted(R)
 	SetRecipesSortedSize(Size)
 end
 
---Wrap functions with smaller names for easy access from code
+-- Wrap functions with smaller names for easy access from code
 
 local function NeedToUpdate()
 	return ATSW_NeedToUpdate[realm][player][Profession()]
@@ -655,18 +676,13 @@ local function SetNeedToUpdate(Prof, Value)
 end
 
 local function PreviousRecipes(Prof)
-	if Prof == nil then Prof = Profession() end
-	
 	TransformSettings(ATSW_PreviousRecipes)
 	
-	return ATSW_PreviousRecipes[realm][player][Prof]
+	return ATSW_PreviousRecipes[realm][player][Prof or Profession()]
 end
 
 local function PreviousRecipesSize(Prof)
-	if Prof == nil then Prof = Profession() end
-	if Prof == nil then return 0 end
-	
-	return table.getn(PreviousRecipes(Prof))
+	return table.getn(PreviousRecipes(Prof or Profession()) or {})
 end
 
 local function PreviousRecipe(I)
@@ -730,48 +746,36 @@ local function SetInvSlot(Value)
 end
 
 local function Tasks(Prof)
-	if Prof == nil then Prof = Profession() end
-	
 	TransformSettings(ATSW_Tasks)
 	
-	return ATSW_Tasks[realm][player][Prof]
+	return ATSW_Tasks[realm][player][Prof or Profession()]
 end
 
 local function TasksSize(Prof)
-	if Prof == nil then Prof = Profession() end
-	
-	if Tasks(Prof) then
-		return table.getn(Tasks(Prof))
-	else
-		return 0
-	end
+	return table.getn(Tasks(Prof or Profession()) or {})
 end
 
 local function Task(I, Prof)
-	if Prof == nil then Prof = Profession() end
-	
-	return Tasks(Prof)[I]
+	return Tasks(Prof or Profession())[I]
 end
 	
 local function DoTaskExist(Name, Prof)
-	if Prof == nil then Prof = Profession() end
-	
-	for I = 1, TasksSize(Prof) do
-		if Task(I, Prof).Name == Name then
+	for I, V in pairs(Tasks(Prof or Profession())) do
+		if V.Name == Name then
 			return I
 		end
 	end
-	
-	return false
 end
 
 local function NoTasks()
-	if ATSW_Tasks == nil or ATSW_Tasks[realm] == nil or ATSW_Tasks[realm][player] == nil then return true end
+	if not (ATSW_Tasks and ATSW_Tasks[realm] and ATSW_Tasks[realm][player]) then
+		return true
+	end
 	
 	local TotalAmount = 0
 	
 	for I in pairs(ATSW_Tasks[realm][player]) do
-		TotalAmount = TotalAmount + table.getn(ATSW_Tasks[realm][player][I])
+		TotalAmount = TotalAmount + TasksSize(I)
 	end
 	
 	return TotalAmount == 0
@@ -797,7 +801,8 @@ local function ResetNecessaries()
 	end
 end
 
---Sound (Open/Close) management functions and reading of last casted spell
+-- Sound (Open/Close) management functions and reading of last casted spell
+
 Original_PlaySound = PlaySound
 
 local Original_CastSpellByName = CastSpellByName
@@ -847,7 +852,8 @@ local function MyUseAction(Slot, CheckCursor, OnSelf)
 end
 UseAction = MyUseAction
 
---Craft delay detection functions
+-- Craft delay detection functions
+
 local Original_PickupContainerItem = PickupContainerItem
 local function MyPickupContainerItem(Bag, Slot)
 	ProcessingDelay = GetTime()
@@ -879,7 +885,9 @@ ReplaceTradeEnchant = MyReplaceTradeEnchant
 -- Utility functions
 
 local function SetVisible(Frame, State)
-	if not Frame then return end
+	if not Frame then
+		return
+	end
 	
 	if State then
 		Frame:Show()
@@ -889,7 +897,9 @@ local function SetVisible(Frame, State)
 end
 
 function SetEnabled(Frame, State)
-	if not Frame then return end
+	if not Frame then
+		return
+	end
 	
 	if State then
 		Frame:Enable()
@@ -902,15 +912,15 @@ local function FormatTime(Seconds, FourDigits)
 	local Time
 	
 	if not tonumber(Seconds) then
-		return Time
+		return nil
 	end
 	
   local D, H, M, S = ChatFrame_TimeBreakDown(Seconds)
   
 	if D > 0 then
-		Time =  string.format("%d days %d hours", D,H)
+		Time =  string.format("%dd:%dh", D, H)
 	elseif H > 0 then
-		Time = string.format("%d hours %d minutes", H,M)
+		Time = string.format("%dh:%dm", H, M)
 	else
 		if FourDigits then
 			Time = string.format( "%02d:%02d", M, S)
@@ -923,18 +933,12 @@ local function FormatTime(Seconds, FourDigits)
 		end
 	end
 	
-	if Time == 0 then
-		Time = Time .. " seconds"
-	end
-	
 	return Time
 end
 
 local function FormatCooldown(Cooldown)
-	local Time
-	
 	if Cooldown then
-		Time = math.floor(Cooldown)
+		local Time = math.floor(Cooldown)
 		
 		if Time > 0 then
 			Time = SecondsToTime(Time, false)
@@ -943,49 +947,35 @@ local function FormatCooldown(Cooldown)
 			Time = string.gsub(Time, "Min", "minute")
 			Time = string.gsub(Time, "Sec", "second")
 		end
+		
+		return Time
 	end
-	
-	if Time == 0 then
-		Time = Time .. " seconds"
-	end
-	
-	return Time
 end
 
 local function ShortFormatCooldown(Cooldown, FourDigits)
 	if Cooldown then
-		local Time = Cooldown
-		
-		if Time >= 0 then
-			Time = FormatTime(Time, FourDigits)
-			
-			return Time
+		if Cooldown >= 0 then
+			return FormatTime(Cooldown, FourDigits)
+		else
+			return ""
 		end
 	end
-	
-	return nil
 end
 
 local function ConvertCooldown(Cooldown, Long)
-	local S
-	
 	if Cooldown then
-		S = Cooldown - GetTime()
-	end
-	
-	if S and S >= 0 then
-		if Long then
-			S = FormatCooldown(S)
-		else
-			S = " |cffE00000(" .. ShortFormatCooldown(S) .. ")|r"
+		local S = Cooldown - GetTime()
+		
+		if S >= 0 then
+			if Long then
+				return FormatCooldown(S)
+			else
+				return " |cffE00000(" .. ShortFormatCooldown(S) .. ")|r"
+			end
 		end
-	else
-		S = nil
 	end
-	
-	return S
 end
-	
+
 local function HexToDec(Hex)
     Hex = string.upper(Hex)
 	
@@ -1011,21 +1001,9 @@ local function Round(number, decimals)
     return math.floor((number * math.pow(10, decimals) + 0.5)) / math.pow(10, decimals)
 end
 
-local function LinkToID(Link)
-    if Link then
-        local _, _, ID = string.find(Link, "^.*|Hitem:(%d*):.*%[.*%].*$")
-		
-        return tonumber(ID)
-    else
-        return nil
-    end
-end
-
 local function LinkToName(Link)
 	if Link then
 		return string.gsub(Link,"^.*%[(.*)%].*$","%1")
-	else
-		return nil
 	end
 end
 
@@ -1034,8 +1012,6 @@ local function LinkToColor(Link)
         local _, _, Color = string.find(Link, "^.*|cff(.-)|.*$")
 		
         return Color
-    else
-        return nil
     end
 end
 
@@ -1047,8 +1023,6 @@ local function GetLinkColorRGB(Link)
         local B	= math.floor((Color - R * 65536 - G * 256))
 		
         return R/255, G/255, B/255
-    else
-        return nil, nil, nil
     end
 end
 
@@ -1072,79 +1046,32 @@ local function LinkToQuality(Link)
 	return ColorToQuality(R, G, B)
 end
 
+local function LinkToID(Link)
+    if Link then
+		local _, _, LinkType, ID = string.find(Link, "^.*|H?([^:]*):?(%d+)")
+		
+        return tonumber(ID)
+    end
+end
+
 local function GetRecipeID(Name)
 	if Name then
 		return LinkToID(Recipe(ATSW_GetRecipePosition(Name)).Link)
 	end
 end
 
-local function GetItemQuality(ID, Reagent)
-    ATSWScanTooltip:SetOwner(ATSWFrame, "ANCHOR_TOPLEFT")
-	
-	local localID = tonumber(ID, 10)
-	
-	if ATSW_TradeSkill() then
-		ATSWScanTooltip:SetTradeSkillItem(localID)
-	else
-		if Reagent then
-			ATSWScanTooltip:SetCraftItem(localID)
-		else
-			ATSWScanTooltip:SetCraftSpell(localID)
-		end
-	end
-	
-    local TextLeft = getglobal("ATSWScanTooltipTextLeft1")
-	local Q = 0
-	
-    if TextLeft then
-        local R, G, B = TextLeft:GetTextColor()
-		
-		Q = ColorToQuality(R, G, B)
-    end
-	
-    ATSWScanTooltip:Hide()
-	
-    return Q
-end
+local ITEM_MIN_LEVEL_PATTERN = string.gsub(ITEM_MIN_LEVEL,"%%d", "(%%d+)")
 
 local function GetItemMinLevel(ID, Reagent)
-    ATSWScanTooltip:SetOwner(ATSWFrame, "ANCHOR_TOPLEFT")
-	
-    local localID = tonumber(ID, 10)
-	
-	if ATSW_TradeSkill() then
-		ATSWScanTooltip:SetTradeSkillItem(localID)
-	else
-		if Reagent then
-			ATSWScanTooltip:SetCraftItem(localID)
-		else
-			ATSWScanTooltip:SetCraftSpell(localID)
+	local Stats = {GetTradeSkillItemStats(ID)}
+
+	for I, V in pairs(Stats) do
+		local _, _, Level = string.find(V, ITEM_MIN_LEVEL_PATTERN)
+
+		if Level then
+			return tonumber(Level)
 		end
 	end
-	
-    local NumLines = ATSWScanTooltip:NumLines()
-	
-    for K = 1, NumLines do
-        local TextLeft = getglobal("ATSWScanTooltipTextLeft" .. K)
-		
-        if TextLeft then
-            local Text = TextLeft:GetText()
-			
-            if Text then
-                local _, _, level = string.find(Text, string.gsub(ITEM_MIN_LEVEL, "%%d", "%(%%d+%)"))
-				
-                if level then
-                    ATSWScanTooltip:Hide()
-					
-                    return tonumber(level, 10)
-                end
-            end
-        end
-    end
-	
-    ATSWScanTooltip:Hide()
-	
-    return 0
 end
 
 local function RemoveEscapeCharacters(String)
@@ -1190,41 +1117,49 @@ function ATSW_SubNameToString(SubName)
 end
 
 local function SubNameToName(Name)
-	if not Name then return nil, nil end
+	if not Name then
+		return
+	end
 	
-	local LName = Name
+	local LName
 	local _, _, SubName = string.find(Name, "%s%s%s%(+(.+)%)+")
 	
-	--Triple space means SubName is in Name
+	-- Triple space means SubName is in Name
 	local TripleSpace = string.find(Name, "%s%s%s")
 	
 	if TripleSpace then
 		LName = string.sub(Name, 1, TripleSpace - 1)
+	else
+		LName = Name
 	end
 	
 	return LName, SubName
 end
 
 local function RecipePosition(Name, List, ListSize)
-	if not (Name and ListSize > 0) then return nil end
+	if not (Name and ListSize > 0) then
+		return nil
+	end
 	
 	local LName, SubName = SubNameToName(Name)
 	
-	if SubName == "" then SubName = nil end
+	if SubName == "" then
+		SubName = nil
+	end
 	
     for I = 1, ListSize do
-		R = List[I]
+		local R = List[I]
 		
         if R.Name == LName and (SubName and R.SubName == SubName or SubName == nil) then
             return R.Position
         end
     end
-	
-    return nil
 end
 
 local function GetRecipePosition(Name, Prof)
-	if Prof == nil then Prof = Profession() end
+	if Prof == nil then
+		Prof = Profession()
+	end
 	
 	return RecipePosition(Name, Recipes(Prof), RecipesSize(Prof))
 end
@@ -1268,8 +1203,6 @@ function ATSW_GetContractedPos(Name)
             return I
         end
     end
-	
-    return false
 end
 
 function ATSW_IsContracted(Name)
@@ -1280,21 +1213,25 @@ local function IsExpanded(Name)
 	return not ATSW_IsContracted(Name)
 end
 
-local function GetProfessionTexture(Name)
-	local I = 0
-	local SName
+local function GetSpellNum(Name)
+	local I, SName = 0
 	
 	repeat
 		I = I + 1
-		
 		SName = GetSpellName(I, BOOKTYPE_SPELL)
 		
 		if SName and string.find(SName, Name) then
-			return GetSpellTexture(I, BOOKTYPE_SPELL)
+			return I
 		end
 	until not SName
+end
+
+local function GetProfessionTexture(Name)
+	local SpellNum = GetSpellNum(Name)
 	
-	return nil
+	if SpellNum then
+		return GetSpellTexture(SpellNum, BOOKTYPE_SPELL)
+	end
 end
 
 function ATSW_GetProfessionTexture(Name)
@@ -1302,21 +1239,17 @@ function ATSW_GetProfessionTexture(Name)
 end
 
 local function Icon(Name)
-	return Name and ("Interface\\Icons\\" .. Name) or nil
+	return Name and ("Interface\\Icons\\" .. Name)
 end
 
 local function IsEnchant(Index)
-	if not Index then return false end
-	
-	local T
+	local I = Icon("Spell_Holy_GreaterHeal")
 	
 	if type(Index) == "string" then
-		T = Index
-	else
-		T = GetCraftTexture(Index)
+		return Index == I
+	elseif type(Index) == "number" then
+		return GetCraftTexture(Index) == I
 	end
-	
-	return T == Icon("Spell_Holy_GreaterHeal")
 end
 
 local function IsBeastTraining()
@@ -1343,6 +1276,7 @@ end
 
 local function GetLatency()
 	local _,_,lag = GetNetStats()
+	
 	return lag / 1000
 end
 
@@ -1492,25 +1426,36 @@ function ATSW_CreateListButtons()
 end
 
 function ATSW_OnLoad()
+	-- Unregister events from Blizzard professions frames
+	EnableAddOn("Blizzard_TradeSkillUI")
+	EnableAddOn("Blizzard_CraftUI")
 	LoadAddOn("Blizzard_TradeSkillUI")
 	LoadAddOn("Blizzard_CraftUI")
 	
-	-- Unregister events from Blizzard professions frames
-	TradeSkillFrame:	UnregisterEvent(	"SKILL_LINES_CHANGED"				)
-	TradeSkillFrame:	UnregisterEvent(	"PLAYER_ENTERING_WORLD"		)
-	TradeSkillFrame:	UnregisterEvent(	"TRADE_SKILL_UPDATE"				)
-	TradeSkillFrame:	UnregisterEvent(	"UNIT_PORTRAIT_UPDATE"			)
-	CraftFrame:		UnregisterEvent(	"SKILL_LINES_CHANGED"				)
-	CraftFrame:		UnregisterEvent(	"CRAFT_UPDATE"						)
-	CraftFrame:		UnregisterEvent(	"UNIT_PORTRAIT_UPDATE"			)
-	CraftFrame:		UnregisterEvent(	"SPELLS_CHANGED"					)
-	CraftFrame:		UnregisterEvent(	"UNIT_PET_TRAINING_POINTS"	)
+	local function UnregisterEvents(Frame, ...)
+		for _, Event in ipairs(arg) do
+			Frame:UnregisterEvent(Event)
+		end
+	end
 	
-	-- Replace Blizzard professions' Show/Hide functions
-	TradeSkillFrame_Show 	= ATSW_TradeSkill_Show
-	CraftFrame_Show 			= ATSW_Craft_Show
-	TradeSkillFrame_Hide 		= ATSW_Hide
-	CraftFrame_Hide 			= ATSW_Hide
+	UnregisterEvents(TradeSkillFrame,
+		"SKILL_LINES_CHANGED",
+		"PLAYER_ENTERING_WORLD",
+		"TRADE_SKILL_UPDATE",
+		"UNIT_PORTRAIT_UPDATE")
+	
+	UnregisterEvents(CraftFrame,
+		"SKILL_LINES_CHANGED",
+		"CRAFT_UPDATE",
+		"UNIT_PORTRAIT_UPDATE",
+		"SPELLS_CHANGED",
+		"UNIT_PET_TRAINING_POINTS")
+	
+	UnregisterEvents(UIParent,
+		"TRADE_SKILL_SHOW",
+		"TRADE_SKILL_CLOSE",
+		"CRAFT_SHOW",
+		"CRAFT_CLOSE")
 	
 	-- Register slash commands
     SLASH_ATSW1 				= "/atsw"
@@ -1518,27 +1463,38 @@ function ATSW_OnLoad()
     SlashCmdList["ATSW"] 	= ATSW_Command
 	
 	-- Register events
-    ATSWFrame:		RegisterEvent(	"UNIT_PET"									)
-    ATSWFrame:		RegisterEvent(	"UNIT_PET_TRAINING_POINTS"		)
-    ATSWFrame:		RegisterEvent(	"BAG_UPDATE"								)
-    ATSWFrame:		RegisterEvent(	"BANKFRAME_OPENED"					)
-    ATSWFrame:		RegisterEvent(	"BANKFRAME_CLOSED"					)
-    ATSWFrame:		RegisterEvent(	"MERCHANT_SHOW"						)
-    ATSWFrame:		RegisterEvent(	"MERCHANT_UPDATE"						)
-    ATSWFrame:		RegisterEvent(	"MERCHANT_CLOSED"						)
-    ATSWFrame:		RegisterEvent(	"AUCTION_HOUSE_CLOSED"			)
-    ATSWFrame:		RegisterEvent(	"AUCTION_HOUSE_SHOW"				)
-    ATSWFrame:		RegisterEvent(	"PLAYERBANKSLOTS_CHANGED"		)
-    ATSWFrame:		RegisterEvent(	"PLAYERBANKBAGSLOTS_CHANGED"	)
-    ATSWFrame:		RegisterEvent(	"PLAYER_ENTERING_WORLD"			)
-    ATSWFrame:		RegisterEvent(	"CHAT_MSG_SYSTEM"						)
-    ATSWFrame:		RegisterEvent(	"CHAT_MSG_SKILL"							)
-    ATSWFrame:		RegisterEvent(	"CHAT_MSG_LOOT"						)
-    ATSWFrame:		RegisterEvent(	"CVAR_UPDATE"								)
-    ATSWFrame:		RegisterEvent(	"UI_ERROR_MESSAGE"					)
+	local function RegisterEvents(Frame, ...)
+		for _, Event in ipairs(arg) do
+			Frame:RegisterEvent(Event)
+		end
+	end
+	
+	RegisterEvents(ATSWFrame,
+		"TRADE_SKILL_SHOW",
+		"TRADE_SKILL_CLOSE",
+		"CRAFT_SHOW",
+		"CRAFT_CLOSE",
+		"UNIT_PET",
+		"UNIT_PET_TRAINING_POINTS",
+		"BAG_UPDATE",
+		"BANKFRAME_OPENED",
+		"BANKFRAME_CLOSED",
+		"MERCHANT_SHOW",
+		"MERCHANT_UPDATE",
+		"MERCHANT_CLOSED",
+		"AUCTION_HOUSE_CLOSED",
+		"AUCTION_HOUSE_SHOW",
+		"PLAYERBANKSLOTS_CHANGED",
+		"PLAYERBANKBAGSLOTS_CHANGED",
+		"PLAYER_ENTERING_WORLD",
+		"CHAT_MSG_SYSTEM",
+		"CHAT_MSG_SKILL",
+		"CHAT_MSG_LOOT",
+		"CVAR_UPDATE",
+		"UI_ERROR_MESSAGE")
 	
 	-- Attach name sort checkbox
-	ATSWNameSortCheckbox:SetPoint("LEFT", ATSWDifficultySortCheckbox, "RIGHT", ATSWDifficultySortCheckboxText:GetWidth()+5, 0)
+	ATSWNameSortCheckbox:SetPoint("LEFT", ATSWDifficultySortCheckbox, "RIGHT", ATSWDifficultySortCheckboxText2:GetWidth()+5, 0)
 	
 	-- Create side tabs
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
@@ -1559,7 +1515,9 @@ function ATSW_OnLoad()
 end
 
 local function InitializeOnShow()
-	if InitializedOnShow then return end
+	if InitializedOnShow then
+		return
+	end
 	
 	ATSW_CreateListButtons()
 	
@@ -1624,6 +1582,7 @@ end
 local OldCraftCount = 0
 
 function ATSW_OnUpdate(TimePassed)
+	-- Loading recipes
     if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
 		-- Update frame if trade skill count is changed
 		if ATSWFrame.UpdateIsRegistered then
@@ -1735,7 +1694,7 @@ function ATSW_OnUpdate(TimePassed)
 		end
 		
 		-- Update cooldowns
-		if GetTime() >= CooldownUpdateTime + 1 then
+		if GetTime() - 1 >= CooldownUpdateTime then
 			local function SetButtonCooldown(Button)
 				if not (Button:IsVisible() and Button.Position) then return end
 				
@@ -1782,6 +1741,8 @@ function ATSW_OnUpdate(TimePassed)
 		
 		ATSW_ArmorCraftCompatibility()
     end
+	
+	-- Progress bar
 	
 	if ATSWProgressBar.Working then
 		local Bar 			= ATSWProgressBar
@@ -1839,9 +1800,8 @@ function ATSW_OnUpdate(TimePassed)
 			end
 			
 			local TimeLeft 	= Bar.EndTime - GetTime()
-			local FourDigits 	= true
 			
-			ATSWProgressBarStopSubText:SetText(ShortFormatCooldown(TimeLeft+1, FourDigits))
+			ATSWProgressBarStopSubText:SetText(ShortFormatCooldown(TimeLeft+1, true))
 		elseif Bar.Mode == ATSW_FLASH then 		-- Glow appearing
 			local Alpha = Glow:GetAlpha() + TimePassed / ATSW_FLASH_TIME
 			
@@ -1874,10 +1834,28 @@ function ATSW_OnUpdate(TimePassed)
 			end
 		end
 	end
+	
+	-- Delay functions
+	
+	if Delayed and GetTime() > ATSW_InTime then
+		ATSW_Delayed()
+		Delayed = false
+	end
+end
+
+function ATSW_Delayed()
+end
+
+local function Delay(Function, Time)
+	ATSW_Delayed = Function
+	ATSW_InTime = GetTime() + Time
+	Delayed = true
 end
 
 function ATSW_ProfessionExists(Prof)
-	if Prof == nil then return false end
+	if Prof == nil then
+		return false
+	end
 	
 	local _, _, _, NumSpells = GetSpellTabInfo(1)
 	
@@ -1893,14 +1871,12 @@ function ATSW_ProfessionExists(Prof)
 			end
 		end
 	end
-	
-	return false
 end
 
 local function GetFirstProfession()
 	local _, _, _, NumSpells = GetSpellTabInfo(1)
 	
-	--Search spell book by texture
+	-- Search spell book by texture
 	for I in ipairs(Professions) do
 		local ProfessionTexture = Icon(Professions[I])
 		
@@ -1912,8 +1888,6 @@ local function GetFirstProfession()
 			end
 		end
 	end
-	
-	return nil
 end
 
 function ATSW_ConfigureSkillButtons(Exception)
@@ -1947,13 +1921,11 @@ function ATSW_ConfigureSkillButtons(Exception)
 				end
 			end
 		end
-		
-		return false
 	end
 	
 	ResetTabs()
 	
-	--Scan spell book for professions
+	-- Scan spell book for professions
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
 		local Tab = getglobal("ATSWFrameTab" .. T)
 		local TabName, TabTexture
@@ -2000,11 +1972,11 @@ function ATSW_SelectTab(Name)
 end
 
 function ATSW_AttachTabsTo(Frame)
-	if ATSWFrameSideTabsFrame:GetParent() == Frame then return end
-	
-	ATSWFrameSideTabsFrame:SetParent(Frame)
-	ATSWFrameSideTabsFrame:SetPoint("TOPLEFT", Frame, "TOPRIGHT", -59, -28)
-	ATSWFrameSideTabsFrame:Show()
+	if ATSWFrameSideTabsFrame:GetParent() ~= Frame then
+		ATSWFrameSideTabsFrame:SetParent(Frame)
+		ATSWFrameSideTabsFrame:SetPoint("TOPLEFT", Frame, "TOPRIGHT", -59, -28)
+		ATSWFrameSideTabsFrame:Show()
+	end
 end
 
 function ATSW_SwitchToFrame(Frame)
@@ -2039,6 +2011,20 @@ function ATSW_SwitchToFrame(Frame)
 		if not F:IsVisible() and F == Frame then
 			ShowUIPanel				(F)
 			ATSW_AttachTabsTo	(F)
+			
+			if MerchantFrame:IsVisible() then
+				local oldCenter = UIParent.center
+				
+				UIParent.center = nil
+				SetCenterFrame(F)
+				UIParent.center = oldCenter
+			else
+				local oldLeft = UIParent.left 
+				
+				UIParent.left = nil
+				SetLeftFrame(F)
+				UIParent.left = oldLeft
+			end
 		end
 	end
 	
@@ -2048,7 +2034,9 @@ function ATSW_SwitchToFrame(Frame)
 end
 
 local function LoadAllProfessionsOnce()
-	if LoadingProfessions then return end
+	if LoadingProfessions then
+		return
+	end
 	
 	LoadingProfessions 			= true
 	
@@ -2057,10 +2045,10 @@ local function LoadAllProfessionsOnce()
 	
 	local _, _, _, NumSpells 	= GetSpellTabInfo(1)
 	
-	UIParent:	UnregisterEvent(	"TRADE_SKILL_SHOW"	)
-	UIParent:	UnregisterEvent(	"TRADE_SKILL_CLOSE"	)
-	UIParent:	UnregisterEvent(	"CRAFT_SHOW"				)
-	UIParent:	UnregisterEvent(	"CRAFT_CLOSE"				)
+	ATSWFrame:	UnregisterEvent(	"TRADE_SKILL_SHOW"	)
+	ATSWFrame:	UnregisterEvent(	"TRADE_SKILL_CLOSE"	)
+	ATSWFrame:	UnregisterEvent(	"CRAFT_SHOW"				)
+	ATSWFrame:	UnregisterEvent(	"CRAFT_CLOSE"				)
 	
 	local function Stub() end
 	local OldSound 				= PlaySound
@@ -2082,28 +2070,30 @@ local function LoadAllProfessionsOnce()
 		end
 	end
 	
-	PlaySound 						= OldSound
-	
 	if LastName ~= CurrentProfession then
 		CloseTradeSkill()
 		CloseCraft()
 		CastSpellByName(CurrentProfession)
 	end
 	
-	UIParent:	RegisterEvent(	"TRADE_SKILL_SHOW"	)
-	UIParent:	RegisterEvent(	"TRADE_SKILL_CLOSE"	)
-	UIParent:	RegisterEvent(	"CRAFT_SHOW"				)
-	UIParent:	RegisterEvent(	"CRAFT_CLOSE"				)
+	PlaySound 						= OldSound
+	
+	ATSWFrame:	RegisterEvent(	"TRADE_SKILL_SHOW"	)
+	ATSWFrame:	RegisterEvent(	"TRADE_SKILL_CLOSE"	)
+	ATSWFrame:	RegisterEvent(	"CRAFT_SHOW"				)
+	ATSWFrame:	RegisterEvent(	"CRAFT_CLOSE"				)
 end
 
 local function ExecutionConnection1()
 	LoadAllProfessionsOnce()
-	--This function will cause all learned professions recipe data to load into the game from the server at once.
-	--After the user chose another profession the recipe data is already in the game.
+	-- This function will cause all learned professions recipe data to load into the game from the server at once.
+	-- After the user chose another profession the recipe data is already in the game.
 	
 	InitializeOnShow()
 	
 	ATSW_UpdateCaption					()
+	ATSW_ShowSort						()
+	ATSW_ShowSearch					()
 	ATSW_UpdateBackground			()
 	ATSW_SelectTab						(Profession())
 	ATSW_ShowAmount					()
@@ -2124,59 +2114,24 @@ local function ExecutionConnection1()
 		end
 	end
 	
-	if NoTasks() then ResetNecessaries() end
+	if NoTasks() then
+		ResetNecessaries()
+	end
 	
 	ATSW_SwitchToFrame(ATSWFrame)
 end
 
-function ATSW_TradeSkill_Show()
-	if not UIParent:IsVisible() then
-		CloseTradeSkill()
-		
-		return
-	end
-	
-	if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
-		UIParent:	UnregisterEvent	("CRAFT_CLOSE"		)
-		CloseCraft()
-		UIParent:	RegisterEvent		("CRAFT_CLOSE"		)
-	end
-	
-	TradeSkill = true
-	ExecutionConnection1()
-end
-
-function ATSW_Craft_Show()
-	if not UIParent:IsVisible() then
-		CloseCraft()
-		
-		return
-	end
-	
-	if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
-		UIParent:	UnregisterEvent	("TRADE_SKILL_CLOSE")
-		CloseTradeSkill()
-		
-		if TradeSkill then
-			ProcessingStop = true
-		end
-		
-		UIParent:	RegisterEvent		("TRADE_SKILL_CLOSE")
-	end
-	
-	TradeSkill = false
-	ExecutionConnection1()
-end
-
 function ATSW_Hide()
-	if not UIParent:IsVisible() then return end
-	
-	ATSW_SwitchToFrame()
-	Original_PlaySound("igCharacterInfoClose")
+	if UIParent:IsVisible() then
+		ATSW_SwitchToFrame()
+		Original_PlaySound("igCharacterInfoClose")
+	end
 end
 
 local function InitializeTable(Table, Value, Prof)
-	if Prof == nil then Prof = Profession() end
+	if Prof == nil then
+		Prof = Profession()
+	end
 	
 	TransformSettings(Table)
 	
@@ -2267,10 +2222,12 @@ local function InitializeFrame()
 		GetProfession					()
 		InitializeTables					()
 		ATSW_ShowDropDown	()
-		ATSW_HideRecipes			()
-		ATSW_HideRecipe			()
-		ATSW_HideTasks			()
-		ATSWCreateButton:		Disable()
+		
+		if RecipesSize() == 0 then
+			ATSW_HideRecipes			()
+			ATSW_HideRecipe			()
+			ATSW_HideTasks			()
+		end
 	end
 end
 
@@ -2312,11 +2269,8 @@ function ATSW_UpdateCaption()
 	ATSWFrameTitleText:SetText(format(TEXT(TRADE_SKILL_TITLE), Name) .. FindSpecialization())
 	ATSW_UpdateStatusBarRank()
 	
-	--Set skill portrait
+	-- Set skill portrait
 	SetPortraitToTexture(ATSWFramePortrait, GetProfessionTexture(Name))
-	
-	ATSW_ShowSort		()
-	ATSW_ShowSearch	()
 end
 
 function ATSW_UpdateFrame()
@@ -2364,7 +2318,10 @@ function ATSW_OnEvent()
 		
 		if s ~= "" then s = s .. ")" end
 		
-		ChatFrame1:AddMessage("ATSW Debug: |cffB0B0B0event|r = " .. "|cffFFD100" .. tostring(event) .. "|r" .. s)
+		-- Filter NPCScan TargetUnit() spam
+		if not (event == "UI_ERROR_MESSAGE" and string.find(arg1, ERR_UNIT_NOT_FOUND)) then
+			Debug("|cffB0B0B0event|r = " .. "|cffFFD100" .. tostring(event) .. "|r" .. s)
+		end
 	end
 	
     if 			event == "UNIT_PET"									then
@@ -2395,11 +2352,25 @@ function ATSW_OnEvent()
 		else
 			ATSW_SetBuyFrameVisible()
 		end
-	
+		
+		if ATSWFrame:IsVisible() then
+			local oldCenter = UIParent.center
+			
+			UIParent.center = nil
+			SetCenterFrame(ATSWFrame)
+			UIParent.center = oldCenter
+		end
     elseif 	event == "MERCHANT_CLOSED" 						then
 	
 		ATSWBuyNecessaryFrame:Hide()
-	
+		
+		if ATSWFrame:IsVisible() then
+			local oldLeft = UIParent.left 
+			
+			UIParent.left = nil
+			SetLeftFrame(ATSWFrame)
+			UIParent.left = oldLeft
+		end
     elseif 	event == "MERCHANT_UPDATE" 						then
 	
 		ATSW_UpdateMerchant()
@@ -2413,11 +2384,14 @@ function ATSW_OnEvent()
         ATSWShoppingListFrame:Hide()
 	
     elseif 	event == "BAG_UPDATE" 								then
-		ATSW_SaveBank()
+		if BankFrameOpened then
+			ATSW_SaveBank()
+		end
+		
 		ATSW_SaveBag(arg1)
 		
 		if ATSWFrame:IsVisible() then
-			--Check if a selected tool is update
+			-- Check if a selected tool is update
 			for Slot = 1, GetContainerNumSlots(arg1) do
 				local function ToolIsUpdating(BID)
 					for I = 1, ATSW_TOOLS_DISPLAYED do
@@ -2443,7 +2417,7 @@ function ATSW_OnEvent()
 			end
 		end
 		
-		--Update all frame sections
+		-- Update all frame sections
 		
 		if ATSWFrame:					IsVisible() 	then 	ATSW_UpdateRecipes					()
 																			ATSW_UpdateTasks					()
@@ -2498,10 +2472,14 @@ function ATSW_OnEvent()
 			ProcessingRecipeTime = arg2 / 1000
 			
 			if not GetTimeCost(arg1) then
-				ATSW_TimeCost[GetRecipeID(arg1)] = ProcessingRecipeTime
+				local ID = GetRecipeID(arg1)
+				
+				if ID then
+					ATSW_TimeCost[ID] = ProcessingRecipeTime
+				end
 			end
 			
-			local CastTime = ProcessingRecipeTime + GetLatency()
+			local CastTime = ProcessingRecipeTime
 			
 			if TradeSkill then
 				CastTime = CastTime * ProcessingAmount
@@ -2558,22 +2536,22 @@ function ATSW_OnEvent()
 	elseif 	event == "CHAT_MSG_SYSTEM" 						then
 	
 		if string.find(arg1, ERR_LEARN_RECIPE_PATTERN)
-		or string.find(arg1, ERR_LEARN_SPELL_PATTERN) then 				-- Learn new recipe
+		or string.find(arg1, ERR_LEARN_SPELL_PATTERN) then 				-- Learn new recipe event
 			SetNeedToUpdate()
 		end
 		
-		if string.find(arg1, ERR_UNLEARN_RECIPE_PATTERN) then 			-- Unlearn profession
+		if string.find(arg1, ERR_UNLEARN_RECIPE_PATTERN) then 			-- Unlearn profession event
 			local _, _, Skill = string.find(arg1, ERR_UNLEARN_RECIPE_PATTERN)
 			
 			if ATSW_ProfessionExists(Skill) then
-				--Reset previous recipes
+				-- Reset previous recipes
 				for I = 1, PreviousRecipesSize(Skill) do
 					table.remove(PreviousRecipes(Skill), PreviousRecipesSize(Skill)-1+I)
 				end
 				
 				ATSW_ConfigureSkillButtons(Skill) -- Reconfigure tabs except Skill
 				
-				--Reset tasks
+				-- Reset tasks
 				for I = 1, TasksSize(Skill) do
 					ATSW_DeleteTask(Task(I, Skill).Name, nil, Skill)
 				end
@@ -2623,7 +2601,7 @@ function ATSW_OnEvent()
 		end
 	elseif 	event == "CHAT_MSG_SKILL" 							then
 	
-		if string.find(arg1, ERR_SKILL_UP_PATTERN) then						-- Increase profession rank
+		if string.find(arg1, ERR_SKILL_UP_PATTERN) then						-- Increase profession rank event
 			local _, _, Skill = string.find(arg1, ERR_SKILL_UP_PATTERN)
 			
 			NoDropDownUpdate = true
@@ -2635,7 +2613,7 @@ function ATSW_OnEvent()
 			end
 			
 			ATSW_UpdateStatusBarRank()
-		elseif string.find(arg1, ERR_SKILL_GAINED_PATTERN) then 			-- Learn new profession
+		elseif string.find(arg1, ERR_SKILL_GAINED_PATTERN) then 			-- Learn new profession event
 			ATSW_ConfigureSkillButtons()
 		end
 	elseif 	event == "CVAR_UPDATE" 								then
@@ -2647,14 +2625,48 @@ function ATSW_OnEvent()
 			ATSWProgressBarGlow:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\ProgressBarFlash")
 		end
 	elseif 	event == "UI_ERROR_MESSAGE" 						then
-		if Processing and 
-		(string.find(arg1, ERR_INV_FULL) or string.find(arg1, sRequires)) then
+		if Processing and (string.find(arg1, ERR_INV_FULL) or string.find(arg1, sRequires)) then
 			ATSW_StopProcessing()
 		end
+	elseif 	event == "TRADE_SKILL_SHOW" 						then
+		if UIParent:IsVisible() then
+			if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
+				ATSWFrame:	UnregisterEvent	("CRAFT_CLOSE"		)
+				CloseCraft()
+				ATSWFrame:	RegisterEvent		("CRAFT_CLOSE"		)
+			end
+			
+			TradeSkill = true
+			ExecutionConnection1()
+		else
+			CloseTradeSkill()
+		end
+	elseif 	event == "CRAFT_SHOW" 									then
+		if UIParent:IsVisible() then
+			if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
+				ATSWFrame:	UnregisterEvent	("TRADE_SKILL_CLOSE")
+				CloseTradeSkill()
+				
+				if TradeSkill then
+					ProcessingStop = true
+				end
+				
+				ATSWFrame:	RegisterEvent		("TRADE_SKILL_CLOSE")
+			end
+		
+			TradeSkill = false
+			ExecutionConnection1()
+		else
+			CloseCraft()
+		end
+	elseif event == "TRADE_SKILL_CLOSE" then
+		ATSW_Hide()
+	elseif event == "CRAFT_CLOSE" then
+		ATSW_Hide()
     end
 end
 
---Control
+-- Control
 
 local function SetSortCheckboxes(Sort)
 	ATSWCategorySortCheckbox:	SetChecked(	Sort == "Category"	)
@@ -2666,58 +2678,66 @@ end
 
 function ATSW_SortCheckbox_OnClick()
 	SetSortBy(this.Sort)
-	
-	if this:GetChecked() then
-		PlaySound("igMainMenuOptionCheckBoxOn")
-	end
-	
 	SetSortCheckboxes(this.Sort)
 end
 
+local function FilterDropDownButton_OnClick(This, Filter, SetFilter, FilterDropDown, SetTradeSkillFilter)
+	local Value = This:GetID() - 1
+	
+	if Value ~= Filter then
+		SetFilter(Value)
+		UIDropDownMenu_SetSelectedID(FilterDropDown, Value + 1)
+		SetTradeSkillFilter(Value, 1, 1)
+		
+		ATSW_GetRecipesSorted(true)
+	end
+end
+
 function ATSWSubClassDropDownButton_OnClick()
-	local Value = this:GetID() - 1
-	
-	if Value == SubClass() then return end
-	
-	SetSubClass(Value)
-	UIDropDownMenu_SetSelectedID(ATSWSubClassDropDown, Value + 1)
-	SetTradeSkillSubClassFilter(Value, 1, 1)
-	
-	ATSW_GetRecipesSorted(true)
+	FilterDropDownButton_OnClick(this, SubClass, SetSubClass, ATSWSubClassDropDown, SetTradeSkillSubClassFilter)
 end
 
 function ATSWInvSlotDropDownButton_OnClick()
-	local Value = this:GetID() - 1
-	
-	if Value == InvSlot() then return end
-	
-	SetInvSlot(Value)
-    UIDropDownMenu_SetSelectedID(ATSWInvSlotDropDown, Value + 1)
-	SetTradeSkillInvSlotFilter(Value, 1, 1)
+	FilterDropDownButton_OnClick(this, InvSlot, SetInvSlot, ATSWInvSlotDropDown, SetTradeSkillInvSlotFilter)
+end
 
-	ATSW_GetRecipesSorted(true)
+local function InsertIntoAux(Link)
+	if aux_frame and aux_frame:IsVisible() then
+		local aux = require 'aux'
+		local info = require 'aux.util.info'
+		
+		local _, _, ID = string.find(Link, "item:(%d+)")
+		local Item = string.format("item:%d", tonumber(ID))
+		
+		local item_info = info.item(tonumber(aux.select(3, strfind(Item, '^item:(%d+)'))))
+		
+		if item_info then
+			return aux.get_tab().CLICK_LINK(item_info)
+		end
+	end
 end
 
 function ATSWRecipeButton_OnClick(Button)
-    if not (Button == "LeftButton") then return end
-	
-	local Name 	= this.Name
 	local Type 	= this.Type
-	local Link		= this.Link
-	local Pos		= this.Position
-	
-	if IsShiftKeyDown() and not (Type == "header") then
-		if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
-			ATSW_AddReagentLinksToChatFrame(Pos)
-		elseif not (IsBeastTraining() or Type == "header") then
-			local Possible = ATSW_HowManyItemsArePossibleToCreate(Name)
-			
-			ATSW_AddTask(Name, Possible > 0 and Possible or 1)
+		
+	if Button == "LeftButton" then
+		local Name 	= this.Name
+		
+		if not Ctrl() and Shift() and not Alt() and not (Type == "header") then
+			if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
+				ATSW_SayReagents(this.Position)
+			elseif not (IsBeastTraining() or Type == "header") then
+				local Possible = ATSW_HowManyItemsArePossibleToCreate(Name)
+				
+				ATSW_AddTask(Name, Possible > 0 and Possible or 1)
+			end
+		elseif Ctrl() and not Shift() and not Alt() and this.Link then
+			DressUpItemLink(this.Link)
+		else
+			ATSW_SelectRecipe(Name, Type)
 		end
-	elseif IsControlKeyDown() and Link then
-		DressUpItemLink(Link)
-	else
-		ATSW_SelectRecipe(Name, Type)
+	elseif Button == "RightButton" then
+		InsertIntoAux(this.Link)
 	end
 end
 
@@ -2751,37 +2771,35 @@ function ATSWReagentsButton_OnClick()
     end
 end
 
-function ATSWFrameDecrement_OnClick()
-	local PreviousAmount = ATSWAmountBox:GetNumber()
-	local Amount = ATSWAmountBox:GetNumber()
+local function Crement(Edge, Step)
+	local Amount	= ATSWAmountBox:GetNumber()
 	
-	if 			IsShiftKeyDown() 	then		Amount = 0
-    elseif 	Amount > 0 			then		Amount = Amount - 1	end
+	if not Ctrl() and Shift() and not Alt() then
+		Amount = Edge
+	end
 	
-	if PreviousAmount ~= Amount then
-		if Amount == 0 then
+	if Amount ~= Edge then
+		ATSWAmountBox:SetNumber(Amount + Step)
+	else
+		if Edge == 0 then
 			ATSWAmountBox:SetText(ATSW_ALL)
 		else
-			ATSWAmountBox:SetNumber(Amount)
+			ATSWAmountBox:SetText(Edge)
 		end
 	end
 end
 
-function ATSWFrameIncrement_OnClick()
-	local PreviousAmount = ATSWAmountBox:GetNumber()
-	local Amount = ATSWAmountBox:GetNumber()
+function ATSWFrameDecrement_OnClick()
+	Crement(0, -1)
+end
 
-	if 			IsShiftKeyDown() 	then Amount = 100
-    elseif 	Amount < 100 		then Amount = Amount + 1	end
-	
-	if PreviousAmount ~= Amount then
-		ATSWAmountBox:SetNumber(Amount)
-	end
+function ATSWFrameIncrement_OnClick()
+	Crement(100, 1)
 end
 
 function ATSWTask_OnClick(arg1)
-	if arg1 == "LeftButton" and IsShiftKeyDown() then
-		if not Processing and not Recipe(this.Position).Cooldown then
+	if arg1 == "LeftButton" then
+		if not Ctrl() and Shift() and not Alt() and not Processing and not Recipe(this.Position).Cooldown then
 			local QName 			= Task(this.TaskIndex).Name
 			local QAmount 		= Task(this.TaskIndex).Amount
 			local IncludeTasks 	= true
@@ -2799,17 +2817,13 @@ end
 function ATSWTaskButton_OnClick()
 	local Amount = ATSWAmountBox:GetNumber()
 	local Name = RecipeSelected()
-
-	if Amount == 0 then
-		if TradeSkill then
-			Amount = ATSW_HowManyItemsArePossibleToCreate(Name)
-		else
-			Amount = 1
-		end
-	end
 	
-	if Amount == 0 and (ATSW_ConsiderBank or ATSW_ConsiderAlts or ATSW_ConsiderMerchants) then
-		Amount = ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
+	if Amount == 0 and TradeSkill then
+		if ATSW_ConsiderBank or ATSW_ConsiderAlts or ATSW_ConsiderMerchants then
+			Amount = ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
+		else
+			Amount = ATSW_HowManyItemsArePossibleToCreate(Name)
+		end
 	end
 	
 	if Amount == 0 then
@@ -2826,11 +2840,7 @@ function ATSWCreateButton_OnClick()
 	
 	if IsBeastTraining() then
 		Craft(GetRecipePosition(Name))
-		
-		return
-	end
-	
-	if not Processing then
+	elseif not Processing then
 		if Amount == 0 then
 			if TradeSkill then
 				Amount = ATSW_HowManyItemsArePossibleToCreate(Name)
@@ -2896,24 +2906,19 @@ function ATSW_ToggleOptionsFrame()
     end
 end
 
-function ATSWRecipe_OnClick(Link)
-	if not arg1 then return end
-	
+function ATSWRecipe_OnClick()
     if arg1 == "RightButton" then
-        if aux_frame and aux_frame:IsVisible() then --TODO проверить
-            local _, _, ID = string.find(Link, "item:(%d+)")
-            local Link = string.format("item:%d", tonumber(ID))
-			
-            SetItemRef(Link, "", "RightButton")
+        if aux_frame then
+			InsertIntoAux(this.Link)
         elseif CanSendAuctionQuery() and AuctionFrame and AuctionFrame:IsVisible() then
             BrowseName:SetText(Link)
             AuctionFrameBrowse_Search()
             BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
         end
 	elseif arg1 == "LeftButton" then
-		if IsControlKeyDown() then
+		if Ctrl() and not Shift() and not Alt() then
 			DressUpItemLink(this.Link)
-		elseif IsShiftKeyDown() then
+		elseif not Ctrl() and Shift() and not Alt() then
 			if WIM_EditBoxInFocus then
 				WIM_EditBoxInFocus:Insert(this.Link)
 			elseif ChatFrameEditBox:IsVisible() then
@@ -2945,23 +2950,6 @@ function ATSWPreviousItemButton_OnClick()
     end
 end
 
-function ATSWItemButton_OnEnter()
-	local Link = this:GetParent().Link
-	
-	Link = string.gsub(Link, "|c(%x+)|H(item:%d+:%d+:%d+:%d+)|h%[(.-)%]|h|r", "%2")
-	
-    if Link then
-        GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:SetPoint("BOTTOMLEFT", this:GetName(), "TOPLEFT")
-        GameTooltip:SetHyperlink(Link)
-        GameTooltip:Show()
-    end
-end
-
-function ATSWItemButton_OnLeave()
-    GameTooltip:Hide()
-end
-
 function ATSWSubClassDropDown_OnLoad()
 	getglobal(this:GetName().."Button"):SetHeight(26)
 	UIDropDownMenu_Initialize(this, ATSWSubClassDropDown_Initialize)
@@ -2979,9 +2967,13 @@ function ATSWSubClassDropDown_Initialize()
 end
 
 local function SetDropDownText(frame, filter, t, DefaultText)
-	if 			filter > 0 					then		UIDropDownMenu_SetText(t[filter], frame)
-	elseif 	table.getn(t) == 1 	then		UIDropDownMenu_SetText(t[1], frame)
-	else													UIDropDownMenu_SetText(DefaultText, frame) end
+	if 			filter > 0 					then
+		UIDropDownMenu_SetText(t[filter], frame)
+	elseif 	table.getn(t) == 1 	then
+		UIDropDownMenu_SetText(t[1], frame)
+	else
+		UIDropDownMenu_SetText(DefaultText, frame)
+	end
 end
 
 function ATSWFilterFrame_LoadSubClasses(...)
@@ -3078,6 +3070,8 @@ function ATSWFilterFrame_LoadInvSlots(...)
 	SetDropDownText(ATSWInvSlotDropDown, filter, arg, ALL_INVENTORY_SLOTS)
 end
 
+-- Get recipes from server
+
 function ATSW_GetRecipes(New)
 	if RecipesSize() == 0 or New then
 		SetDropDownFilter(0, 0) -- It is needed for full trade skill list initial loading
@@ -3146,11 +3140,11 @@ end
 function ATSW_TypeToNumber(Type)
 	local Number = 0
 	
-	if Type 	== "trivial" 	then Number = 	4 end
-	if Type 	== "easy" 	then Number = 	3 end
-	if Type 	== "medium"	then Number = 	2 end
-	if Type 	== "optimal" 	then Number = 	1 end
-	if Type 	== "none" 	then Number = 	0 end
+	if Type 	== "trivial" 	then Number = 4 end
+	if Type 	== "easy" 	then Number = 3 end
+	if Type 	== "medium"	then Number = 2 end
+	if Type 	== "optimal" 	then Number = 1 end
+	if Type 	== "none" 	then Number = 0 end
 	
 	return Number
 end
@@ -3197,65 +3191,49 @@ function ATSW_GetRecipesSortedByCustom()
 	
 	local Size = table.getn(Categories())
 	
+	local function Category(C)
+		return Categories()[C]
+	end
+	
+	local function CatRecipe(C, I)
+		return Category(C).Items[I]
+	end
+	
+	local Expanded, HeaderAdded
+	
 	for C = 1, Size do
-		local function Category(C)
-			return Categories()[C]
-		end
-		
-		local function CatRecipe(C, I)
-			return Category(C).Items[I]
-		end
-		
-		local H = Category(C)
-		local Expanded, HeaderIsAdded
+		Expanded = IsExpanded(Category(C).Name)
+		HeaderAdded = false
 		
 		for I = 1, table.getn(Category(C).Items) do
-			local CR = CatRecipe(C, I)
-			
-			if ATSW_Filter(CR.Name, CR.Type) and DropDownFilterPass(CR.Name) and IsInTradeSkills(CR.Name) then
-				
-				if not HeaderIsAdded then
-					Expanded 	= IsExpanded(H.Name)
-					AddRecipeSorted(H)
-					HeaderIsAdded = true
+			local R = CatRecipe(C, I)
+
+			if ATSW_Filter(R.Name, R.Type) and DropDownFilterPass(R.Name) and IsInTradeSkills(R.Name) then
+				if not HeaderAdded then
+					AddRecipeSorted(Category(C))
+					HeaderAdded = true
 				end
 				
 				if Expanded then
-					AddRecipeSorted(Recipe(GetRecipePosition(CR.Name)))
+					AddRecipeSorted(Recipe(GetRecipePosition(R.Name)))
 				end
 			end
 		end
 	end
 	
-	-- Then add uncategorized recipes into the category named "Uncategorized"
-	local UncategorizedAdded
+	-- Then add uncategorized recipes into the category "Uncategorized"
 	
-	local function AddUncategorizedHeader()
-		local Expanded = IsExpanded(ATSW_UNCATEGORIZED)
-		
-		if not UncategorizedAdded then
-			AddRecipeSorted(UncategorizedHeader[1])
-			UncategorizedAdded = true
-		end
-		
-		return Expanded
-	end
-	
-	local Expanded, HeaderIsAdded
-	
-	for I = 1, RecipesSize() do
-		local R = Recipe(I)
-		
-		if R.Type ~= "header" and not ATSWCS_IsCategorized(R.Name, R.SubName) then
-			if R.Type~="header" and ATSW_Filter(R.Name, R.Type) and DropDownFilterPass(R.Name) then
-				if not HeaderIsAdded then
-					Expanded = AddUncategorizedHeader()
-					HeaderIsAdded = true
+	if IsExpanded(ATSW_UNCATEGORIZED) then
+		for I = 1, RecipesSize() do
+			local R = Recipe(I)
+			
+			if R.Type ~= "header" and not ATSWCS_IsCategorized(R.Name, R.SubName) and ATSW_Filter(R.Name, R.Type) and DropDownFilterPass(R.Name) then
+				if not HeaderAdded then
+					AddRecipeSorted(UncategorizedHeader[1])
+					HeaderAdded = true
 				end
 				
-				if Expanded then
-					AddRecipeSorted(R)
-				end
+				AddRecipeSorted(R)
 			end
 		end
 	end
@@ -3287,6 +3265,9 @@ end
 
 function ATSW_UpdateRecipes()
 	local ScrollOffset 				= ScrollOffset() / ATSW_TRADESKILL_HEIGHT
+	local TextureWidth				= ATSWRecipe1Texture:GetWidth()
+	local _, _, _, TextureLeft	= ATSWRecipe1Texture:GetPoint(1)
+	local ButtonWidth				= ATSWListScrollFrame:GetWidth()
 	
 	for I = 1, ATSW_RECIPES_DISPLAYED do
 		local Button 					= getglobal("ATSWRecipe" .. I)
@@ -3295,7 +3276,7 @@ function ATSW_UpdateRecipes()
 		local Exist 						= Index <= RecipesSortedSize()
 		local R, Possible, Text
 		
-		SetVisible(Button, false) --Needed for tooltip update if scrolled
+		SetVisible(Button, false) -- Needed for tooltip update if scrolled
 		SetVisible(Button, Exist)
 		
 		if Exist then
@@ -3316,7 +3297,7 @@ function ATSW_UpdateRecipes()
 			local QualityTexture 	= getglobal("ATSWRecipe" .. I .. "QualityTexture")
 			local ButtonHighlight 	= getglobal("ATSWRecipe" .. I .. "Highlight")
 			
-			local point, relativeTo, relativePoint, _, yOfs = Button:GetPoint(2) --LEFT, ATSWFrame, LEFT
+			local point, relativeTo, relativePoint, _, yOfs = Button:GetPoint(2) -- LEFT, ATSWFrame, LEFT
 			local BorderSize 			= 0.071
 			local cR, cG, cB 			= GetLinkColorRGB(R.Link)
 			local PossibleAmount	= 0
@@ -3333,11 +3314,14 @@ function ATSW_UpdateRecipes()
 				XOffset 					= 20
 				
 				if not IsBeastTraining() then
-					PossibleAmount 		= ATSW_HowManyItemsArePossibleToCreate							(R.Name)
+					PossibleAmount 		= ATSW_HowManyItemsArePossibleToCreate(R.Name,
+						ATSW_ConsiderBank 			and ATSW_POSSIBLE_BANK,
+						ATSW_ConsiderAlts 			and ATSW_POSSIBLE_ALTS,
+						ATSW_ConsiderMerchants 	and ATSW_POSSIBLE_MERCHANT)
 					PossibleTotal 			= ATSW_HowManyItemsArePossibleToCreateWithConsidering	(R.Name)
 					
 					if ATSW_Unified then
-						Possible 			= PossibleAmount > 0 and PossibleAmount or nil
+						Possible 			= PossibleAmount > 0 and PossibleAmount
 					elseif PossibleTotal > 0 then
 						Possible				= PossibleAmount .. "/" .. PossibleTotal
 					end
@@ -3368,15 +3352,17 @@ function ATSW_UpdateRecipes()
 			Button:				SetText				(Text .. (ConvertCooldown(R.Cooldown) or ""))
 			Button:				SetTextColor		(TypeColor.R, TypeColor.G, TypeColor.B)
 			Button:				SetPoint			(point, relativeTo:GetName(), relativePoint, Button.XOffset + XOffset, yOfs)
+			Button:				SetWidth			(math.min(Button:GetTextWidth() + TextureWidth + TextureLeft, ButtonWidth - XOffset))
 			ButtonHighlight:	SetTexCoord		(0+HighlightSize, 1-HighlightSize, 0+HighlightSize, 1-HighlightSize)
 			ButtonHighlight:	SetDesaturated	(R.Type ~= "header")
 			
-			local Width 		= math.min(Button:GetTextWidth() + 20, 280) -- Замечание: 20 и 280 должны были взяться из кода, а не через голову
-			
-			Button:				SetWidth			(Width)
-			ButtonText:		SetWidth			(Width)
-			
 			SetVisible(QualityTexture, cR and cG and cB and not (cR == 1 and cG == 1 and cB == 1))
+			
+			if R.Type == "header" then
+				Button:RegisterForClicks("LeftButtonUp")
+			else
+				Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			end
 		end
 		
 		Button.Name 			= R and (R.Name .. (R.SubName and R.SubName ~= "" and ("   (" .. R.SubName .. ")") or ""))
@@ -3410,7 +3396,7 @@ function ATSW_UpdateTasks()
 		local Exist 				= Task(Index)
 		local tR, tG, tB 		= 1, 1, 1
 		
-		SetVisible(Button, false) --It is needed for tooltip update if button text is changed
+		SetVisible(Button, false) -- It is needed for tooltip update if button text is changed
 		SetVisible(Button, Exist)
 		SetVisible(DeleteButton, Exist)
 		
@@ -3468,11 +3454,11 @@ function ATSW_UpdateTasks()
 		Button.Name 			= Name
 		Button.Text			= Text
 		Button.Position		=	Pos
-		Button.TaskIndex	= Exist and Index or nil
+		Button.TaskIndex	= Exist and Index
 	end
 	
-	SetEnabled(ATSWReagentsButton, 	NecessaryReagentsSize() ~= 0)
-	SetVisible	(ATSWWeb, 					TasksSize() == 0)
+	SetEnabled	(ATSWReagentsButton, 	NecessaryReagentsSize() ~= 0)
+	SetVisible		(ATSWWeb, 					TasksSize() == 0)
 	
 	ATSW_UpdateCreateButton()
 	ATSW_UpdateTaskListScroll()
@@ -3492,9 +3478,13 @@ function ATSW_ShowSearch()
 	ATSW_BlockSearchTextChanged = true
 	ATSWSearchBox:SetText(SearchString())
 	
+	SetVisible(ATSWSearchLabel, SearchString() == "")
+	SetVisible(ATSWSearchIcon,  SearchString() == "")
+	
 	if SearchString() == "" then
-		ATSWSearchLabel:Show()
-		ATSWSearchIcon:Show()
+		ATSWSearchBox:ClearFocus()
+	else
+		ATSWSearchBox:SetFocus()
 	end
 	
 	ATSW_BlockSearchTextChanged = false
@@ -3506,19 +3496,17 @@ function ATSW_ShowDropDown()
 end
 
 function ATSW_ShowSelection()
-	if RecipeSelected() then
-		ATSW_SelectRecipe(RecipeSelected())
-	else
+	local function FirstCraft()
 		local Name, _, SubName = GetCraftNameType(GetFirstCraft())
 		
 		if SubName and SubName ~= "" then
-			SubName = "   (" .. SubName .. ")"
+			Name = Name .. "   (" .. SubName .. ")"
 		end
 		
-		if Name then
-			ATSW_SelectRecipe(Name .. (SubName or ""))
-		end
+		return Name
 	end
+
+	ATSW_SelectRecipe(RecipeSelected() or FirstCraft())
 end
 
 function ATSW_ShowAmount()
@@ -3560,7 +3548,9 @@ end
 function ATSW_ShowReagentsButton		(Visible)
 	SetVisible(ATSWReagentsButton, 		Visible)
 	
-	if not Visible then ATSWReagentsFrame:Hide() end
+	if not Visible then
+		ATSWReagentsFrame:Hide()
+	end
 end
 
 function ATSW_ShowTaskButton			(Visible)
@@ -3572,22 +3562,20 @@ function ATSW_ShowTrainingPointsMenu	(Visible)
 end
 
 function ATSW_SelectRecipe(Name, Type)
-	if not Name then
+	if Name then
+		if Type == "header" then
+			ATSW_SwitchCategory(Name)
+		else
+			-- Store selected recipe name
+			ATSW_SelectedRecipe[realm][player][Profession()] = Name
+			ATSW_ShowRecipe(Name)
+		end
+	else
 		ATSW_SelectedRecipe[realm][player][Profession()] = nil
 		ATSW_HideRecipe()
-		ATSWCreateButton:Disable()
-		
-		return
 	end
 	
-	if Type == "header" then
-		ATSW_SwitchCategory(Name)
-	else
-		--Store selected recipe name
-		ATSW_SelectedRecipe[realm][player][Profession()] = Name
-		ATSW_ShowRecipe(Name)
-		ATSW_UpdateCreateButton()
-	end
+	ATSW_UpdateCreateButton()
 end
 
 function ATSW_SwitchCategory(Name)
@@ -3601,14 +3589,6 @@ function ATSW_SwitchCategory(Name)
 end
 
 function ATSW_ShowRecipe(Name)
-	local Recipe = Recipe(GetRecipePosition(Name))
-	
-	if not Recipe then
-		ATSW_HideRecipe()
-		
-		return
-	end
-	
 	local GamePosition = GetPositionFromGame(Name)
 	
 	SelectCraftItem(GamePosition)
@@ -3616,11 +3596,13 @@ function ATSW_ShowRecipe(Name)
 	ATSWRecipeName:Show()
 	ATSWRecipeIcon:Show()
 	
-	--Name
+	local Recipe = Recipe(GetRecipePosition(Name))
+	
+	-- Name
 	ATSWRecipeName:SetText(Recipe.Name)
 	
-	--Icon
-	local Quality = GetItemQuality(GamePosition)
+	-- Icon
+	local Quality = LinkToQuality(Recipe.Link)
 	
 	SetVisible(ATSWRecipeIconQualityTexture, Quality > 2)
 	
@@ -3631,7 +3613,7 @@ function ATSW_ShowRecipe(Name)
 		ATSWRecipeIcon:Hide()
 	end
 	
-	--Quality border
+	-- Quality border
 	if Quality > 2 then
 		local RColor = QualityColor[Quality]
 		
@@ -3640,7 +3622,7 @@ function ATSW_ShowRecipe(Name)
 		ATSWRecipeIconQualityTexture:SetVertexColor(1, 1, 1)
 	end
 	
-	--Amount of production
+	-- Amount of production
 	local Min	= Recipe.ProductMin
 	local Max	= Recipe.ProductMax
 	
@@ -3654,7 +3636,7 @@ function ATSW_ShowRecipe(Name)
 		ATSWRecipeIconAmount:SetText("")
 	end
 	
-	--Cooldown
+	-- Cooldown
 	local Cooldown = ConvertCooldown(Recipe.Cooldown, true)
 	
 	SetVisible(ATSWRecipeCooldown, Cooldown)
@@ -3676,7 +3658,7 @@ function ATSW_ShowRecipe(Name)
 	local BeastTraining = IsBeastTraining()
 	
 	if BeastTraining then
-		--Requirements
+		-- Requirements
 		local Button 					= getglobal("ATSWTool" .. 1)
 		local ButtonText 			= getglobal("ATSWTool" .. 1 .. "Text")
 		local ButtonTexture 		= getglobal("ATSWTool" .. 1 .. "Texture")
@@ -3707,7 +3689,7 @@ function ATSW_ShowRecipe(Name)
 		ButtonText:					SetTextColor(0, 0, 0)
 		SetEnabled(Button, false)
 	else
-		--Tools
+		-- Tools
 		Tools = ToolStringToTable(GetCraftRequirements(GamePosition))
 		
 		SetVisible(ATSWToolsLabel, table.getn(Tools) > 0)
@@ -3757,7 +3739,7 @@ function ATSW_ShowRecipe(Name)
 	SetVisible(ATSWCraftDescription, 	BeastTraining)
 	
 	if BeastTraining then
-		--Training cost
+		-- Training cost
 		if Recipe.TrainingCost > 0 then
 			local Total, Spent 	= GetPetTrainingPoints()
 			local Usable		 	= Total - Spent
@@ -3773,7 +3755,7 @@ function ATSW_ShowRecipe(Name)
 		SetVisible(ATSWCostText, 			Recipe.TrainingCost > 0)
 		ATSWReagentsLabel:SetText(COSTS_LABEL .. " ")
 		
-		--Description
+		-- Description
 		local Description = GetCraftDescription(GamePosition)
 		
 		SetVisible(ATSWCraftDescription, Description)
@@ -3782,7 +3764,7 @@ function ATSW_ShowRecipe(Name)
 			ATSWCraftDescription:SetText(Description)
 		end
 	else
-		--Reagents
+		-- Reagents
 		local NumReagents 		= Recipe.ReagentsSize
 		
 		SetVisible(ATSWReagentsLabel, NumReagents > 0)
@@ -3794,7 +3776,7 @@ function ATSW_ShowRecipe(Name)
 			local Exists 				= I <= NumReagents
 			local RName, RTexture, RAmount, RPlayerAmount, RLink, RTotalAmount, Quality, RColor, R, G, B, A, Craftable, Position
 			
-			SetVisible(Button, false) --Needed for tooltip update if schematic is changed
+			SetVisible(Button, false) -- Needed for tooltip update if schematic is changed
 			SetVisible(Button, Exists)
 			
 			if Exists then
@@ -3855,22 +3837,23 @@ function ATSW_ShowRecipe(Name)
 	
 	ATSW_SetHighlight(Name)
 	
-	--Remove previous recipe if it is selected
-	for I = 1, PreviousRecipesSize() do
-		if PreviousRecipe(I) == Recipe.Name then
+	-- Remove previous recipe if it is selected
+	
+	for I, V in pairs(PreviousRecipes()) do
+		if V == Recipe.Name then
 			table.remove(PreviousRecipes(), I)
 			
 			break
 		end
 	end
 	
-	--Previous recipes button
+	-- Previous recipes button
 	SetVisible(ATSWPreviousItemButton, PreviousRecipesSize() > 0)
 	
-	--Task button
+	-- Task button
 	ATSWTaskButton:Enable()
 	
-	--Amount control
+	-- Amount control
 	ATSWIncrementButton:Enable()
 	ATSWDecrementButton:Enable()
 end
@@ -3899,16 +3882,19 @@ function ATSW_HideRecipe()
 		SetVisible(getglobal("ATSWReagent" .. I), 	Visible)
 	end
 	
-	--Task button
+	-- Task button
 	ATSWTaskButton:Disable()
 	
-	--Amount control
+	-- Amount control
 	ATSWIncrementButton:Disable()
 	ATSWDecrementButton:Disable()
 end
 
-function ATSW_SetHighlight(Name, SubName)
-	local HighlightIsSet = false
+function ATSW_SetHighlight(Name)
+	if HighlightButton then
+		HighlightButton:UnlockHighlight()
+		HighlightButton = nil
+	end
 	
 	if Name then
 		for I = 1, ATSW_RECIPES_DISPLAYED do
@@ -3917,18 +3903,19 @@ function ATSW_SetHighlight(Name, SubName)
 			if Button.Name == Name then
 				local R, G, B = Button:GetTextColor()
 				
-				ATSWHighlight:SetPoint("TOP", Button:GetName())
+				ATSWHighlight:SetPoint("TOP", Button)
 				ATSWHighlightTexture:SetVertexColor(R, G, B, 0.8)
-				HighlightIsSet = true
 				
-				Button:LockHighlight()
-			else
-				Button:UnlockHighlight()
+				HighlightButton = Button
 			end
 		end
 	end
 	
-	SetVisible(ATSWHighlight, HighlightIsSet)
+	if HighlightButton then
+		HighlightButton:LockHighlight()
+	end
+	
+	SetVisible(ATSWHighlight, HighlightButton)
 end
 
 function ATSW_UpdateCreateButton()
@@ -3964,24 +3951,20 @@ function ATSW_UpdateCreateButton()
 					Possible = false
 				end
 			else
-				if not Amount or Amount == 0 then Amount = 1 end
+				if not Amount or Amount == 0 then
+					Amount = 1
+				end
 				
 				Possible = (Position and not GetCraftCooldown(Position)) and (Type ~= "used") and ATSW_HowManyItemsArePossibleToCreate(RecipeSelected()) >= Amount
 				
 				for I = 1, TasksSize() do
 					Pos = GetPositionFromGame(Task(I).Name)
 					
-					if Pos then
-						local Cooldown = GetCraftCooldown(Pos)
-						
-						if not Cooldown then
-							TaskPossible = ATSW_HowManyItemsArePossibleToCreate(Task(I).Name, ATSW_POSSIBLE_NOTASK)
+					if Pos and not GetCraftCooldown(Pos) then
+						if ATSW_HowManyItemsArePossibleToCreate(Task(I).Name, ATSW_POSSIBLE_NOTASK) > 0 then
+							Possible = not (Processing and ProcessingRecipe == Task(I).Name)
 							
-							if TaskPossible > 0 then
-								Possible = not (Processing and ProcessingRecipe == Task(I).Name)
-								
-								break
-							end
+							break
 						end
 					end
 				end
@@ -3989,7 +3972,9 @@ function ATSW_UpdateCreateButton()
 		end
 	end
 	
-	SetEnabled(ATSWCreateButton, Possible)
+	if not Processing then
+		SetEnabled(ATSWCreateButton, Possible)
+	end
 	
 	local Name = getglobal(GetCraftButtonToken())
 	local Text
@@ -4024,51 +4009,137 @@ function ATSW_Craft(Name, Amount)
 	ProcessingRecipe 		= Name
 	ProcessingTexture		= GetCraftTexture(Index)
 	ProcessingAmount 		= math.min(Amount, Possible)
+	ProcessingDelay			= GetTime()
 	
 	ATSWFrame:RegisterEvent("SPELLCAST_START")
 	
-	ProcessingDelay			= GetTime()
+	ATSW_PushCreateButton()
+	Delay(function ()
+				ATSW_PushCreateButton(Processing)
+			end, GetLatency()*4)
 	
 	Craft(Index, Amount)
 end
 
-function ATSW_AddReagentLinksToChatFrame(Position)
-    local ChatType, ChatNumber
+local function GetReagents(Name, Amount, Link, Texture, Table)
+	local Table = Table or {}
+	local Amount = Amount or 1
 	
-    if WIM_EditBoxInFocus ~= nil then
-        ChatType 		= "WHISPER"
-        ChatNumber 	= WIM_EditBoxInFocus:GetParent().theUser
-    else
-        ChatType, ChatNumber = ChatFrameEditBox.chatType
-		
-        if 			ChatType == "WHISPER" then ChatNumber = ChatFrameEditBox.tellTarget
-        elseif	ChatType == "CHANNEL" then ChatNumber = ChatFrameEditBox.channelTarget end
-    end
+	local Pos = GetPositionFromGame(Name)
 	
-    local ChatLine, LineStart
-	local R = Recipe(Position)
-	
-	if not R.Link then return end
-	
-	if IsEnchant(Position) then
-		LineStart = ""
-	else
-		LineStart = ATSW_REAGENTLIST1 .. " "
-	end
-	
-	SendChatMessage(LineStart .. R.Link .. " " .. ATSW_REAGENTLIST2, ChatType, nil, ChatNumber)
-		
-	for J = 1, GetReagentCount(Position) do
-		local _, _, Amount, _, Link = GetReagentData(Position, J)
-		
-		if Amount and Amount > 1 then
-			Amount = " (" .. Amount .. ")"
-		else
-			Amount = ""
+	if not Pos then
+		for I = 1, table.getn(Table) do
+			if Table[I].Name == Name then
+				Table[I].Amount = Table[I].Amount + Amount
+				
+				return Table
+			end
 		end
 		
-		ChatLine = (Link or "") .. (Amount or "")
-		SendChatMessage(ChatLine, ChatType, nil, ChatNumber)
+		table.insert(Table,	{	Name 	= Name,
+										Amount = Amount,
+										Link 		= Link,
+										Texture	= Texture	})
+		
+		return Table
+	end
+	
+	for I = 1, GetReagentCount(Pos) do
+		local RName, RTexture, RAmount, _, RLink = GetReagentData(Pos, I)
+		local Min = GetCraftMinMax(GetPositionFromGame(Name))
+		local Amount = math.ceil(Amount / Min)
+		
+		Table = GetReagents(RName, (RAmount * Amount), RLink, RTexture, Table)
+	end
+	
+	return Table
+end
+
+local function GetSayTooltipString()
+	if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
+		local ChatType, ChatNumber, ChatName, ChatID
+		local SayTarget = ""
+		
+		if WIM_EditBoxInFocus ~= nil then
+			ChatType 		= "WHISPER"
+			ChatNumber 	= WIM_EditBoxInFocus:GetParent().theUser
+			
+			SayTarget = ATSW_TOOLTIP_TO .. WIM_UserWithClassColor(ChatNumber)
+		else
+			ChatType, ChatNumber = ChatFrameEditBox.chatType
+			
+			if 			ChatType == "WHISPER" then ChatNumber = ChatFrameEditBox.tellTarget
+			elseif	ChatType == "CHANNEL" then ChatNumber = ChatFrameEditBox.channelTarget end
+			
+			if			ChatType ~= "SAY"	   	 then
+				ChatID, ChatName = GetChannelName(ChatNumber)
+				
+				SayTarget = ATSW_TOOLTIP_TO .. "[" .. ChatID .. ". " .. ChatName .."]"
+			end
+		end
+		
+		return ATSW_TOOLTIP_SAYREAGENTS .. SayTarget, ChatType, ChatNumber
+	else
+		return ""
+	end
+end
+
+local Lines = {}
+local Message = ""
+local TooltipString, ChatType, ChatNumber
+
+StaticPopupDialogs["SAYREAGENTS"] = {
+	text = "",
+	button1 = TEXT(YES),
+	button2 = TEXT(NO),
+	OnAccept = function()
+		SendChatMessage(Message, ChatType, nil, ChatNumber)
+		
+		for L = 1, table.getn(Lines) do
+			SendChatMessage(Lines[L], ChatType, nil, ChatNumber)
+		end
+	end,
+	timeout = 0,
+	preferredIndex = 2,
+	showAlert = 1,
+	hideOnEscape = 1
+}
+
+function ATSW_SayReagents(Position)
+    TooltipString, ChatType, ChatNumber = GetSayTooltipString()
+	
+    local LineStart
+	local R = Recipe(Position)
+	
+	if R.Link then
+		if IsEnchant(Position) then
+			LineStart = ""
+		else
+			LineStart = ATSW_REAGENTLIST1 .. " "
+		end
+		
+		local Reagents = GetReagents(R.Name)
+		
+		local S = string.format(TooltipString, "^.*|cffffffff?(%s*)") .. "|r?\n\n" .. LineStart .. R.Link .. " " .. ATSW_REAGENTLIST2
+		
+		Lines = {}
+		
+		for L = 1, table.getn(Reagents) do
+			local Line = Reagents[L].Name
+			
+			if Reagents[L].Amount > 1 then
+				Line = Line .. " (" .. Reagents[L].Amount .. ")"
+			end
+			
+			S = S .. "\n" .. Line
+			
+			table.insert(Lines, Line)
+		end
+		
+		StaticPopupDialogs["SAYREAGENTS"].text = S .. "\n"
+		Message = LineStart .. R.Link .. " " .. ATSW_REAGENTLIST2
+		
+		StaticPopup_Show("SAYREAGENTS")
 	end
 end
 
@@ -4151,7 +4222,9 @@ function ATSW_HowManyItemsArePossibleToCreate(Name, ...)
 end
 
 function ATSW_SetNecessary(Name, Amount, Link, Texture, NecessaryReagentMode)
-	if not Name or (Amount and Amount <= 0) then return end
+	if not Name or (Amount and Amount <= 0) then
+		return
+	end
 	
 	local NPos
 	
@@ -4197,7 +4270,7 @@ function ATSW_SetNecessary(Name, Amount, Link, Texture, NecessaryReagentMode)
 	end
 end
 
---Task functions
+-- Task functions
 
 local function AmountInTasksIndirect(Name, Prof)
 	local Amount = 0
@@ -4235,7 +4308,9 @@ local function AmountInTasks(Name, Prof)
 end
 
 function ATSW_AddTask(Name, Amount, Link, Texture, Recursive, NecessaryReagentMode, Insert, Prof)
-	if not Name or (Amount and Amount <= 0) then return end
+	if not Name then
+		return
+	end
 	
 	if Prof == nil then Prof = Profession() end
 	
@@ -4254,6 +4329,8 @@ function ATSW_AddTask(Name, Amount, Link, Texture, Recursive, NecessaryReagentMo
 	if not Pos then
 		ATSW_SetNecessary(Name, Amount, Link, Texture, NecessaryReagentMode)
 		
+		return
+	elseif (Amount and Amount <= 0) then
 		return
 	end
 	
@@ -4278,7 +4355,7 @@ function ATSW_AddTask(Name, Amount, Link, Texture, Recursive, NecessaryReagentMo
 		Merchant 			= ATSW_ConsiderMerchants and ATSW_Merchant[R.Name] and 0 or 1
 		
 		if GetRecipePosition(R.Name, Prof) then
-			local Min = GetCraftMinMax(GetPositionFromGame(R.Name))
+			local Min = GetCraftMinMax(GetRecipePosition(R.Name, Prof))
 			
 			Required 		= math.ceil(((AmountInTasksIndirect(R.Name, Prof) - (AmountInTasksDirect(R.Name, Prof) * Min) - math.ceil(Possession(R.Name) / Min))) / Min) * Merchant
 			
@@ -4289,10 +4366,13 @@ function ATSW_AddTask(Name, Amount, Link, Texture, Recursive, NecessaryReagentMo
 			Required 		= R.Amount * Amount
 		end
 		
+		if Required < 0 then
+			NecessaryReagentMode = ATSW_NECESSARY_REAGENT_ADD
+			Required = Amount
+		end
+		
 		ATSW_AddTask(R.Name, Required, R.Link, R.Texture, true, NecessaryReagentMode, InsertBefore or Insert , Prof)
 	end
-	
-	if NecessaryReagentMode then return end
 	
 	if not Recursive then
 		ATSW_UpdateRecipes()
@@ -4305,22 +4385,24 @@ function ATSW_DeleteTask(Name, Amount, Prof)
 		T = Task(I, Prof)
 		
 		if T.Name == Name then
-			--Get removing amount
+			-- Get removing amount
 			local Removed = Amount or T.Amount
 			
-			--Remove task
+			-- Remove task
 			if not Amount or T.Amount <= Amount then
 				table.remove(Tasks(Prof), I)
 			else
 				T.Amount = T.Amount - Amount
 			end
 			
-			--Remove necessary item
+			-- Remove necessary item
 			ATSW_AddTask(Name, Removed, nil, nil, nil, ATSW_NECESSARY_REAGENT_DELETE, nil, Prof)
 			
-			if NoTasks() then ResetNecessaries() end
+			if NoTasks() then
+				ResetNecessaries()
+			end
 			
-			--Update lists
+			-- Update lists
 			if not (Prof and Prof ~= Profession()) then
 				ATSW_UpdateRecipes()
 				ATSW_UpdateTasks()
@@ -4331,18 +4413,20 @@ function ATSW_DeleteTask(Name, Amount, Prof)
 	end
 end
 
---Progress bar functions
+-- Progress bar functions
 
 function ATSW_InitializeProgressBar(StartTime, EndTime)
 	ATSWProgressBar:SetMinMaxValues(StartTime, EndTime)
+	ATSWProgressBar:		SetAlpha(1)
+	ATSWProgressBarGlow:SetAlpha(0)
 	
 	ATSWProgressBar.StartTime = StartTime
 	ATSWProgressBar.EndTime 	= EndTime
 	ATSWProgressBar.Mode		= ATSW_CAST
-	ATSWProgressBar:				SetAlpha(1)
-	ATSWProgressBarGlow:		SetAlpha(0)
 	ATSWProgressBar.Working 	= true
 end
+
+ATSW_Time = 0
 
 function ATSW_StartProcessing()
 	ATSWFrame:RegisterEvent("SPELLCAST_INTERRUPTED")
@@ -4352,7 +4436,20 @@ function ATSW_StartProcessing()
 	Processing 							= true
 	
 	ATSW_UpdateTasks()
-	ATSWCreateButton:Disable()
+end
+
+function ATSW_PushCreateButton(State)
+	if State or (State == nil) then
+		ATSWCreateButton:SetButtonState("PUSHED", true)
+		ATSWCreateButton:SetHighlightTexture("")
+		ATSWCreateButton:SetTextColor(0.5, 0.5, 0.5)
+		ATSWCreateButton:SetHighlightTextColor(0.5, 0.5, 0.5)
+	elseif State == false then
+		ATSWCreateButton:SetButtonState("NORMAL", false)
+		ATSWCreateButton:SetHighlightTexture("Interface\\Buttons\\UI-Panel-Button-Highlight")
+		ATSWCreateButton:SetTextColor(1, 0.82, 0)
+		ATSWCreateButton:SetHighlightTextColor(1, 0.82, 0)
+	end
 end
 
 function ATSW_StopProcessing()
@@ -4365,8 +4462,8 @@ function ATSW_StopProcessing()
 	ATSWProgressBar.TaskItem 	= nil
 	ATSWProgressBar:Hide()
 	
+	ATSW_PushCreateButton(false)
 	ATSW_UpdateTasks()
-	ATSW_UpdateCreateButton()
 end
 
 function ATSW_CompleteTask()
@@ -4393,7 +4490,7 @@ function ATSW_ShowAuctionShoppingList()
     if (AuctionFrame and AuctionFrame:IsVisible() or aux_frame and aux_frame:IsVisible()) and 
 	NecessaryReagentsSize() > 0 and 
 	ATSW_DisplayShoppingList then
-		for A = 1, ATSW_AUCTION_ITEMS_DISPLAYED do --Create auction shopping frame buttons
+		for A = 1, ATSW_AUCTION_ITEMS_DISPLAYED do -- Create auction shopping frame buttons
 			if not getglobal("ATSWSLFReagent" .. A) then
 				local F = CreateFrame("Frame", "ATSWSLFReagent" .. A, ATSWShoppingListFrame, "ATSWSLFReagentTemplate")
 				
@@ -4405,7 +4502,7 @@ function ATSW_ShowAuctionShoppingList()
 			end
 		end
 		
-		--Attach (Compatible with aux)
+		-- Attach (Compatible with aux)
         if not aux_frame and AuctionFrame then
             ATSWShoppingListFrame:SetPoint("TOPLEFT", "AuctionFrame", "TOPLEFT", 348, -435.5)
         else
@@ -4421,12 +4518,7 @@ end
 
 function ATSWAuction_SearchForRecipe()
     if aux_frame then
-        local _, _, ID = string.find(this:GetParent().Link, "item:(%d+)")
-        local Link = string.format("item:%d", tonumber(ID))
-		
-		if IsShiftKeyDown() then
-			SetItemRef(Link, "", "RightButton")
-		end
+		InsertIntoAux(this:GetParent().Link)
     elseif CanSendAuctionQuery() then
         BrowseName:SetText(this:GetParent().Name)
         AuctionFrameBrowse_Search()
@@ -4486,20 +4578,21 @@ function ATSW_UpdateAuctionList()
 end
 
 function ATSW_UpdateNecessaryReagents()
-	if NoTasks() then ResetNecessaries() end
-	
-	UpdateReagentList	("ATSWRFReagent", ATSW_NECESSARIES_DISPLAYED, 0)
-	
-	SetVisible(ATSWReagentsFrameAndMore, NecessaryReagentsSize() > ATSW_NECESSARIES_DISPLAYED)
+	if NoTasks() then
+		ResetNecessaries()
+	end
 	
 	if NecessaryReagentsSize() == 0 then
 		ATSWReagentsFrame:Hide()
+	else
+		UpdateReagentList("ATSWRFReagent", ATSW_NECESSARIES_DISPLAYED, 0)
+		SetVisible(ATSWReagentsFrameAndMore, 	NecessaryReagentsSize() > ATSW_NECESSARIES_DISPLAYED)
 	end
 end
 
---Search functions
+-- Search functions
 
-function ATSW_SetSearch(Text)
+function ATSWSearchBox_OnTextChanged(Text) --TODO
 	if ATSW_BlockSearchTextChanged then return end
 
     SetSearchString(Text)
@@ -4510,8 +4603,13 @@ function ATSW_SetSearch(Text)
 end
 
 function ATSW_Filter(Name, Type)
-	if not Name then return false end
-	if (Type == "header") or (Name == "") then return true end
+	if not Name then
+		return false
+	end
+	
+	if (Type == "header") or (Name == "") then
+		return true
+	end
 	
 	local function ReplaceMagicCharacters(String)
 		local S = String
@@ -4566,13 +4664,17 @@ function ATSW_Filter(Name, Type)
 		local PValue = Parameters[I].Value
 		
         if PName == "name" then
-            if not string.find(string.lower(Name), PValue) then return false end
+            if not string.find(string.lower(Name), PValue) then
+				return false
+			end
         end
 		
         if PName == "reagent" or PName == "r" then
             local Index = GetRecipePosition(Name)
 			
-			if not Index then return false end
+			if not Index then
+				return false
+			end
 			
 			local Found = false
 			
@@ -4582,7 +4684,9 @@ function ATSW_Filter(Name, Type)
 				end
 			end
 			
-			if not Found then return false end
+			if not Found then
+				return false
+			end
         end
 		
         if	PName == "level"
@@ -4590,8 +4694,7 @@ function ATSW_Filter(Name, Type)
 		or	PName == "quality"
 		or PName == "q"
 		or	PName == "possible" 
-		or	PName == "possibletotal" then 
-			
+		or	PName == "possibletotal" then
 			local PMin, PDirection, PMax
 			
 			if PName == "rarity" or PName == "quality" or PName == "q" then
@@ -4609,10 +4712,10 @@ function ATSW_Filter(Name, Type)
 			local Param
 			
 			if 			PName == "level" 				then
-						Param = GetItemMinLevel(Recipe(GetRecipePosition(Name)).Position)
+						Param = GetItemMinLevel(Recipe(GetRecipePosition(Name)).Position) or 0
 						
 			elseif 	PName == "rarity" or PName == "quality" or PName == "q" then
-						Param = GetItemQuality(Recipe(GetRecipePosition(Name)).Position)
+						Param = LinkToQuality(Recipe(GetRecipePosition(Name)).Link)
 						
 			elseif 	PName == "possible" 			then
 						Param = ATSW_HowManyItemsArePossibleToCreate(Name)
@@ -4624,17 +4727,27 @@ function ATSW_Filter(Name, Type)
 			if PMin and not PMax then
 				if PDirection ~= "" then
 					if PDirection == "+" then
-						if not (Param >= PMin) then return false end
+						if not (Param >= PMin) then
+							return false
+						end
 					elseif PDirection == "-" then
-						if not (Param <= PMin) then return false end
+						if not (Param <= PMin) then return
+							false
+						end
 					end
 				else
-					if not (Param == PMin) then return false end
+					if not (Param == PMin) then
+						return false
+					end
 				end
 			elseif PDirection == "-" then
-				if not (Param > PMin and Param < PMax) then return false end
+				if not (Param > PMin and Param < PMax) then
+					return false
+				end
 			elseif PDirection == "+" then
-				if not (Param == PMin + PMax) then return false end
+				if not (Param == PMin + PMax) then
+					return false
+				end
 			end
         end
     end
@@ -4644,8 +4757,27 @@ end
 
 -- Tooltip functions
 
+function ATSWItemButton_OnEnter()
+	local Link = this:GetParent().Link
+	
+	Link = string.gsub(Link, "|c(%x+)|H(item:%d+:%d+:%d+:%d+)|h%[(.-)%]|h|r", "%2")
+	
+    if Link then
+        GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:SetPoint("BOTTOMLEFT", this:GetName(), "TOPLEFT")
+        GameTooltip:SetHyperlink(Link)
+        GameTooltip:Show()
+    end
+end
+
+function ATSWItemButton_OnLeave()
+    GameTooltip:Hide()
+end
+
 function ATSW_DisplayRecipeTooltip()
-    if not ATSW_RecipeTooltip then return end
+    if not ATSW_RecipeTooltip then
+		return
+	end
 	
     local R
 	
@@ -4689,39 +4821,6 @@ function ATSW_DisplayRecipeTooltip()
 		ATSWRecipeTooltip:AddLine(" ")
         ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_NECESSARY)
 		
-        local Reagents = {}
-		
-		local function GetReagents(Name, Amount, Link, Texture)
-			if not Amount or Amount <= 0 then return end
-			
-			local Pos 						= GetPositionFromGame(Name)
-			
-			if not Pos then
-				for I = 1, table.getn(Reagents) do
-					if Reagents[I].Name == Name then
-						Reagents[I].Amount = Reagents[I].Amount + Amount
-						
-						return
-					end
-				end
-				
-				table.insert(Reagents,{	Name 	= Name,
-													Amount = Amount,
-													Link 		= Link,
-													Texture	= Texture	})
-				
-				return
-			end
-			
-			for I = 1, GetReagentCount(Pos) do
-				local RName, RTexture, RAmount, _, RLink = GetReagentData(Pos, I)
-				local Min = GetCraftMinMax(GetPositionFromGame(Name))
-				local Amount = math.ceil(Amount / Min)
-				
-				GetReagents(RName, (RAmount * Amount), RLink, RTexture)
-			end
-		end
-		
 		local Offset
 		
 		if AtlasLoot then
@@ -4735,7 +4834,7 @@ function ATSW_DisplayRecipeTooltip()
 		
 		getglobal("ATSWRecipeTooltipTextLeft" .. 4):SetPoint("LEFT", "ATSWRecipeTooltipTextureLeft4", "RIGHT", Offset, 0)
 		
-		GetReagents(R.Name, 1)
+		local Reagents = GetReagents(R.Name, 1)
 		
         for I = 1, 19 do
 			local Texture
@@ -4803,27 +4902,7 @@ function ATSW_DisplayRecipeTooltip()
 		local S
 		
 		if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
-			local ChatType, ChatNumber, ChatName, ChatID
-			local SayTarget = ""
-			
-			if WIM_EditBoxInFocus ~= nil then
-				ChatNumber 	= WIM_UserWithClassColor(WIM_EditBoxInFocus:GetParent().theUser)
-
-				SayTarget = ATSW_TOOLTIP_TO .. ChatNumber
-			else
-				ChatType, ChatNumber = ChatFrameEditBox.chatType
-				
-				if 			ChatType == "WHISPER" then ChatNumber = ChatFrameEditBox.tellTarget
-				elseif	ChatType == "CHANNEL" then ChatNumber = ChatFrameEditBox.channelTarget end
-				
-				if			ChatType ~= "SAY"	   	 then
-					ChatID, ChatName = GetChannelName(ChatNumber)
-					
-					SayTarget = ATSW_TOOLTIP_TO .. "[" .. ChatID .. ". " .. ChatName .."]"
-				end
-			end
-			
-			S = ATSW_TOOLTIP_SAYREAGENTS .. SayTarget
+			S = GetSayTooltipString()
 		elseif ATSW_HowManyItemsArePossibleToCreate(R.Name) > 0 then
 			S = ATSW_TOOLTIP_ADDITEM
 		end
@@ -4831,7 +4910,7 @@ function ATSW_DisplayRecipeTooltip()
 		if S then
 			ATSWRecipeTooltip:AddLine(S)
 			ATSWRecipeTooltip:SetHeight(ATSWRecipeTooltip:GetHeight()+21)
-			ATSWRecipeTooltip:SetWidth(math.max(getglobal("ATSWRecipeTooltipTextLeft"..ATSWRecipeTooltip:NumLines()):GetWidth()+22, ATSWRecipeTooltip:GetWidth()))
+			ATSWRecipeTooltip:SetWidth(math.max(getglobal("ATSWRecipeTooltipTextLeft" .. ATSWRecipeTooltip:NumLines()):GetWidth()+22, ATSWRecipeTooltip:GetWidth()))
 		end
     end
 end
@@ -4853,12 +4932,12 @@ function ATSW_SaveBag(Bag)
 		ATSW_Bags[realm][player][Bag] = {}
 	end
 	
-	--Clear
+	-- Clear
 	for Slot in pairs(ATSW_Bags[realm][player][Bag]) do
 		ATSW_Bags[realm][player][Bag][Slot] = nil
 	end
 	
-	--Memorize
+	-- Memorize
 	for Slot = 1, GetContainerNumSlots(Bag) do
 		local Name = LinkToName(GetContainerItemLink(Bag, Slot))
 		
@@ -4909,12 +4988,12 @@ function ATSW_SaveBank()
 		ATSW_Bank[realm][player] = {}
 	end
 	
-	--Clear
+	-- Clear
 	for I in pairs(ATSW_Bank[realm][player]) do
 		ATSW_Bank[realm][player][I] = nil
 	end
 	
-	--Memorize item slots
+	-- Memorize item slots
 	for Slot = 1, 24 do
 		local Name = LinkToName(GetContainerItemLink(BANK_CONTAINER, Slot))
 		
@@ -4925,7 +5004,7 @@ function ATSW_SaveBank()
 		end
 	end
 	
-	--Memorize bank bag slots
+	-- Memorize bank bag slots
 	for Container = 5, 10 do
 		for Slot = 1, GetContainerNumSlots(Container) do
 			local Name = LinkToName(GetContainerItemLink(Container, Slot))
@@ -4955,9 +5034,7 @@ function ATSW_AddToBank(Name, Amount)
 end
 
 function ATSW_GetBankAmount(Name)
-	if not Name then return 0 end
-	
-    if ATSW_Bank[realm] then
+    if Name and ATSW_Bank[realm] then
         if ATSW_Bank[realm][player] then
             if ATSW_Bank[realm][player][Name] then
                 return ATSW_Bank[realm][player][Name]
@@ -4970,12 +5047,10 @@ end
 
 -- Alternative character functions
 local function GetAltsAmountInBags(Name, PlayerName)
-	if not Name then return 0 end
-	
 	local Table		= ATSW_Bags[realm]
 	local Amount	= 0
 	
-	if Table then
+	if Name and Table then
 		for PName in pairs(Table) do
 			if (PlayerName and PlayerName == PName) or (PlayerName == nil and PName ~= player) then
 				for Bag 	in pairs(Table[PName]) do
@@ -4995,12 +5070,10 @@ local function GetAltsAmountInBags(Name, PlayerName)
 end
 
 local function GetAltsAmountInBank(Name, PlayerName)
-	if not Name then return 0 end
-	
 	local Table		= ATSW_Bank[realm]
 	local Amount	= 0
 	
-	if Table then
+	if Name and Table then
 		for PName in pairs(Table) do
 			if PName ~= player then
 				for IName, IAmount in pairs(Table[PName]) do
@@ -5022,14 +5095,6 @@ end
 function ATSW_GetAltsLocationIntoTooltip(Name)
 	local HeaderAdded = false
 	
-	local function AddHeader()
-		if not HeaderAdded then
-			ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_POSSESS .. " " .. this:GetParent().Link .. ":")
-			
-			HeaderAdded = true
-		end
-	end
-	
 	local function GetLocation(Table, In)
 		if Name then
 			for RName in pairs(Table) do
@@ -5045,7 +5110,12 @@ function ATSW_GetAltsLocationIntoTooltip(Name)
 							end
 							
 							if Amount > 0 then
-								AddHeader()
+								if not HeaderAdded then
+									ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_POSSESS .. " " .. this:GetParent().Link .. ":")
+									
+									HeaderAdded = true
+								end
+								
 								ATSWRecipeTooltip:AddLine(ClassColorize(PName) .. ": " .. "|cffffffff" .. Amount .. "|r " .. In)
 							end
 						end
@@ -5056,7 +5126,6 @@ function ATSW_GetAltsLocationIntoTooltip(Name)
 	end
 	
 	ATSWRecipeTooltip:ClearLines()
-	
 	ATSWRecipeTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", 0)
 	ATSWRecipeTooltip:SetBackdropColor(0, 0, 0, 1)
 	
@@ -5082,55 +5151,53 @@ end
 ATSW_Merchant = {}
 
 function ATSW_UpdateMerchant()
-    if not (MerchantFrame:IsVisible()) then return end
-	
-	for I = 1, GetMerchantNumItems() do
-		local Name, _, _, _, Available = GetMerchantItemInfo(I)
-		
-		if Name and Available == -1 then
-			ATSW_Merchant[Name] = true
+    if MerchantFrame:IsVisible() then
+		for I = 1, GetMerchantNumItems() do
+			local Name, _, _, _, Available = GetMerchantItemInfo(I)
+			
+			if Name and Available == -1 then
+				ATSW_Merchant[Name] = true
+			end
 		end
 	end
 end
 
 function ATSW_IsInMerchant(Name)
-	if not Name then return false end
-	
-    return ATSW_Merchant[Name]
+    return Name and ATSW_Merchant[Name]
 end
 
 local function GetMerchantReagentsPrice(Buy)
-	if not (MerchantFrame:IsVisible() and NecessaryReagentsSize() > 0) then return nil end
-	
-	local TotalPrice = 0
-	
-	local function GetTotalPrice(Item)
-		for M = 1, GetMerchantNumItems() do
-			local MName, _, MPrice, MQuantity, MAvailable = GetMerchantItemInfo(M)
-			
-			if Item.Name == MName then
-				local HaveQuantity	= ATSW_GetBagsAmount(Item.Name) + (ATSW_ConsigerBank and ATSW_GetBankAmount(Item.Name) or 0)
-				local NeedQuantity	= Item.Amount - HaveQuantity
-				local BuyQuantity = math.ceil(NeedQuantity / MQuantity)
+	if MerchantFrame:IsVisible() and NecessaryReagentsSize() > 0 then
+		local TotalPrice = 0
+		
+		local function GetTotalPrice(Item)
+			for M = 1, GetMerchantNumItems() do
+				local MName, _, MPrice, MQuantity, MAvailable = GetMerchantItemInfo(M)
 				
-				if BuyQuantity > MAvailable and MAvailable > 0 then
-					BuyQuantity = MAvailable
+				if Item.Name == MName then
+					local HaveQuantity	= ATSW_GetBagsAmount(Item.Name) + (ATSW_ConsigerBank and ATSW_GetBankAmount(Item.Name) or 0)
+					local NeedQuantity	= Item.Amount - HaveQuantity
+					local BuyQuantity = math.ceil(NeedQuantity / MQuantity)
+					
+					if BuyQuantity > MAvailable and MAvailable > 0 then
+						BuyQuantity = MAvailable
+					end
+					
+					if BuyQuantity < 0 then BuyQuantity = 0 end
+					
+					TotalPrice = TotalPrice + BuyQuantity * MPrice
+					
+					if Buy and BuyQuantity > 0 then BuyMerchantItem(M, BuyQuantity) end
 				end
-				
-				if BuyQuantity < 0 then BuyQuantity = 0 end
-				
-				TotalPrice = TotalPrice + BuyQuantity * MPrice
-				
-				if Buy and BuyQuantity > 0 then BuyMerchantItem(M, BuyQuantity) end
 			end
 		end
+		
+		for N = 1, NecessaryReagentsSize() do
+			GetTotalPrice(NecessaryReagent(N))
+		end
+		
+		return TotalPrice
 	end
-	
-	for N = 1, NecessaryReagentsSize() do
-		GetTotalPrice(NecessaryReagent(N))
-	end
-	
-	return TotalPrice
 end
 
 function ATSW_SetBuyFrameVisible()
@@ -5138,8 +5205,8 @@ function ATSW_SetBuyFrameVisible()
 	
    if Price and Price > 0 then
 		MoneyFrame_Update(ATSWBuyPrice:GetName(), Price)
-		ATSWBuyNecessaryFrame:Show()
 		ATSWBuyButton:Enable()
+		ATSWBuyNecessaryFrame:Show()
 	else
 		ATSWBuyNecessaryFrame:Hide()
 	end
