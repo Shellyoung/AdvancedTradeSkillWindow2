@@ -4518,7 +4518,13 @@ end
 
 function ATSWAuction_SearchForRecipe()
     if aux_frame then
-		InsertIntoAux(this:GetParent().Link)
+	InsertIntoAux(this:GetParent().Link)
+    elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then  -- old aux-addon 
+        AuxBuySearchBox:SetText(this:GetParent().Name)
+        AuxBuySearchButton_OnClick()
+    elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then  -- old aux-addon 
+        AuxBuyNameInputBox:SetText(this:GetParent().Name)
+        Aux.buy.SearchButton_onclick()
     elseif CanSendAuctionQuery() then
         BrowseName:SetText(this:GetParent().Name)
         AuctionFrameBrowse_Search()
