@@ -2737,7 +2737,15 @@ function ATSWRecipeButton_OnClick(Button)
 			ATSW_SelectRecipe(Name, Type)
 		end
 	elseif Button == "RightButton" then
-		InsertIntoAux(this.Link)
+		if aux_frame then
+			InsertIntoAux(this.Link)
+		elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
+			AuxBuySearchBox:SetText(this.Name)
+			AuxBuySearchButton_OnClick()
+		elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
+			AuxBuyNameInputBox:SetText(this.Name)
+			Aux.buy.SearchButton_onclick()
+		end
 	end
 end
 
@@ -2910,8 +2918,14 @@ function ATSWRecipe_OnClick()
     if arg1 == "RightButton" then
         if aux_frame then
 			InsertIntoAux(this.Link)
+		elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
+			AuxBuySearchBox:SetText(this.Name)
+			AuxBuySearchButton_OnClick()
+		elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
+			AuxBuyNameInputBox:SetText(this.Name)
+			Aux.buy.SearchButton_onclick()
         elseif CanSendAuctionQuery() and AuctionFrame and AuctionFrame:IsVisible() then
-            BrowseName:SetText(Link)
+            BrowseName:SetText(this.Link)
             AuctionFrameBrowse_Search()
             BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
         end
@@ -4518,18 +4532,18 @@ end
 
 function ATSWAuction_SearchForRecipe()
     if aux_frame then
-	InsertIntoAux(this:GetParent().Link)
-    elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then  -- old aux-addon 
-        AuxBuySearchBox:SetText(this:GetParent().Name)
-        AuxBuySearchButton_OnClick()
-    elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then  -- old aux-addon 
-        AuxBuyNameInputBox:SetText(this:GetParent().Name)
-        Aux.buy.SearchButton_onclick()
-    elseif CanSendAuctionQuery() then
+		InsertIntoAux(this:GetParent().Link)
+	elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
+		AuxBuySearchBox:SetText(this:GetParent().Name)
+		AuxBuySearchButton_OnClick()
+	elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
+		AuxBuyNameInputBox:SetText(this:GetParent().Name)
+		Aux.buy.SearchButton_onclick()
+	elseif CanSendAuctionQuery() then
         BrowseName:SetText(this:GetParent().Name)
         AuctionFrameBrowse_Search()
         BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
-    end
+	end
 end
 
 local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
