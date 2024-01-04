@@ -2701,7 +2701,7 @@ function ATSWInvSlotDropDownButton_OnClick()
 	FilterDropDownButton_OnClick(this, InvSlot, SetInvSlot, ATSWInvSlotDropDown, SetTradeSkillInvSlotFilter)
 end
 
-local function InsertIntoAux(Link)
+local function InsertIntoAuxOrAH(Link, Name)
 	if aux_frame and aux_frame:IsVisible() then
 		local aux = require 'aux'
 		local info = require 'aux.util.info'
@@ -2714,6 +2714,16 @@ local function InsertIntoAux(Link)
 		if item_info then
 			return aux.get_tab().CLICK_LINK(item_info)
 		end
+	elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
+		AuxBuySearchBox:SetText(Name)
+		AuxBuySearchButton_OnClick()
+	elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
+		AuxBuyNameInputBox:SetText(Name)
+		Aux.buy.SearchButton_onclick()
+	elseif CanSendAuctionQuery() and AuctionFrame and AuctionFrame:IsVisible() then
+		BrowseName:SetText(Link)
+		AuctionFrameBrowse_Search()
+		BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
 	end
 end
 
@@ -2737,15 +2747,7 @@ function ATSWRecipeButton_OnClick(Button)
 			ATSW_SelectRecipe(Name, Type)
 		end
 	elseif Button == "RightButton" then
-		if aux_frame then
-			InsertIntoAux(this.Link)
-		elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
-			AuxBuySearchBox:SetText(this.Name)
-			AuxBuySearchButton_OnClick()
-		elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
-			AuxBuyNameInputBox:SetText(this.Name)
-			Aux.buy.SearchButton_onclick()
-		end
+		InsertIntoAuxOrAH(this.Link, this.Name)
 	end
 end
 
@@ -2916,19 +2918,7 @@ end
 
 function ATSWRecipe_OnClick()
     if arg1 == "RightButton" then
-        if aux_frame then
-			InsertIntoAux(this.Link)
-		elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
-			AuxBuySearchBox:SetText(this.Name)
-			AuxBuySearchButton_OnClick()
-		elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
-			AuxBuyNameInputBox:SetText(this.Name)
-			Aux.buy.SearchButton_onclick()
-        elseif CanSendAuctionQuery() and AuctionFrame and AuctionFrame:IsVisible() then
-            BrowseName:SetText(this.Link)
-            AuctionFrameBrowse_Search()
-            BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
-        end
+        InsertIntoAuxOrAH(this.Link, this.Name)
 	elseif arg1 == "LeftButton" then
 		if Ctrl() and not Shift() and not Alt() then
 			DressUpItemLink(this.Link)
@@ -4531,19 +4521,7 @@ function ATSW_ShowAuctionShoppingList()
 end
 
 function ATSWAuction_SearchForRecipe()
-    if aux_frame then
-		InsertIntoAux(this:GetParent().Link)
-	elseif AuxBuySearchBox and AuxBuySearchBox:IsVisible() then
-		AuxBuySearchBox:SetText(this:GetParent().Name)
-		AuxBuySearchButton_OnClick()
-	elseif AuxBuyNameInputBox and AuxBuyNameInputBox:IsVisible() then 
-		AuxBuyNameInputBox:SetText(this:GetParent().Name)
-		Aux.buy.SearchButton_onclick()
-	elseif CanSendAuctionQuery() then
-        BrowseName:SetText(this:GetParent().Name)
-        AuctionFrameBrowse_Search()
-        BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
-	end
+	InsertIntoAuxOrAH(this:GetParent().Link, this:GetParent().Name)
 end
 
 local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
