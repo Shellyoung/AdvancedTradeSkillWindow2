@@ -4,8 +4,7 @@ Improved window for your professions for World of Warcraft vanilla
 <sub>version 2.1.2</sub>
 
 ![Attention](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/1b3981c8-1722-451a-a5c9-34d21bb247b1)
-
-**Your settings are safe**. Folder name is changed from AdvancedTradeSkillWindow to AdvancedTradeSkillWindow2. Rename the file AdvancedTradeSkillWindow.lua into AdvancedTradeSkillWindow2.lua inside the folder **..WTF\Account\ACCOUNT NAME\SavedVariables**.
+**This project is suspended for indefinite time period**
 
 
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
@@ -83,7 +82,7 @@ Improved window for your professions for World of Warcraft vanilla
   Supported languages: English, Русский, Español, Français, Deutsch
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.2/AdvancedTradeSkillWindow2.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.3/AdvancedTradeSkillWindow2.rar)
   
   2. Extract the folder	**AdvancedTradeSkillWindow2** from the archive and place it into the folder **World of Warcraft\Interface\Addons**.
   
