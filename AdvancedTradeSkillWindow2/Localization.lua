@@ -47,7 +47,7 @@ if Locale == "deDE" then
 	ATSWOF_INSTALLED					= "Aktiv"
 	ATSWOF_ADDON						= "Zusatz"
 	ATSWOF_EFFECT						= "Wirkung"
-	ATSWOFALDESCRIPTION				= "Bietet handwerkliche Fertigkeitsstufen\nfür schwieriges Sortieren"
+	ATSWOFALDESCRIPTION				= "Bietet handwerkliche Fertigkeitsstufen\nund Bastelzeit"
 	ATSWOFOKAY_TEXT					= "OKAY"
 	
 	ATSW_TOOLTIP_NECESSARY 		= "Benötigte reagenzien:"
@@ -138,7 +138,7 @@ elseif Locale == "frFR" then
 	ATSWOF_INSTALLED					= "Installed"
 	ATSWOF_ADDON						= "Ajout"
 	ATSWOF_EFFECT						= "Effet"
-	ATSWOFALDESCRIPTION				= "Fournit des niveaux de compétences\nd'artisanat pour un tri difficile"
+	ATSWOFALDESCRIPTION				= "Fournit des niveaux de compétences\net le temps de fabrication"
 	ATSWOFOKAY_TEXT					= "D'accord"
 	
 	ATSW_TOOLTIP_NECESSARY 		= "Réactifs nécessaires:"
@@ -229,7 +229,7 @@ elseif Locale == "esES" then
 	ATSWOF_INSTALLED					= "Activo"
 	ATSWOF_ADDON						= "Extensión"
 	ATSWOF_EFFECT						= "Efecto"
-	ATSWOFALDESCRIPTION				= "Proporciona niveles de habilidad de\nelaboracion para una clasificacion dificil"
+	ATSWOFALDESCRIPTION				= "Proporciona niveles de habilidad de\ny tiempo de elaboración"
 	ATSWOFOKAY_TEXT					= "BUENO"
 
 	ATSW_TOOLTIP_NECESSARY 		= "Reactivos necesarios:"
@@ -320,7 +320,7 @@ elseif Locale == "ruRU" then
 	ATSWOF_INSTALLED					= "Включён"
 	ATSWOF_ADDON						= "Аддон"
 	ATSWOF_EFFECT						= "Эффект"
-	ATSWOFALDESCRIPTION				= "Даёт уровни повышения навыка\nдля сортировки по сложности"
+	ATSWOFALDESCRIPTION				= "Даёт уровни повышения навыка\nи время создания"
 	ATSWOFOKAY_TEXT					= "Закрыть"
 	
 	ATSW_TOOLTIP_NECESSARY 		= "Требуемые реагенты:"
@@ -411,7 +411,7 @@ elseif Locale == "zhCN" then
 	ATSWOF_INSTALLED					= "已安装"
 	ATSWOF_ADDON						= "插件"
 	ATSWOF_EFFECT						= "影响"
-	ATSWOFALDESCRIPTION				= "按难度排序提供更高级别的手工制作技能"
+	ATSWOFALDESCRIPTION				= "提供配方和生产时间的生产水平"
 	ATSWOFOKAY_TEXT					= "确定"
 
 	ATSW_TOOLTIP_NECESSARY		= "所需材料:"
@@ -460,9 +460,10 @@ elseif Locale == "zhCN" then
 	ATSW_HELP_POSSIBLE_TOTAL	= ":possibletotal |c可用次数|r"
 	ATSW_HELP_POSSIBLE_TOTAL_DESC = "- 列出指定(背包、银行、小号、商人)材料齐全并包含|c可用次数|r的制作配方"
 	ATSW_HELP_QNAMES					= "物品品质(Quality names):"
-	ATSW_HELP_QNAMES_DESC		        = "|cff9d9d9dPoor|r, Common|r, |cff1eff00Uncommon|r, |cff0070ddRare|r, |cffa335eeEpic|r, |cffff8000Legendary|r, |cffe6cc80Artifact|r"
-	ATSW_HELP_QCOLORS			    	= "物品品质颜色(Quality colors):"
-	ATSW_HELP_QCOLORS_DESC		        = "|cff9d9d9dGrey|r, White|r, |cff1eff00Green|r, |cff0070ddBlue|r, |cffa335eePurple|r, |cffff8000Orange|r, |cffe6cc80Gold|r"
+	ATSW_HELP_QNAMES_DESC		= "|cff9d9d9dPoor|r, Common|r, |cff1eff00Uncommon|r, |cff0070ddRare|r, |cffa335eeEpic|r, |cffff8000Legendary|r, |cffe6cc80Artifact|r"
+	ATSW_HELP_QCOLORS				= "物品品质颜色(Quality colors):"
+	ATSW_HELP_QCOLORS_DESC		= "|cff9d9d9dGrey|r, White|r, |cff1eff00Green|r, |cff0070ddBlue|r, |cffa335eePurple|r, |cffff8000Orange|r, |cffe6cc80Gold|r"
+	
 else
 	ATSW_CLEAR 							= "Clear"
 	ATSW_CREATE 							= "Create"
@@ -501,7 +502,7 @@ else
 	ATSWOF_INSTALLED					= "Installed"
 	ATSWOF_ADDON						= "Add-on"
 	ATSWOF_EFFECT						= "Effect"
-	ATSWOFALDESCRIPTION				= "Provides crafting skill-up levels\nfor sorting by difficulty"
+	ATSWOFALDESCRIPTION				= "Provides crafting skill-up levels\nand crafting time"
 	ATSWOFOKAY_TEXT					= "OKAY"
 	
 	ATSW_TOOLTIP_NECESSARY 		= "Required reagents:"

@@ -231,21 +231,22 @@ end
 function ATSWCS_OnShow()
 	Name = Profession()
 	
-	if not Name then return end
-	
-	ATSWCSFrameTitleText:SetText(ATSWCS_TITLE .. " (" .. Name .. ")")
-	
-	--Set Skill Portrait
-	SetPortraitToTexture(ATSWCSFramePortrait, ATSW_GetProfessionTexture(Name))
-	
-	--Fill items list
-	if ATSWCS_PreviousSkill ~= Profession() then
-		ATSWCS_FillAllRecipes()
+	if Name then
+		ATSWCSFrameTitleText:SetText(ATSWCS_TITLE .. " (" .. Name .. ")")
 		
-		ATSWCS_PreviousSkill = Profession()
+		--Set Skill Portrait
+		SetPortraitToTexture(ATSWCSFramePortrait, ATSW_GetProfessionTexture(Name))
+		
+		--Fill items list
+		if ATSWCS_PreviousSkill ~= Profession() then
+			ATSWCS_FillAllRecipes()
+			
+			ATSWCS_PreviousSkill = Profession()
+		end
+		
+		ATSWCSFrame:SetPoint(ATSWFrame:GetPoint())
+		ATSWCS_Update()
 	end
-	
-	ATSWCS_Update()
 end
 
 function ATSWCSAddButton_OnClick()

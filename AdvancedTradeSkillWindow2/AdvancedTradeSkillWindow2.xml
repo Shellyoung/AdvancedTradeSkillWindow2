@@ -121,16 +121,18 @@
 				ATSWTool_OnClick(arg1)
 			</OnClick>
 			<OnEnter>
-				getglobal(this:GetName() .. "Text"):SetTextColor(1, 1, 1)
-				
-				GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
-				
 				local Index = ATSW_GetPositionFromGame(this.Name)
 				
-				if ATSW_TradeSkill() then
-					GameTooltip:SetTradeSkillItem	(Index)
-				else
-					GameTooltip:SetCraftSpell		(Index)
+				if Index then
+					getglobal(this:GetName() .. "Text"):SetTextColor(1, 1, 1)
+					
+					GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
+					
+					if ATSW_TradeSkill() then
+						GameTooltip:SetTradeSkillItem	(Index)
+					else
+						GameTooltip:SetCraftSpell		(Index)
+					end
 				end
 			</OnEnter>
 			<OnLeave>
@@ -512,8 +514,8 @@
 				</Texture>
 				<FontString name="$parentEffectDescription" inherits="ATSWYellowFont" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="CENTER" relativeTo="$parentEffect" relativePoint="CENTER">
-							<Offset x="-4" y="40"/>
+						<Anchor point="CENTER" relativeTo="$parentEffect" relativePoint="TOP">
+							<Offset x="-4" y="-5"/>
 						</Anchor>
 					</Anchors>
 				</FontString>
@@ -1423,7 +1425,6 @@
 					<OnEnter>
 						local Table = ATSW_PreviousRecipes[ATSW_realm][ATSW_player][ATSW_Profession[ATSW_realm][ATSW_player]]
 						
-						
 						GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
 						GameTooltip:SetText(Table[table.getn(Table)])
 					</OnEnter>
@@ -1725,25 +1726,6 @@
 			<OnEvent>
 				ATSW_OnEvent()
 			</OnEvent>
-			<OnShow>
-				ATSWUpdaterFrame:Show()
-				ATSW_UpdateListScroll()
-			</OnShow>
-			<OnHide>
-				if ATSW_SwitchingToEditor then
-					ATSW_SwitchingToEditor = false
-				else
-					if ATSW_TradeSkill() then
-						CloseTradeSkill()
-					else
-						CloseCraft()
-					end
-					
-					PlaySound("igCharacterInfoClose")
-				end
-				
-				ATSWUpdaterFrame:Hide()
-			</OnHide>
         </Scripts>
     </Frame>
 	
@@ -1961,7 +1943,7 @@
     </Frame>
 
 	<Frame name="ATSWConfigFrame" inherits="ATSWDialogBoxFrame_OnlyOK" toplevel="true" frameStrata="DIALOG" parent="UIParent">
-		<Size x="395" y="470"/>
+		<Size x="395" y="560"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<Texture name="ATSWOptionsMenuHeader" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\UI-DialogBox-Header">
@@ -2408,6 +2390,7 @@
 								Name:Disable()
 								
 								getglobal(this:GetName() .. "Effect"):SetTexture(AtlasLootTexturePath .. "Effect")
+								getglobal(this:GetName() .. "Effect"):SetPoint("CENTER", 165, -70)
 								getglobal(this:GetName() .. "EffectDescription"):SetText(ATSWOFALDESCRIPTION)
 							</OnLoad>
 							<OnShow>
@@ -3187,6 +3170,9 @@
 	</Frame>
 	
 	<Frame name="ATSWShoppingListFrame" frameStrata="HIGH" toplevel="true" enableMouse="true" parent="UIParent" hidden="true">
+		<HitRectInsets>
+			<AbsInset left="12" right="35" top="0" bottom="58"/>
+		</HitRectInsets>
         <Size x="512" y="200"/>
         <Anchors>
             <Anchor point="TOPLEFT" relativeTo="ATSWFrame" relativePoint="TOPLEFT">
@@ -3327,8 +3313,6 @@
 			</ScrollFrame>
         </Frames>
     </Frame>
-	
-	<GameTooltip name="ATSWScanTooltip" frameStrata="TOOLTIP" inherits="GameTooltipTemplate" parent="UIParent" hidden="true"/>
 	
 	<GameTooltip name="ATSWActionNameTooltip" frameStrata="TOOLTIP" inherits="GameTooltipTemplate" parent="UIParent" hidden="true">
 		<Scripts>
