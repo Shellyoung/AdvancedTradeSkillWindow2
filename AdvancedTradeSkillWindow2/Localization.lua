@@ -460,7 +460,9 @@ elseif Locale == "zhCN" then
 	ATSW_HELP_POSSIBLE_TOTAL	= ":possibletotal |c可用次数|r"
 	ATSW_HELP_POSSIBLE_TOTAL_DESC = "- 列出指定(背包、银行、小号、商人)材料齐全并包含|c可用次数|r的制作配方"
 	ATSW_HELP_QNAMES					= "物品品质(Quality names):"
-	
+	ATSW_HELP_QNAMES_DESC		        = "|cff9d9d9dPoor|r, Common|r, |cff1eff00Uncommon|r, |cff0070ddRare|r, |cffa335eeEpic|r, |cffff8000Legendary|r, |cffe6cc80Artifact|r"
+	ATSW_HELP_QCOLORS			    	= "物品品质颜色(Quality colors):"
+	ATSW_HELP_QCOLORS_DESC		        = "|cff9d9d9dGrey|r, White|r, |cff1eff00Green|r, |cff0070ddBlue|r, |cffa335eePurple|r, |cffff8000Orange|r, |cffe6cc80Gold|r"
 else
 	ATSW_CLEAR 							= "Clear"
 	ATSW_CREATE 							= "Create"
