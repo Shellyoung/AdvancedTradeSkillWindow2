@@ -1,10 +1,13 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft vanilla
 
-<sub>version 2.1.2</sub>
+<sub>version 2.1.3</sub>
 
 ![Attention](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/1b3981c8-1722-451a-a5c9-34d21bb247b1)
-**This project is suspended for indefinite time period**
+
+**This project is suspended for indefinite time period.**
+
+**Reason: I quit playing WoW. I killed so many mobs with stupidest AI in the world. The amount of reagents on my hands is unbearable.**
 
 
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
