@@ -7,7 +7,7 @@ Improved window for your professions for World of Warcraft vanilla
 
 **This project is suspended for indefinite time period.**
 
-**Reason: I quit playing WoW. I killed so many mobs with stupidest AI in the world. The amount of reagents on my hands is unbearable.**
+**Reason: I quit playing WoW. I killed so many mobs with stupidest AI in the world. The amount of reagents on my hands is unbearable. I need more mana.**
 
 
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
