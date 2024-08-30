@@ -8,8 +8,8 @@ Improved window for your professions for World of Warcraft vanilla
 
 ## Modified by Ayri of Turtle-WoW:
 ### August 2024 - v2.1.3 Bug Fixes
-Reagents required for crafting were bugged to ONLY work in 'SAY' channel.  Modified code starts at line 4156 in file 'AdvancedTradeSkillWindow2.lua'
-Bugfixed to support ALL channels including: SAY, WHISPER, CHANNEL, YELL, PARTY/GROUP, GUILD, and RAID chats.
+Reagents required for crafting were bugged to ONLY work in 'SAY' channel.  Modified code starts at line 4156 in file 'AdvancedTradeSkillWindow2.lua'.  
+Bugfixed to support ALL channels including: SAY, WHISPER, CHANNEL, YELL, PARTY/GROUP, GUILD, and RAID chats.  
 Details in ReadMe.txt
 
   Advanced Trade Skill Window 2 is a replacement for the standard tradeskill window.
