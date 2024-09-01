@@ -1,7 +1,7 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft vanilla
 
-<sub>version 2.1.3</sub>
+<sub>version 2.1.4</sub>
 
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
 
@@ -77,7 +77,7 @@ Improved window for your professions for World of Warcraft vanilla
   Supported languages: English, Русский, Español, Français, Deutsch
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.3/AdvancedTradeSkillWindow2.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.4/AdvancedTradeSkillWindow2.rar)
   
   2. Extract the folder	**AdvancedTradeSkillWindow2** from the archive and place it into the folder **World of Warcraft\Interface\Addons**.
   
@@ -96,6 +96,6 @@ Improved window for your professions for World of Warcraft vanilla
   https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
 
   ###### Thank you
-  Bug reporting and suggestions: [MasterBruin](https://github.com/MasterBruin), [shikulja](https://github.com/shikulja), [TerrorBlades](https://github.com/TerrorBlades), [flyinbed](https://github.com/flyinbed), [asfddhdjkdghkghhgdsfn](https://github.com/asfddhdjkdghkghhgdsfn).
+  Bug reporting and suggestions: [MasterBruin](https://github.com/MasterBruin), [shikulja](https://github.com/shikulja), [TerrorBlades](https://github.com/TerrorBlades), [flyinbed](https://github.com/flyinbed), [asfddhdjkdghkghhgdsfn](https://github.com/asfddhdjkdghkghhgdsfn), [AyrianaWoW](https://github.com/AyrianaWoW/).
   
   翻译成中文: [flyinbed](https://github.com/flyinbed)
