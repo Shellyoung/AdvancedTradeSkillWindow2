@@ -1,7 +1,6 @@
--- Advanced Trade Skill Window version 2.1.3 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.4 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
--- Bugfixed by Ayri in August 2024, begins at line 4156 below
 
 ATSW_MAX_TRADESKILL_TABS 			= 8
 ATSW_TRADESKILL_HEIGHT 				= 18
@@ -4152,43 +4151,43 @@ local function GetReagents(Name, Amount, Link, Texture, Table)
 	return Table
 end
 
---- This entire function has been rewritten by Ayri in August 2024 as part of bugfix ---
 local function GetSayTooltipString()
 	if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
-		local ChatType, ChatNumber, ChatName, ChatID
+		local ChatType, ChatNumber
 		local SayTarget = ""
-
+		
 		if WIM_EditBoxInFocus ~= nil then
-			ChatType = "WHISPER"
-			ChatNumber = WIM_EditBoxInFocus:GetParent().theUser
-
-			SayTarget= ATSW_TOOLTIP_TO .. WIM_UserWithClassColor(ChatNumber)
+			ChatType 		= "WHISPER"
+			ChatNumber 	= WIM_EditBoxInFocus:GetParent().theUser
+			
+			SayTarget 		= ATSW_TOOLTIP_TO .. WIM_UserWithClassColor(ChatNumber)
 		else
 			ChatType, ChatNumber = ChatFrameEditBox.chatType
 
-		if ChatType == "WHISPER" then
-				ChatNumber = ChatFrameEditBox.tellTarget
-		elseif ChatType == "CHANNEL" then
-				ChatNumber = ChatFrameEditBox.channelTarget
-		elseif ChatType == "YELL" then
-				SayTarget = ATSW_TOOLTIP_TO .. "[YELL]"
-		elseif ChatType == "PARTY" then
-				SayTarget = ATSW_TOOLTIP_TO .. "[PARTY]"
-		elseif ChatType == "GUILD" then
-				SayTarget = ATSW_TOOLTIP_TO .. "[GUILD]"
-		elseif ChatType == "RAID" then
-				SayTarget = ATSW_TOOLTIP_TO .. "[RAID]"
-
-			SayTarget = ATSW_TOOLTIP_TO .. "[" .. ChatID .. ". " .. ChatName .. "]"
+			if ChatType == "WHISPER" then
+					ChatNumber = ChatFrameEditBox.tellTarget
+			elseif ChatType == "CHANNEL" then
+					ChatNumber = ChatFrameEditBox.channelTarget
+					
+					local ChatID, ChatName = GetChannelName(ChatNumber)
+				
+					SayTarget = ATSW_TOOLTIP_TO .. "[" .. ChatID .. ". " .. ChatName .."]"
+			elseif ChatType == "YELL" then
+					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_YELL
+			elseif ChatType == "PARTY" then
+					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_PARTY
+			elseif ChatType == "GUILD" then
+					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_GUILD
+			elseif ChatType == "RAID" then
+					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_RAID
+			end
 		end
-	end
 
 		return ATSW_TOOLTIP_SAYREAGENTS .. SayTarget, ChatType, ChatNumber
 	else
 		return ""
 	end
 end
---- End of rewrite ---
 
 local Lines = {}
 local Message = ""
