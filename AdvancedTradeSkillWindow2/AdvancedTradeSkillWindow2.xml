@@ -1,4 +1,4 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Script file="AdvancedTradeSkillWindow2.lua"/>
 	<Script file="Localization.lua"/>
@@ -967,11 +967,7 @@
 						this:GetPushedTexture():SetTexCoord(0.20, 0.8, 0.2, 0.8)
 					</OnLoad>
 					<OnClick>
-						if ATSW_TradeSkill() then
-							CloseTradeSkill()
-						else
-							CloseCraft()
-						end
+						CloseATSW()
 					</OnClick>
 				</Scripts>
             </Button>
@@ -1726,6 +1722,11 @@
 			<OnEvent>
 				ATSW_OnEvent()
 			</OnEvent>
+			<OnHide>
+				if not ATSW_SwitchingFrames then
+					CloseATSW()
+				end
+			</OnHide>
         </Scripts>
     </Frame>
 	
@@ -2421,6 +2422,9 @@
 		<Scripts>
 			<OnShow>
 				PlaySound("igMainMenuOpen")
+				if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
+					CloseATSW()
+				end
 			</OnShow>
 			<OnHide>
 				HideUIPanel(ATSWConfigFrame)

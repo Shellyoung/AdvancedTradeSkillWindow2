@@ -356,3 +356,10 @@ v2.1.3
 v2.1.4
 • New features:
 	- Reagents, requires for crafting, can now be said not only into SAY channel, but also into YELL, PARTY, GUILD and RAID channels (Thanks to AyrianaWoW from github.com)
+
+v2.1.5
+• Data flow fixes:
+	- Crafting items required Atlas addon to be present in crafting time request function.
+
+• Control fixes:
+	- Closing the addon using Escape button was hiding the profession frame and not closing the profession.

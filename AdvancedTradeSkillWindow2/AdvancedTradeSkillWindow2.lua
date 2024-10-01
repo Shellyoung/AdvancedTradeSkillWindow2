@@ -1,4 +1,4 @@
--- Advanced Trade Skill Window version 2.1.4 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.5 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -281,6 +281,7 @@ local sRequires 	= string.sub(s, 1, string.find(s, "%s")) 	-- Delete %s
 
 ATSW_Debug 									= false
 
+ATSW_SwitchingFrames						= false
 ATSW_SwitchingToEditor					= false
 ATSW_SwitchingToMain						= false
 
@@ -1350,22 +1351,20 @@ end
 local function GetCraftingTime(Name, Amount)
 	local ID = GetRecipeID(Name)
 	local Cost = ATSW_TimeCost[ID]
-	
-	if DB and not Cost then
-		local DB = GetSpellInfoVanillaDB
-		local AtlasID = CraftIDtoAtlasID(ID)
-		
-		if AtlasID then
-			local castTime = DB["craftspells"][AtlasID]["castTime"]
-			
-			if castTime then
-				Cost = castTime
-			end
-		end
-	end
+	local DB = GetSpellInfoVanillaDB
 	
 	if Cost then
 		return Cost*(Amount or 0)
+	else
+		if DB then
+			local AtlasID = CraftIDtoAtlasID(ID)
+			
+			if AtlasID then
+				local castTime = DB["craftspells"][AtlasID]["castTime"]
+				
+				return castTime
+			end
+		end
 	end
 end
 
@@ -2042,6 +2041,8 @@ function ATSW_SwitchToFrame(Frame)
 		elseif 	F == 2 then return ATSWCSFrame end
 	end
 	
+	ATSW_SwitchingFrames = true
+	
 	if ATSW_SwitchingToMain then
 		ATSW_SwitchingToMain = false
 	else
@@ -2090,6 +2091,8 @@ function ATSW_SwitchToFrame(Frame)
 	if not Frame and Processing then
 		ProcessingStop = true
 	end
+	
+	ATSW_SwitchingFrames = false
 end
 
 local function LoadAllProfessionsOnce()
@@ -2194,6 +2197,14 @@ local function ATSW_Show()
 	
 	ATSWUpdaterFrame:Show()
 	ATSW_UpdateListScroll()
+end
+
+function CloseATSW()
+	if ATSW_TradeSkill() then
+		CloseTradeSkill()
+	else
+		CloseCraft()
+	end
 end
 
 function ATSW_Hide()
