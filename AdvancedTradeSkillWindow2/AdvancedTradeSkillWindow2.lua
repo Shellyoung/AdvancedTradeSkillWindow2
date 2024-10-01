@@ -1351,7 +1351,7 @@ local function GetCraftingTime(Name, Amount)
 	local ID = GetRecipeID(Name)
 	local Cost = ATSW_TimeCost[ID]
 	
-	if not Cost then
+	if DB and not Cost then
 		local DB = GetSpellInfoVanillaDB
 		local AtlasID = CraftIDtoAtlasID(ID)
 		
