@@ -1970,10 +1970,12 @@ function ATSW_ConfigureSkillButtons(Exception)
 			local Tab = getglobal("ATSWFrameTab"..T)
 			
 			if Tab then
-				local Tex = Tab:GetNormalTexture()
-				
-				if Tex and Tex:GetTexture() == Texture then
-					return true
+				local NormalTexture = Tab:GetNormalTexture()
+				if NormalTexture then
+					local Tex = NormalTexture:GetTexture()
+					if Tex and string.lower(Tex) == string.lower(Texture) then
+						return true
+					end
 				end
 			end
 		end
