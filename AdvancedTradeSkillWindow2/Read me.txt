@@ -363,3 +363,7 @@ v2.1.5
 
 • Control fixes:
 	- Closing the addon using Escape button was hiding the profession frame and not closing the profession.
+
+v2.1.6
+• Data flow fixes:
+	- Profession could appear multiple times while working together with some addons (MasterTradeSkills for example).

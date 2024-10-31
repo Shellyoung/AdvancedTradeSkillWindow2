@@ -665,13 +665,8 @@
 		</HighlightFont>
 	</Button>
 	
-	<Frame name="ATSWFrameSideTabsFrame" parent="ATSWFrame">
+	<Frame name="ATSWFrameSideTabsFrame">
 		<Size x="26" y="200"/>
-		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="ATSWFrame" relativePoint="TOPRIGHT">
-                <Offset x="-59" y="-28"/>
-			</Anchor>
-		</Anchors>
 	</Frame>
 	
 	<Frame name="ATSWFrame" enableMouse="true" hidden="true" parent="UIParent" frameStrata="HIGH">

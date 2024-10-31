@@ -1,4 +1,4 @@
--- Advanced Trade Skill Window version 2.1.5 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.6 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -1971,8 +1971,10 @@ function ATSW_ConfigureSkillButtons(Exception)
 			
 			if Tab then
 				local NormalTexture = Tab:GetNormalTexture()
+				
 				if NormalTexture then
 					local Tex = NormalTexture:GetTexture()
+					
 					if Tex and string.lower(Tex) == string.lower(Texture) then
 						return true
 					end
