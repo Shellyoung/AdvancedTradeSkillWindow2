@@ -100,4 +100,4 @@ Improved window for your professions for World of Warcraft vanilla
   
   Bug reporting: [MasterBruin](https://github.com/MasterBruin), [shikulja](https://github.com/shikulja), [TerrorBlades](https://github.com/TerrorBlades), [asfddhdjkdghkghhgdsfn](https://github.com/asfddhdjkdghkghhgdsfn), [David Côté-Tremblay](https://github.com/dctremblay), [AyrianaWoW](https://github.com/AyrianaWoW/), [evilbunny235](https://github.com/evilbunny235).
   
-  翻译成中文: [flyinbed](https://github.com/flyinbed)
+  翻译成中文: [flyinbed](https://github.com/flyinbed).
