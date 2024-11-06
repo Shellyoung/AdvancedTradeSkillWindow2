@@ -1,4 +1,4 @@
--- Advanced Trade Skill Window version 2.1.6 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.7 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -95,6 +95,7 @@ local Professions	= {
 	"Trade_Tailoring",					-- Tailoring
 	"Trade_Engineering",				-- Engineering
 	"Trade_BlackSmithing",			-- Blacksmithing
+	"INV_Jewelry_Necklace_11",	-- Jewelcrafting
 	"Spell_Fire_FlameBlades",			-- Smelting
 	"Trade_Alchemy",					-- Alchemy
 	"INV_Misc_ArmorKit_17",			-- Leatherworking
@@ -218,6 +219,7 @@ ATSW_Background = {
 	["Interface\\Icons\\Trade_Tailoring"					]	= "Tailoring",
 	["Interface\\Icons\\Trade_Engineering"				]	= "Engineering",
 	["Interface\\Icons\\Trade_BlackSmithing"			]	= "Blacksmithing",
+	["Interface\\Icons\\INV_Jewelry_Necklace_11"	]	= "Jewelcrafting",
 	["Interface\\Icons\\Spell_Fire_FlameBlades"			]	= "Smelting",
 	["Interface\\Icons\\Trade_Alchemy"					]	= "Alchemy",
 	["Interface\\Icons\\INV_Misc_ArmorKit_17"		]	= "Leatherworking",
@@ -1592,6 +1594,9 @@ function ATSW_OnLoad()
 	
 	GameTooltip:SetBackdrop({bgFile=[[Interface\Tooltips\UI-Tooltip-Background]], edgeFile=[[Interface\Tooltips\UI-Tooltip-Border]], tile = true, edgeSize = 16, tileSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
 	GameTooltip:SetBackdropColor(R, G, B, A)
+	
+	-- Fix a bug which shows error "skillOffset is nil" on line 171 of Blizzard_TradeSkillUI.lua (modified by Turtle-WoW team)
+	FauxScrollFrame_SetOffset(TradeSkillListScrollFrame, 0)
 end
 
 local function SetDropDownFilter(SubClass, InvSlot)
@@ -2330,7 +2335,13 @@ local function InitializeFrame()
 end
 
 function ATSW_UpdateBackground()
-	ATSWBackground:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Background\\" .. ATSW_Background[GetProfessionTexture(Profession())])
+	local BG = ATSW_Background[GetProfessionTexture(Profession())]
+	
+	if BG then
+		ATSWBackground:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Background\\" .. BG)
+	else
+		ATSWBackground:SetTexture(nil)
+	end
 end
 
 function ATSW_UpdateCaption()

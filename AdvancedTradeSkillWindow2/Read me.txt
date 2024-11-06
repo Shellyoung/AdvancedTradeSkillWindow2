@@ -367,3 +367,10 @@ v2.1.5
 v2.1.6
 • Data flow fixes:
 	- Profession could appear multiple times while working together with some addons (MasterTradeSkills for example).
+
+v2.1.7
+• New features:
+	- Jewelcrafting profession support (but not for specializations yet) for Turtle WoW private server
+
+• Data flow fixes:
+	- Fix of the error "Blizzard_TradeSkillUI.lua:171: attempt to perform arithmetic on local `skillOffset' (a nil value)" on Turtle WoW private server
