@@ -1,7 +1,7 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft vanilla
 
-### The addon is temporarily suspended until _february of the year 2025_. Maybe forever.
+### The addon is temporarily suspended and I don't know for how long.
 
 <sub>version 2.1.7</sub>
 
