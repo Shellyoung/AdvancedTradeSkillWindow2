@@ -1,9 +1,7 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft vanilla
 
-### The addon is temporarily suspended and I don't know for how long.
-
-<sub>version 2.1.7</sub>
+<sub>version 2.1.8</sub>
 
 ![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
 
@@ -76,10 +74,10 @@ Improved window for your professions for World of Warcraft vanilla
 
 
   ### Localization
-  Supported languages: English, Русский, Español, Français, Deutsch
+  Supported languages: English, Русский, Español, Français, Deutsch, 简体中文
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.7/AdvancedTradeSkillWindow2.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.8/AdvancedTradeSkillWindow2.rar)
   
   2. Extract the folder	**AdvancedTradeSkillWindow2** from the archive and place it into the folder **World of Warcraft\Interface\Addons**.
   
