@@ -1,4 +1,4 @@
--- Advanced Trade Skill Window version 2.1.7 for WoW Vanilla
+-- Advanced Trade Skill Window version 2.1.8 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -108,7 +108,7 @@ local Professions	= {
 
 -- For AtlasLoot addon
 local ProfessionNamesForAtlasLoot = {
-	["Interface\\Icons\\Trade_Engraving"] = {
+	["Interface\\Icons\\Trade_Engraving"] = { -- Enchanting
 		"EnchantingApprentice1",
 		"EnchantingJourneyman1",
 		"EnchantingJourneyman2",
@@ -118,7 +118,7 @@ local ProfessionNamesForAtlasLoot = {
 		"EnchantingArtisan2",
 		"EnchantingArtisan3"
 	},
-	["Interface\\Icons\\Trade_Tailoring"] = {
+	["Interface\\Icons\\Trade_Tailoring"] = { -- Tailoring
 		"TailoringApprentice1",
 		"TailoringJourneyman1",
 		"TailoringJourneyman2",
@@ -129,7 +129,7 @@ local ProfessionNamesForAtlasLoot = {
 		"TailoringArtisan3",
 		"TailoringArtisan4"
 	},
-	["Interface\\Icons\\Trade_Engineering"] = {
+	["Interface\\Icons\\Trade_Engineering"] = { -- Engineering
 		"EngineeringApprentice1",
 		"EngineeringJourneyman1",
 		"EngineeringJourneyman2",
@@ -140,7 +140,7 @@ local ProfessionNamesForAtlasLoot = {
 		"Gnomish1",
 		"Goblin1"
 	},
-	["Interface\\Icons\\Trade_BlackSmithing"] ={
+	["Interface\\Icons\\Trade_BlackSmithing"] ={ -- Blacksmithing
 		"SmithingApprentice1",
 		"SmithingJourneyman1",
 		"SmithingJourneyman2",
@@ -155,17 +155,39 @@ local ProfessionNamesForAtlasLoot = {
 		"Hammersmith1",
 		"Swordsmith1"
 	},
-	["Interface\\Icons\\Spell_Fire_FlameBlades"] = {
+	["Interface\\Icons\\INV_Jewelry_Necklace_11"] = { -- Jewelcrafting
+		"JewelcraftingApprentice1",
+		"JewelcraftingJourneyman1",
+		"JewelcraftingJourneyman2",
+		"JewelcraftingExpert1",
+		"JewelcraftingExpert2",
+		"JewelcraftingExpert3",
+		"JewelcraftingArtisan1",
+		"JewelcraftingArtisan2",
+		"JewelcraftingGemology1",
+		"JewelcraftingGoldsmithing1",
+		"JewelcraftingGemstones1",
+		"JewelcraftingRings1",
+		"JewelcraftingRings2",
+		"JewelcraftingAmulets1",
+		"JewelcraftingHelm1",
+		"JewelcraftingBracers1",
+		"JewelcraftingOffHands1",
+		"JewelcraftingStaves1",
+		"JewelcraftingTrinkets1",
+		"JewelcraftingMisc1"
+	},
+	["Interface\\Icons\\Spell_Fire_FlameBlades"] = { -- Smelting
 		"Smelting1"
 	},
-	["Interface\\Icons\\Trade_Alchemy"] = {
+	["Interface\\Icons\\Trade_Alchemy"] = { -- Alchemy
 		"AlchemyApprentice1",
 		"AlchemyJourneyman1",
 		"AlchemyExpert1",
 		"AlchemyArtisan1",
 		"AlchemyArtisan2"
 	},
-	["Interface\\Icons\\INV_Misc_ArmorKit_17"] = {
+	["Interface\\Icons\\INV_Misc_ArmorKit_17"] = { -- Leatherworking
 		"LeatherApprentice1",
 		"LeatherJourneyman1",
 		"LeatherJourneyman2",
@@ -178,18 +200,21 @@ local ProfessionNamesForAtlasLoot = {
 		"Elemental1",
 		"Tribal1"
 	},
-	["Interface\\Icons\\INV_Misc_Food_15"] = {
+	["Interface\\Icons\\INV_Misc_Food_15"] = { -- Cooking
 		"CookingApprentice1",
 		"CookingJourneyman1",
 		"CookingExpert1",
 		"CookingArtisan1"
 	},
-	["Interface\\Icons\\Spell_Holy_SealOfSacrifice"] = {
+	["Interface\\Icons\\Spell_Holy_SealOfSacrifice"] = { -- First Aid
 		"FirstAid1"
 	},
-	["Interface\\Icons\\Trade_Survival"] = {""},
-	["Interface\\Icons\\Ability_Hunter_BeastCall02"] = {""},
-	["Interface\\Icons\\Trade_BrewPoison"] = {
+	["Interface\\Icons\\Trade_Survival"] = { -- Survival
+		"Survival1",
+		"Survival2"
+	}, 
+	["Interface\\Icons\\Ability_Hunter_BeastCall02"] = {""}, -- Beast Training
+	["Interface\\Icons\\Trade_BrewPoison"] = { -- Poisons
 		"Poisons1"
 	}
 }
@@ -2171,6 +2196,7 @@ local function ATSW_Show()
 		end
 		
 		ATSW_ConfigureSkillButtons()
+		ATSW_AtlasLootLoaded = ATSW_CheckForAtlasLootLoaded()
 		
 		InitializedOnShow = true
 	end
@@ -3278,8 +3304,6 @@ function ATSW_CompareDifficulty(Left, Right)
 end
 
 function ATSW_GetRecipesSortedByDifficulty()
-	ATSW_AtlasLootLoaded 		= ATSW_CheckForAtlasLootLoaded()
-
 	GetRecipesSortedWithoutHeaders()
 	
 	ATSW_Sort(RecipesSorted(), RecipesSortedSize(), ATSW_CompareDifficulty)
@@ -4132,6 +4156,10 @@ function ATSW_Craft(Name, Amount)
 	ProcessingTexture		= GetCraftTexture(Index)
 	ProcessingAmount 		= math.min(Amount, Possible)
 	ProcessingDelay			= GetTime()
+	
+	--Compatibility with otravi Cast Bar
+	oCBIcon = ProcessingTexture
+	oCBName = Name
 	
 	ATSWFrame:RegisterEvent("SPELLCAST_START")
 	
