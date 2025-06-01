@@ -902,6 +902,18 @@
 	    </Layers>
 	    <Frames>
 			<StatusBar name="ATSWRankFrame" drawLayer="BACKGROUND" minValue="0" maxValue="1" defaultValue="0">
+				<Frames>
+					<Frame name="$parentSpark">
+						<Size x="22" y="24"/>
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentTexture" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+								<TexCoords left="0" right="1" top="0.3" bottom="0.7"/>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
 				<Size x="637" y="17"/>
 				<Anchors>
 					<Anchor point="TOPLEFT">
@@ -928,6 +940,7 @@
 				<Scripts>
 					<OnLoad>
 						getglobal(this:GetName() .. "Background"):SetVertexColor(0.0, 0.0, 0.75, 0.5)
+						getglobal(this:GetName() .. "SparkTexture"):SetVertexColor(0.0, 0.0, 0.75, 1)
 					</OnLoad>
 				</Scripts>
 				<BarTexture name="$parentBar" file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar" />

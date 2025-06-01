@@ -2336,6 +2336,7 @@ function ATSW_UpdateStatusBarRank()
 	if ATSWRankFrame:IsVisible() then
 		ATSWRankFrame:			SetMinMaxValues(0, MaxRank)
 		ATSWRankFrame:			SetValue(Rank)
+		ATSWRankFrameSpark:	SetPoint('CENTER', ATSWRankFrame, 'LEFT', ATSWRankFrame:GetWidth() * Rank/MaxRank, 0)
 	end
 	
 	if ATSWRankFrameRank:IsVisible() then
