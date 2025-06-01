@@ -2332,6 +2332,7 @@ function ATSW_UpdateStatusBarRank()
 	
 	SetVisible(ATSWRankFrame, 		Rank > 0)
 	SetVisible(ATSWRankFrameRank, 	MaxRank > 0)
+	SetVisible(ATSWRankFrameSpark,	Rank ~= MaxRank)
 	
 	if ATSWRankFrame:IsVisible() then
 		ATSWRankFrame:			SetMinMaxValues(0, MaxRank)
