@@ -1,4 +1,3 @@
--- Advanced Trade Skill Window version 2.1.8 for WoW Vanilla
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
@@ -609,7 +608,7 @@ local function GetSpellNum(Name)
 		I = I + 1
 		SName = GetSpellName(I, BOOKTYPE_SPELL)
 		
-		if SName and string.find(SName, Name) then
+		if SName and Name and string.find(SName, Name) then
 			return I
 		end
 	until not SName
@@ -711,7 +710,7 @@ ATSW_AtlasIDCache = {}
 
 local function CraftIDtoAtlasID(ID, Enchants)
 	local function Find(ID)
-		local DB = GetSpellInfoVanillaDB
+		local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
 		local Table
 		
 		if Enchants then
@@ -735,13 +734,13 @@ local function CraftIDtoAtlasID(ID, Enchants)
 end
 
 local function GetAtlasCraftInfo(ID)
-	local DB = GetSpellInfoVanillaDB
+	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
 	
 	return DB["enchants"][ID] or DB["craftspells"][ID]
 end
 
 local function GetAtlasInfo(ID)
-	local DB = GetSpellInfoVanillaDB
+	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
 	local Info
 	
 	if DB then
@@ -761,7 +760,7 @@ end
 
 local function GetCraftTexture			(Index)
 	local Icon
-	local DB = GetSpellInfoVanillaDB
+	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
 	
 	if DB then
 		local ID = ATSW_LinkToID(GetCraftLink(Index))
@@ -1378,7 +1377,7 @@ end
 local function GetCraftingTime(Name, Amount)
 	local ID = GetRecipeID(Name)
 	local Cost = ATSW_TimeCost[ID]
-	local DB = GetSpellInfoVanillaDB
+	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
 	
 	if Cost then
 		return Cost*(Amount or 0)
@@ -2855,7 +2854,7 @@ local function InsertIntoAuction(Link)
 		AuxBuyNameInputBox:SetText(Name)
 		Aux.buy.SearchButton_onclick()
 	elseif CanSendAuctionQuery() and AuctionFrame and AuctionFrame:IsVisible() then
-		BrowseName:SetText(Link)
+		BrowseName:SetText(Name)
 		AuctionFrameBrowse_Search()
 		BrowseNoResultsText:SetText(BROWSE_NO_RESULTS)
 	end
@@ -2953,9 +2952,9 @@ function ATSWTask_OnClick(arg1)
 			if Possible then
 				ATSW_Craft(QName, QAmount)
 			end
+		else
+			ATSWRecipeButton_OnClick(arg1)
 		end
-	else
-		ATSWRecipeButton_OnClick(arg1)
 	end
 end
 
