@@ -3,7 +3,8 @@ Improved window for your professions for World of Warcraft vanilla
 
 <sub>version 2.1.9</sub>
 
-![Face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/03e89d75-14f0-417a-8c27-808cb54ce29f)
+![face](https://github.com/user-attachments/assets/fdd26f0b-ba6f-4943-b78f-87f6d993f558)
+
 
 
   Advanced Trade Skill Window 2 is a replacement for the standard tradeskill window.
