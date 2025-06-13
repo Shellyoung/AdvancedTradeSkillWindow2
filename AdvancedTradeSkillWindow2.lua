@@ -462,12 +462,10 @@ local function FormatCooldown(Cooldown)
 end
 
 local function ShortFormatCooldown(Cooldown, FourDigits)
-	if Cooldown then
-		if Cooldown >= 0 then
-			return FormatTime(Cooldown, FourDigits)
-		else
-			return ""
-		end
+	if Cooldown and type(Cooldown) == 'number' and Cooldown >= 0 then
+		return FormatTime(Cooldown, FourDigits)
+	else
+		return ""
 	end
 end
 
@@ -3589,7 +3587,7 @@ function ATSW_UpdateTasks()
 			ItemTexture:		SetTexture	(Texture)
 			Button:				SetWidth		(Button:GetTextWidth() + t_xOfs + t_Width + 4)
 			QualityTexture:	SetVertexColor(R, G, B)
-			TimeCost:			SetText			(ShortFormatCooldown(Time, true) or "")
+			TimeCost:			SetText			(ShortFormatCooldown(Time, true))
 			
 			SetVisible(DeleteButton, 	not NameIsProcessing)
 			SetVisible(TimeCost, 		not NameIsProcessing)
@@ -4940,7 +4938,7 @@ function ATSW_DisplayRecipeTooltip()
 				local AtlasLoot, SU2, SU3, SU4 = ATSW_SkillUps(R.Name)
 				
 				if AtlasLoot then
-					ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_SKILLUPS .. ORANGE .. AtlasLoot .." " .. YELLOW ..  SU2 .." " .. GREEN .. SU3 .." " .. GREY .. SU4)
+					ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_SKILLUPS .. ORANGE .. (AtlasLoot or '?') .." " .. YELLOW .. (SU2 or '?') .." " .. GREEN .. (SU3 or '?') .." " .. GREY .. (SU4 or '?'))
 				end
 				
 				local cR, cG, cB
@@ -5402,8 +5400,8 @@ function ATSW_SkillUps(Name)
 		
 		for _, Item in pairs(ProfessionNamesForAtlasLoot[ATSW_GetProfessionTexture(Profession())]) do
 			if Item ~= "" then
-				for _, SkillInfo in pairs(ATSW_AtlasLootLoaded[Item]) do
-					for N, Param in pairs(SkillInfo) do
+				for _, Info in pairs(ATSW_AtlasLootLoaded[Item]) do
+					for N, Param in pairs(Info) do
 						if N == 3 and string.sub(Param, 5, -1) == Name then
 							Found = true
 						end
@@ -5413,7 +5411,12 @@ function ATSW_SkillUps(Name)
 							-- { "s3924", "inv_gizmo_pipe_02", "=q1=Copper Tube", "=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110" },
 							-- =so parameters contain difficulty of the skill
 							
-							local _, _, SU1, SU2, SU3, SU4 = string.find(Param, "=so1=(%d+)%s*=so2=(%d+)%s*=so3=(%d+)%s*=so4=(%d+)")
+							local _, _, SU1, SU2, SU3, SU4 = string.find(Param, "=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)")
+
+							SU1 = tonumber(SU1)
+							SU2 = tonumber(SU2)
+							SU3 = tonumber(SU3)
+							SU4 = tonumber(SU4)
 							
 							SkillUpCache[Name] = {SU1, SU2, SU3, SU4}
 
@@ -5428,8 +5431,13 @@ function ATSW_SkillUps(Name)
 	return skill
 end
 
-function ATSW_Skill(Name)
+function ATSW_CompareSkill(Name)
 	local SU1, SU2, SU3, SU4 = ATSW_SkillUps(Name)
+	
+	SU1 = SU1 or 0
+	SU2 = SU2 or 0
+	SU3 = SU3 or 0
+	SU4 = SU4 or 0
 	
 	if SU1 then
 		return SU1*20+(SU2-SU1)+(SU3-SU2)+(SU4-SU3) -- Works somehow
@@ -5439,5 +5447,5 @@ function ATSW_Skill(Name)
 end
 
 function ATSW_CompareDifficultyUsingExternalData(Left, Right)
-	return (ATSW_TypeToNumber(Left.Type) == ATSW_TypeToNumber(Right.Type)) and (ATSW_Skill(Left.Name) > ATSW_Skill(Right.Name))
+	return (ATSW_TypeToNumber(Left.Type) == ATSW_TypeToNumber(Right.Type)) and (ATSW_CompareSkill(Left.Name) > ATSW_CompareSkill(Right.Name))
 end
