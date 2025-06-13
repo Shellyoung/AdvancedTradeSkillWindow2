@@ -410,7 +410,7 @@ local function SetVisible(Frame, State)
 	end
 end
 
-function SetEnabled(Frame, State)
+local function SetEnabled(Frame, State)
 	if Frame then
 		if State then
 			Frame:Enable()
@@ -1142,9 +1142,10 @@ end
 
 Original_PlaySound = PlaySound
 
+local function Stub() end
+
 local Original_CastSpellByName = CastSpellByName
 local function MyCastSpellByName(Name, OnSelf)
-	local function Stub() end
 	local Storage = PlaySound
 	
 	LastCastName = Name
@@ -1157,7 +1158,7 @@ CastSpellByName = MyCastSpellByName
 
 local Original_CastSpell = CastSpell
 local function MyCastSpell(spellID, spellbookType)
-	local function Stub() end
+	
 	local Storage = PlaySound
 	
 	LastCastName = GetSpellName(spellID, spellbookType)
@@ -1168,17 +1169,16 @@ local function MyCastSpell(spellID, spellbookType)
 end
 CastSpell = MyCastSpell
 
+local function GetNameFromTooltip(Slot)
+	ATSWActionNameTooltip:SetParent(UIParent)
+	ATSWActionNameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+	ATSWActionNameTooltip:SetAction(Slot)
+	
+	return ATSWActionNameTooltipTextLeft1:GetText()
+end
+
 local Original_UseAction = UseAction
 local function MyUseAction(Slot, CheckCursor, OnSelf)
-	local function GetNameFromTooltip(Slot)
-		ATSWActionNameTooltip:SetParent(UIParent)
-		ATSWActionNameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		ATSWActionNameTooltip:SetAction(Slot)
-		
-		return ATSWActionNameTooltipTextLeft1:GetText()
-	end
-	
-	local function Stub() end
 	local Storage = PlaySound
 	
 	LastCastName = GetNameFromTooltip(Slot)
@@ -1394,6 +1394,46 @@ end
 
 -- Main code section
 
+local function SetSizeAndPoints(S, Width, Point, RelativePoint, RelativeTo, X, Y)
+	S:SetJustifyH("LEFT")
+	S:SetJustifyV("TOP")
+	S:SetWidth(Width)
+	S:SetPoint(Point, RelativePoint, RelativeTo, X, Y)
+end
+
+local function AddHelpItem(Parameter, Description, NoReplace)
+	local StringsAmount 	= 0
+	local C = StringsAmount
+	
+	if not Parameter 	then Parameter 	= "" end
+	if not Description 	then Description	= "" end
+	
+	if not NoReplace then
+		Parameter 	= string.gsub(Parameter, "|c", "|cffFFD100")
+		Description = string.gsub(Description, "|c", "|cffFFD100")
+	end
+	
+	local Frame 				= ATSWSearchHelpFrame
+	
+	local S = Frame:CreateFontString("ATSWHelp" .. C + 1, "ARTWORK", "GameFontHighlightSmall")
+	
+	if C == 0 then
+		SetSizeAndPoints(S, 120, "TOPLEFT", ATSWSearchHelpFrame, "TOPLEFT", 20, -50)
+	else
+		SetSizeAndPoints(S, 120, "TOPLEFT", "ATSWHelp" .. C, "BOTTOMLEFT", 0, -15)
+	end
+	
+	S:SetText(Parameter)
+	
+	local D = Frame:CreateFontString("ATSWHelp" .. C + 1 .. "Description", "ARTWORK", "GameFontHighlightSmall")
+	
+	SetSizeAndPoints(D, 265, "TOPLEFT", S, "TOPRIGHT")
+	
+	D:SetText(Description)
+	
+	StringsAmount = C + 1
+end
+
 function ATSW_CreateListButtons()
 	-- Create recipe buttons
 	for R = 1, ATSW_RECIPES_DISPLAYED do
@@ -1478,45 +1518,6 @@ function ATSW_CreateListButtons()
 	end
 	
 	-- Create search help strings
-	local StringsAmount 	= 0
-	local Frame 				= ATSWSearchHelpFrame
-	
-	local function AddHelpItem(Parameter, Description, NoReplace)
-		local function SetSizeAndPoints(S, Width, Point, RelativePoint, RelativeTo, X, Y)
-			S:SetJustifyH("LEFT")
-			S:SetJustifyV("TOP")
-			S:SetWidth(Width)
-			S:SetPoint(Point, RelativePoint, RelativeTo, X, Y)
-		end
-		local C = StringsAmount
-		
-		if not Parameter 	then Parameter 	= "" end
-		if not Description 	then Description	= "" end
-		
-		if not NoReplace then
-			Parameter 	= string.gsub(Parameter, "|c", "|cffFFD100")
-			Description = string.gsub(Description, "|c", "|cffFFD100")
-		end
-		
-		local S = Frame:CreateFontString("ATSWHelp" .. C + 1, "ARTWORK", "GameFontHighlightSmall")
-		
-		if C == 0 then
-			SetSizeAndPoints(S, 120, "TOPLEFT", ATSWSearchHelpFrame, "TOPLEFT", 20, -50)
-		else
-			SetSizeAndPoints(S, 120, "TOPLEFT", "ATSWHelp" .. C, "BOTTOMLEFT", 0, -15)
-		end
-		
-		S:SetText(Parameter)
-		
-		local D = Frame:CreateFontString("ATSWHelp" .. C + 1 .. "Description", "ARTWORK", "GameFontHighlightSmall")
-		
-		SetSizeAndPoints(D, 265, "TOPLEFT", S, "TOPRIGHT")
-		
-		D:SetText(Description)
-		
-		StringsAmount = C + 1
-	end
-	
 	AddHelpItem(ATSW_HELP_REAGENT, 				ATSW_HELP_REAGENT_DESC)
 	AddHelpItem(ATSW_HELP_LEVEL, 					ATSW_HELP_LEVEL_DESC)
 	AddHelpItem(ATSW_HELP_QUALITY, 				ATSW_HELP_QUALITY_DESC)
@@ -1529,18 +1530,24 @@ function ATSW_CreateListButtons()
 	AddHelpItem(ATSW_HELP_QCOLORS, 				ATSW_HELP_QCOLORS_DESC,	true)
 end
 
+local function UnregisterEvents(Frame, ...)
+	for _, Event in ipairs(arg) do
+		Frame:UnregisterEvent(Event)
+	end
+end
+
+local function RegisterEvents(Frame, ...)
+	for _, Event in ipairs(arg) do
+		Frame:RegisterEvent(Event)
+	end
+end
+
 function ATSW_OnLoad()
 	-- Unregister events from Blizzard professions frames
 	EnableAddOn("Blizzard_TradeSkillUI")
 	EnableAddOn("Blizzard_CraftUI")
 	LoadAddOn("Blizzard_TradeSkillUI")
 	LoadAddOn("Blizzard_CraftUI")
-	
-	local function UnregisterEvents(Frame, ...)
-		for _, Event in ipairs(arg) do
-			Frame:UnregisterEvent(Event)
-		end
-	end
 	
 	UnregisterEvents(TradeSkillFrame,
 		"SKILL_LINES_CHANGED",
@@ -1567,12 +1574,6 @@ function ATSW_OnLoad()
     SlashCmdList["ATSW"] 	= ATSW_Command
 	
 	-- Register events
-	local function RegisterEvents(Frame, ...)
-		for _, Event in ipairs(arg) do
-			Frame:RegisterEvent(Event)
-		end
-	end
-	
 	RegisterEvents(ATSWFrame,
 		"TRADE_SKILL_SHOW",
 		"TRADE_SKILL_CLOSE",
@@ -1665,6 +1666,27 @@ end
 
 local OldCraftCount = 0
 
+local function WhatReagentIsLackingData()
+	for I = 1, MAX_TRADE_SKILL_REAGENTS do
+		local Button 				= getglobal("ATSWReagent" .. I)
+		local ButtonTexture 	= getglobal("ATSWReagent" .. I .. "Texture")
+		
+		if Button:IsVisible() then
+			if not (ButtonTexture:GetTexture() and Button.Name and Button.Link) then
+				return Button
+			end
+		end
+	end
+	
+	return false
+end
+
+local function SetButtonCooldown(Button)
+	if Button:IsVisible() and Button.Position then
+		Button:SetText(Button.Text .. (ConvertCooldown(Recipe(Button.Position).Cooldown) or ""))
+	end
+end
+
 function ATSW_OnUpdate(TimePassed)
 	-- Loading recipes
 	
@@ -1735,21 +1757,6 @@ function ATSW_OnUpdate(TimePassed)
 		
 		-- Update missing reagents data
 		if not ReagentsDataIsComplete and RecipeSelected() then
-			local function WhatReagentIsLackingData()
-				for I = 1, MAX_TRADE_SKILL_REAGENTS do
-					local Button 				= getglobal("ATSWReagent" .. I)
-					local ButtonTexture 	= getglobal("ATSWReagent" .. I .. "Texture")
-					
-					if Button:IsVisible() then
-						if not (ButtonTexture:GetTexture() and Button.Name and Button.Link) then
-							return Button
-						end
-					end
-				end
-				
-				return false
-			end
-			
 			local B = WhatReagentIsLackingData()
 			
 			if B then
@@ -1780,12 +1787,6 @@ function ATSW_OnUpdate(TimePassed)
 		
 		-- Update cooldowns
 		if GetTime() - 1 >= CooldownUpdateTime then
-			local function SetButtonCooldown(Button)
-				if Button:IsVisible() and Button.Position then
-					Button:SetText(Button.Text .. (ConvertCooldown(Recipe(Button.Position).Cooldown) or ""))
-				end
-			end
-			
 			-- Set cooldowns for recipe buttons
 			for I = 1, ATSW_RECIPES_DISPLAYED do
 				SetButtonCooldown(getglobal("ATSWRecipe" .. I))
@@ -1973,43 +1974,43 @@ local function GetFirstProfession()
 	end
 end
 
-function ATSW_ConfigureSkillButtons(Exception)
-	local function ResetTabs()
-		for T = 1, ATSW_MAX_TRADESKILL_TABS do
-			local Tab = getglobal("ATSWFrameTab"..T)
+local function ResetTabs()
+	for T = 1, ATSW_MAX_TRADESKILL_TABS do
+		local Tab = getglobal("ATSWFrameTab"..T)
+		
+		if Tab then
+			Tab.Name = nil
 			
-			if Tab then
-				Tab.Name = nil
-				
-				local Tex = Tab:GetNormalTexture()
-				
-				if Tex then
-					Tex:SetTexture(nil)
-				end
+			local Tex = Tab:GetNormalTexture()
+			
+			if Tex then
+				Tex:SetTexture(nil)
 			end
 		end
 	end
+end
 
-	local _, _, _, NumSpells = GetSpellTabInfo(1)
-	
-	local function TabExists(Texture)
-		for T = 1, ATSW_MAX_TRADESKILL_TABS do
-			local Tab = getglobal("ATSWFrameTab"..T)
+local function TabExists(Texture)
+	for T = 1, ATSW_MAX_TRADESKILL_TABS do
+		local Tab = getglobal("ATSWFrameTab"..T)
+		
+		if Tab then
+			local NormalTexture = Tab:GetNormalTexture()
 			
-			if Tab then
-				local NormalTexture = Tab:GetNormalTexture()
+			if NormalTexture then
+				local Tex = NormalTexture:GetTexture()
 				
-				if NormalTexture then
-					local Tex = NormalTexture:GetTexture()
-					
-					if Tex and string.lower(Tex) == string.lower(Texture) then
-						return true
-					end
+				if Tex and string.lower(Tex) == string.lower(Texture) then
+					return true
 				end
 			end
 		end
 	end
-	
+end
+
+function ATSW_ConfigureSkillButtons(Exception)
+	local _, _, _, NumSpells = GetSpellTabInfo(1)
+
 	ResetTabs()
 	
 	-- Scan spell book for professions
@@ -2305,15 +2306,15 @@ local function InitializeTables()
 	InitializeContractedCategories()
 end
 
-local function GetProfession()
-	local function InitializeProfession()
-		local Table = ATSW_Profession
-		
-		if not Table 						then Table = {} 						end
-		if not Table[realm] 			then Table[realm] = {} 				end
-		if not Table[realm][player] 	then Table[realm][player] = nil 	end
-	end
+local function InitializeProfession()
+	local Table = ATSW_Profession
 	
+	if not Table 						then Table = {} 						end
+	if not Table[realm] 			then Table[realm] = {} 				end
+	if not Table[realm][player] 	then Table[realm][player] = nil 	end
+end
+
+local function GetProfession()
 	InitializeProfession()
 	
 	local Skill = GetCraftCaption()
