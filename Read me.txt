@@ -1,4 +1,4 @@
-Advanced Trade Skill Window 2 v2.1.4 for Vanilla
+Advanced Trade Skill Window 2 v2.1.9 for Vanilla
 a World of Warcraft UI Addon
 Written by Rene Schneider (Slarti on EU-Blackhand) in 2006
 Fixed by laytya in 2017
@@ -385,11 +385,11 @@ v2.1.8
 • Data flow fixes:
 	- Skill-up levels was showing only for sorting by difficulty
 
-v.2.1.9
+v2.1.9
 • Data flow fixes:
 	- Auction shopping list was inserting item link instead of item name into Blizzard auction interface
 	- Minor fix
-	- AtlasLoot support: aquiaring data from the new update of AtlasLoot
+	- AtlasLoot support: getting data from the new update of AtlasLoot
 • Control fixes:
 	- Clicking on a task was not selecting a recipe
 • Graphical changes:

@@ -489,7 +489,7 @@ function ATSWCS_FillAllRecipes()
 	end
 
 	local function CompareDifficultyUsingExternalData(Left, Right)
-		return (ATSW_TypeToNumber(Left.Type) == ATSW_TypeToNumber(Right.Type)) and (ATSW_Skill(Left.Name) > ATSW_Skill(Right.Name))
+		return (ATSW_TypeToNumber(Left.Type) == ATSW_TypeToNumber(Right.Type)) and (ATSW_CompareSkill(Left.Name) > ATSW_CompareSkill(Right.Name))
 	end
 	
     SetCustomRecipesSize(0)
