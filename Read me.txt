@@ -1,5 +1,5 @@
-Advanced Trade Skill Window 2 v2.1.9 for Vanilla
-a World of Warcraft UI Addon
+Advanced Trade Skill Window 2
+a World of Warcraft UI Addon (version 1)
 Written by Rene Schneider (Slarti on EU-Blackhand) in 2006
 Fixed by laytya in 2017
 Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
@@ -394,3 +394,8 @@ v2.1.9
 	- Clicking on a task was not selecting a recipe
 • Graphical changes:
 	- Rank bar have a spark
+
+v2.1.10
+• Data flow fixes:
+	- Fix of issue #21: failure to open on a new realm after opening successfully on a different realm
+	- AtlasLoot support: skill-ups didn't show if one of them is unknown

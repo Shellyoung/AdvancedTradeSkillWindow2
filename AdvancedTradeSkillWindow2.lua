@@ -874,7 +874,7 @@ end
 local function Profession()
 	TransformSettings(ATSW_Profession)
 
-	return ATSW_Profession[realm][player]
+	return ATSW_Profession[realm] and ATSW_Profession[realm][player]
 end
 
 local function RecipeSelected()
