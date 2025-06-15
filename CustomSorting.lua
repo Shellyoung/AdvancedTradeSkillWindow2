@@ -91,6 +91,16 @@ local function SetVisible(Frame, State)
 	end
 end
 
+local function SetEnabled(Frame, State)
+	if Frame then
+		if State then
+			Frame:Enable()
+		else
+			Frame:Disable()
+		end
+	end
+end
+
 local function GetCategoryTexture(Expanded)
 	return "Interface\\Buttons\\UI-" .. (Expanded and "Min" or "Pl") .. "usButton-Up"
 end
