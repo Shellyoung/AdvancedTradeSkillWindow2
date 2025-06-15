@@ -99,6 +99,4 @@ Improved window for your professions for World of Warcraft vanilla
   ###### Thank you
   Suggestions: [flyinbed](https://github.com/flyinbed).
   
-  Bug reporting: [MasterBruin](https://github.com/MasterBruin), [shikulja](https://github.com/shikulja), [TerrorBlades](https://github.com/TerrorBlades), [asfddhdjkdghkghhgdsfn](https://github.com/asfddhdjkdghkghhgdsfn), [David Côté-Tremblay](https://github.com/dctremblay), [AyrianaWoW](https://github.com/AyrianaWoW/), [evilbunny235](https://github.com/evilbunny235), [gvdn78](https://github.com/gvdn78), [alchem1ster](https://github.com/alchem1ster), [Kissabella](https://github.com/Kissabella).
-  
   翻译成中文: [flyinbed](https://github.com/flyinbed).
