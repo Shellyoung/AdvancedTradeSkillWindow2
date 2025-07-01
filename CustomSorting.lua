@@ -43,7 +43,9 @@ local function GetSelected()
 end
 
 local function SetSelected(Value)
-	if Profession() == nil then return end
+	if Profession() == nil then
+		return
+	end
 	
 	ATSW_CSSelected[realm][player][Profession()] = Value or ""
 end
@@ -128,7 +130,9 @@ local function Item(I, J)
 end
 
 local function SetCategorySelected(Value)
-	if Profession() == nil then return end
+	if Profession() == nil then
+		return
+	end
 	
 	ATSW_CSOpenCategory[realm][player][Profession()] = Value
 	
@@ -493,15 +497,15 @@ function ATSWCSFrameDelete_OnClick()
 	ATSWCS_UpdateATSWFrame()
 end
 
-function ATSWCS_FillAllRecipes()
-	local function CompareDifficulty(Left, Right)
-		return ATSW_TypeToNumber(Left.Type) < ATSW_TypeToNumber(Right.Type)
-	end
+local function CompareDifficulty(Left, Right)
+	return ATSW_TypeToNumber(Left.Type) < ATSW_TypeToNumber(Right.Type)
+end
 
-	local function CompareDifficultyUsingExternalData(Left, Right)
-		return (ATSW_TypeToNumber(Left.Type) == ATSW_TypeToNumber(Right.Type)) and (ATSW_CompareSkill(Left.Name) > ATSW_CompareSkill(Right.Name))
-	end
-	
+local function CompareDifficultyUsingExternalData(Left, Right)
+	return (ATSW_TypeToNumber(Left.Type) == ATSW_TypeToNumber(Right.Type)) and (ATSW_CompareSkill(Left.Name) > ATSW_CompareSkill(Right.Name))
+end
+
+function ATSWCS_FillAllRecipes()
     SetCustomRecipesSize(0)
 	
     for I = 1, RecipesSize() do
@@ -672,17 +676,17 @@ function ATSWCS_UpdateCategories()
 	ATSWCS_UpdateButtons()
 end
 
-function ATSWCS_UpdateButtons()
-	local function SetLabelColor(Button)
-		local Label = getglobal(Button:GetName() .. "Label")
-		
-		if Button:IsEnabled() == 1 then
-			Label:SetTextColor(1, 1, 1)
-		else
-			Label:SetTextColor(0.5, 0.5, 0.5)
-		end
-	end
+local function SetLabelColor(Button)
+	local Label = getglobal(Button:GetName() .. "Label")
 	
+	if Button:IsEnabled() == 1 then
+		Label:SetTextColor(1, 1, 1)
+	else
+		Label:SetTextColor(0.5, 0.5, 0.5)
+	end
+end
+
+function ATSWCS_UpdateButtons()
 	local Parent 		= "ATSWCSFrame"
 	local Delete		= getglobal(Parent .. "Delete")
 	local MoveDown	= getglobal(Parent .. "MoveDown")

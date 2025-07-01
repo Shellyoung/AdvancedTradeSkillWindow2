@@ -40,54 +40,58 @@ UIPanelWindows["ATSWFrame"		] 	= { area = "left", 		pushable = 8 }
 UIPanelWindows["ATSWCSFrame"		] 	= { area = "left", 		pushable = 8 }
 UIPanelWindows["ATSWConfigFrame"]	= { area = "center", 	pushable = 1 }
 
-ATSWTypeColor 								= {}
-ATSWTypeColor["optimal"	] 				= {	R = 1.00,	G = 0.50,	B = 0.25	}
-ATSWTypeColor["medium"	] 				= {	R = 1.00,	G = 1.00,	B = 0.00	}
-ATSWTypeColor["easy"		]    			= {	R = 0.25,	G = 0.75,	B = 0.25	}
-ATSWTypeColor["trivial"		] 				= {	R = 0.50,	G = 0.50,	B = 0.50	}
-ATSWTypeColor["used"		]  				= {	R = 0.50,	G = 0.50,	B = 0.50	}
-ATSWTypeColor["header"	]  				= {	R = 1.00,	G = 0.82,	B = 0		}
-ATSWTypeColor["none"		]    			= {	R = 0.25,	G = 0.75,	B = 0.25	}
+ATSWTypeColor = {
+	["optimal"	] 	= {	R = 1.00,	G = 0.50,	B = 0.25	},
+	["medium"	] 	= {	R = 1.00,	G = 1.00,	B = 0.00	},
+	["easy"		]  = {	R = 0.25,	G = 0.75,	B = 0.25	},
+	["trivial"		] 	= {	R = 0.50,	G = 0.50,	B = 0.50	},
+	["used"		]  	= {	R = 0.50,	G = 0.50,	B = 0.50	},
+	["header"	]  	= {	R = 1.00,	G = 0.82,	B = 0		},
+	["none"		]    = {	R = 0.25,	G = 0.75,	B = 0.25	}
+}
 
-local QualityColor 								= {}
-QualityColor[1] 									= {	R = 0.62,	G = 0.62, 	B = 0.62	}
-QualityColor[2] 									= {	R = 1,		G = 1, 		B = 1		}
-QualityColor[3] 									= {	R = 0.12,	G = 1, 		B = 0		}
-QualityColor[4] 									= {	R = 0,		G = 0.44, 	B = 0.87	}
-QualityColor[5] 									= {	R = 0.64,	G = 0.21, 	B = 0.93	}
-QualityColor[6] 									= {	R = 1,		G = 0.5, 	B = 0		}
-QualityColor[7] 									= {	R = 0.9,	G = 0.8, 	B = 0.5		}
-QualityColor[8] 									= {	R = 0,		G = 0.8, 	B = 1		}
+local QualityColor = {
+	[1] = {	R = 0.62,	G = 0.62, 	B = 0.62	},
+	[2] = {	R = 1,		G = 1, 		B = 1		},
+	[3] = {	R = 0.12,	G = 1, 		B = 0		},
+	[4] = {	R = 0,		G = 0.44, 	B = 0.87	},
+	[5] = {	R = 0.64,	G = 0.21, 	B = 0.93	},
+	[6] = {	R = 1,		G = 0.5, 	B = 0		},
+	[7] = {	R = 0.9,	G = 0.8, 	B = 0.5		},
+	[8] = {	R = 0,		G = 0.8, 	B = 1		}
+}
 
-local QualityNames								= {}
-QualityNames["grey"		] 					= 1
-QualityNames["white"		] 					= 2
-QualityNames["green"		] 					= 3
-QualityNames["blue"		] 					= 4
-QualityNames["purple"		]					= 5
-QualityNames["orange"	]	 				= 6
-QualityNames["gold"		] 					= 7
-QualityNames["cyan"		] 					= 8
+local QualityNames = {
+	["grey"		] 					= 1,
+	["white"	] 					= 2,
+	["green"	] 					= 3,
+	["blue"		] 					= 4,
+	["purple"	]					= 5,
+	["orange"	]	 				= 6,
+	["gold"		] 					= 7,
+	["cyan"		] 					= 8,
 
-QualityNames["poor"			] 				= 1
-QualityNames["common"		] 				= 2
-QualityNames["uncommon"	] 				= 3
-QualityNames["rare"				] 				= 4
-QualityNames["epic"			]				= 5
-QualityNames["legendary"		] 				= 6
-QualityNames["artifact"		] 				= 7
-QualityNames["heirloom"		] 				= 8
+	["poor"			] 				= 1,
+	["common"	] 				= 2,
+	["uncommon"	] 				= 3,
+	["rare"			] 				= 4,
+	["epic"			]				= 5,
+	["legendary"	] 				= 6,
+	["artifact"		] 				= 7,
+	["heirloom"		] 				= 8
+}
 
-local ToolID 										= {}
-ToolID["Blacksmith Hammer"			] 		= 5956
-ToolID["Arclight Spanner"				] 		= 6219
-ToolID["Gyromatic Micro-Adjustor"	]		= 10498
-ToolID["Philosopher's Stone"		] 		= 9149
-ToolID["Runed Copper Rod"			] 		= 6218
-ToolID["Runed Silver Rod"			] 		= 6339
-ToolID["Runed Golden Rod"			] 		= 11130
-ToolID["Runed Truesilver Rod"		] 		= 11145
-ToolID["Runed Arcanite Rod"		] 		= 16207
+local ToolID = {
+	["Blacksmith Hammer"			] 		= 5956,
+	["Arclight Spanner"				] 		= 6219,
+	["Gyromatic Micro-Adjustor"	]		= 10498,
+	["Philosopher's Stone"			] 		= 9149,
+	["Runed Copper Rod"			] 		= 6218,
+	["Runed Silver Rod"				] 		= 6339,
+	["Runed Golden Rod"			] 		= 11130,
+	["Runed Truesilver Rod"		] 		= 11145,
+	["Runed Arcanite Rod"			] 		= 16207
+}
 
 local Professions	= {
 	"Trade_Engraving",					-- Enchanting
@@ -254,7 +258,7 @@ ATSW_Background = {
 	["Interface\\Icons\\Trade_BrewPoison"				]	= "Poisons"
 }
 
--- Colors stored for code readability
+-- Colors are stored for code readability
 local GREY 		= "|cff7f7f7f"
 local RED 			= "|cffff0000"
 local WHITE 		= "|cffFFFFFF"
@@ -265,20 +269,34 @@ local ORANGE 	= "|cffff7f3f"
 local YELLOW 	= "|cffffff00"
 local DEFAULT 	= "|cffFFd200"
 
-local ClassColor 									= {}
-ClassColor["Druid"		]						= "|cffff7c0a"
-ClassColor["Hunter"		]						= "|cffaad372"
-ClassColor["Mage"		]						= "|cff3fc7eb"
-ClassColor["Paladin"		]						= "|cfff48cba"
-ClassColor["Priest"		]						= "|cffffffff"
-ClassColor["Rogue"		]						= "|cfffff468"
-ClassColor["Shaman"	]						= "|cff0070dd"
-ClassColor["Warlock"	]						= "|cff8788ee"
-ClassColor["Warrior"		]						= "|cffc69b6d"
+local ClassColor = {
+	['Druid']		= "|cffff7c0a",
+	['Hunter']	= "|cffaad372",
+	['Mage']		= "|cff3fc7eb",
+	['Paladin']	= "|cfff48cba",
+	['Priest']	= "|cffffffff",
+	['Rogue']	= "|cfffff468",
+	['Shaman']	= "|cff0070dd",
+	['Warlock']	= "|cff8788ee",
+	['Warrior']	= "|cffc69b6d"
+}
+
+local function GetUnitClass(Unit)
+	local _, Class = UnitClass(Unit)
+	
+	if Class and string.len(Class) > 0 then
+		local First = string.upper(string.sub(Class, 1, 1))
+		local Rest = string.upper(string.sub(Class, 2))
+		
+		Class = First .. Rest
+	end
+	
+	return Class
+end
 
 local realm 										= GetRealmName()
 local player 										= UnitName("player")
-local class											= UnitClass("player")
+local class											= GetUnitClass("player")
 ATSW_player										= player
 ATSW_realm										= realm
 
@@ -365,16 +383,18 @@ ATSW_Amount[realm] 						= {}
 ATSW_Amount[realm][player] 				= {}
 
 -- Processing
-local Processing 									= false
-local ProcessingProfession					= nil
-local ProcessingRecipe 						= nil
-local ProcessingTexture						= nil
-local ProcessingRecipeTime					= 0
-local ProcessingAmount 						= 0
-local ProcessingTime							= 0
-local ProcessingDelay							= 0
-local ProcessingComplete						= 0
-local ProcessingStop							= false
+local Processing = {
+	Active			= false,
+	Profession		= nil,
+	Recipe			= nil,
+	Texture			= nil,
+	RecipeTime	= 0,
+	Amount			= 0,
+	Time				= 0,
+	Delay				= 0,
+	Complete		= 0,
+	Stop				= false
+}
 
 -- Options
 ATSW_Unified 									= true
@@ -398,8 +418,8 @@ ATSW_RecipesSorted[realm][player] 		= {}
 ATSW_RecipesSortedSize 					= {}
 ATSW_RecipesSortedSize[realm] 			= {}
 ATSW_RecipesSortedSize[realm][player] = {}
--- Utility functions
 
+-- Utility functions
 local function SetVisible(Frame, State)
 	if Frame then
 		if State then
@@ -1193,28 +1213,28 @@ UseAction = MyUseAction
 
 local Original_PickupContainerItem = PickupContainerItem
 local function MyPickupContainerItem(Bag, Slot)
-	ProcessingDelay = GetTime()
+	Processing.Delay = GetTime()
 	Original_PickupContainerItem(Bag, Slot)
 end
 PickupContainerItem = MyPickupContainerItem
 
 local Original_BindEnchant = BindEnchant
 local function MyBindEnchant()
-	ProcessingDelay = GetTime()
+	Processing.Delay = GetTime()
 	Original_BindEnchant()
 end
 BindEnchant = MyBindEnchant
 
 local Original_ReplaceEnchant = ReplaceEnchant
 local function MyReplaceEnchant()
-	ProcessingDelay = GetTime()
+	Processing.Delay = GetTime()
 	Original_ReplaceEnchant()
 end
 ReplaceEnchant = MyReplaceEnchant
 
 local Original_ReplaceTradeEnchant = ReplaceTradeEnchant
 local function MyReplaceTradeEnchant()
-	ProcessingDelay = GetTime()
+	Processing.Delay = GetTime()
 	Original_ReplaceTradeEnchant()
 end
 ReplaceTradeEnchant = MyReplaceTradeEnchant
@@ -1841,7 +1861,7 @@ function ATSW_OnUpdate(TimePassed)
 		for I = 1, ATSW_TASKS_DISPLAYED do
 			local Button 	= getglobal("ATSWTask" .. I)
 		
-			if Button.Name == ProcessingRecipe then	
+			if Button.Name == Processing.Recipe then	
 				ItemFound = true
 				
 				if not Bar.TaskItem or Bar.TaskItem ~= Button then
@@ -1880,7 +1900,7 @@ function ATSW_OnUpdate(TimePassed)
 				Bar:		SetValue(GetTime())
 				Spark:	SetPoint("CENTER", Bar, "LEFT", (1 - (Bar.EndTime - GetTime())/(Bar.EndTime - Bar.StartTime)) * Bar:GetWidth(), -1)
 			else
-				if IsEnchant(ProcessingTexture) then
+				if IsEnchant(Processing.Texture) then
 					Bar.Mode = ATSW_FLASH
 				end
 			end
@@ -1981,10 +2001,10 @@ local function ResetTabs()
 		if Tab then
 			Tab.Name = nil
 			
-			local Tex = Tab:GetNormalTexture()
+			local NormalTexture = Tab:GetNormalTexture()
 			
-			if Tex then
-				Tex:SetTexture(nil)
+			if NormalTexture then
+				NormalTexture:SetTexture(nil)
 			end
 		end
 	end
@@ -1998,9 +2018,9 @@ local function TabExists(Texture)
 			local NormalTexture = Tab:GetNormalTexture()
 			
 			if NormalTexture then
-				local Tex = NormalTexture:GetTexture()
+				local TabTexture = NormalTexture:GetTexture()
 				
-				if Tex and string.lower(Tex) == string.lower(Texture) then
+				if TabTexture and string.lower(TabTexture) == string.lower(Texture) then
 					return true
 				end
 			end
@@ -2008,23 +2028,37 @@ local function TabExists(Texture)
 	end
 end
 
+local function ChangeSmeltingIcon(Texture)
+	if Texture == "Interface\\Icons\\Spell_Fire_FlameBlades" then
+		return "Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Smelting"
+	end
+	
+	return Texture
+end
+
 function ATSW_ConfigureSkillButtons(Exception)
 	local _, _, _, NumSpells = GetSpellTabInfo(1)
 
 	ResetTabs()
 	
-	-- Scan spell book for professions
+	-- Iterate tabs
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
 		local Tab = getglobal("ATSWFrameTab" .. T)
 		local TabName, TabTexture
 		
+		-- Iterate professions
 		for I in ipairs(Professions) do
 			local ProfessionTexture = Icon(Professions[I])
 			
+			ProfessionTexture = ChangeSmeltingIcon(ProfessionTexture)
+			
 			if not TabExists(ProfessionTexture) then
+				-- Scan spell book for professions
 				for B = 1, NumSpells do
 					local Texture 	= GetSpellTexture	(B, "BOOKTYPE_SPELL")
 					local Name		= GetSpellName		(B, "BOOKTYPE_SPELL")
+					
+					Texture = ChangeSmeltingIcon(Texture)
 					
 					if Name ~= Exception and Texture and Texture == ProfessionTexture then
 						TabName 		= GetSpellName(B, "BOOKTYPE_SPELL")
@@ -2120,8 +2154,8 @@ function ATSW_SwitchToFrame(Frame)
 		end
 	end
 	
-	if not Frame and Processing then
-		ProcessingStop = true
+	if not Frame and Processing.Active then
+		Processing.Stop = true
 	end
 	
 	ATSW_SwitchingFrames = false
@@ -2574,7 +2608,7 @@ function ATSW_OnEvent()
 	
     elseif 	event == "SPELLCAST_START"  						then
 		
-		if arg1 == ProcessingRecipe and not Processing then
+		if arg1 == Processing.Recipe and not Processing.Active then
 			local function ColorizeProgressBar()
 				local R, G, B = 1, 0.82, 0
 				
@@ -2598,29 +2632,29 @@ function ATSW_OnEvent()
 				end
 				
 				if IsSmelting() then
-					R, G, B = GetColor(GetRecipeID(ProcessingRecipe))
+					R, G, B = GetColor(GetRecipeID(Processing.Recipe))
 				end
 				
 				ATSWProgressBarTexture:SetVertexColor(R, G, B)
 			end
 			
-			ProcessingRecipeTime = arg2 / 1000
+			Processing.RecipeTime = arg2 / 1000
 			
 			local ID = GetRecipeID(arg1)
 			
 			if ID then
-				ATSW_TimeCost[ID] = ProcessingRecipeTime
+				ATSW_TimeCost[ID] = Processing.RecipeTime
 			end
 			
-			local CastTime = ProcessingRecipeTime
+			local CastTime = Processing.RecipeTime
 			
 			if TradeSkill then
-				CastTime = CastTime * ProcessingAmount
+				CastTime = CastTime * Processing.Amount
 			end
 			
-			ATSW_InitializeProgressBar(ProcessingDelay, (ProcessingDelay + CastTime))
+			ATSW_InitializeProgressBar(Processing.Delay, (Processing.Delay + CastTime))
 			ColorizeProgressBar()
-			ProcessingDelay = GetTime() - ProcessingDelay
+			Processing.Delay = GetTime() - Processing.Delay
 			ATSW_StartProcessing()
 		end
 		
@@ -2708,24 +2742,24 @@ function ATSW_OnEvent()
 	elseif 	event == "CHAT_MSG_LOOT" 						then
 		
 		-- Task completion
-		if Processing then
+		if Processing.Active then
 			if string.find(arg1, LOOT_ITEM_CREATED_SELF_PATTERN) then -- React on "You create: %s" pattern
 				Bar = ATSWProgressBar
 				
-				if ProcessingAmount > 1 then
+				if Processing.Amount > 1 then
 					ATSW_CompleteTask()
 				else
-					if ProcessingStop then
+					if Processing.Stop then
 						ATSW_CompleteTask() -- Complete immediately
 					else
 						Bar.Mode = ATSW_FLASH -- Start flash animation
 					end
 				end
 				
-				RecipesRemaining = ProcessingAmount - ProcessingComplete
+				RecipesRemaining = Processing.Amount - Processing.Complete
 				
 				TimePassed 	= GetTime() - Bar.StartTime
-				ERT 				= (ProcessingRecipeTime + GetLatency()) * RecipesRemaining -- Estimated remaining time
+				ERT 				= (Processing.RecipeTime + GetLatency()) * RecipesRemaining -- Estimated remaining time
 				
 				Bar.EndTime = GetTime() + TimePassed + ERT
 				
@@ -2758,7 +2792,7 @@ function ATSW_OnEvent()
 			ATSWProgressBarGlow:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\ProgressBarFlash")
 		end
 	elseif 	event == "UI_ERROR_MESSAGE" 						then
-		if Processing and (string.find(arg1, ERR_INV_FULL) or string.find(arg1, sRequires)) then
+		if Processing.Active and (string.find(arg1, ERR_INV_FULL) or string.find(arg1, sRequires)) then
 			ATSW_StopProcessing()
 		end
 	elseif 	event == "TRADE_SKILL_SHOW" 						then
@@ -2781,7 +2815,7 @@ function ATSW_OnEvent()
 				CloseTradeSkill()
 				
 				if TradeSkill then
-					ProcessingStop = true
+					Processing.Stop = true
 				end
 				
 				ATSWFrame:	RegisterEvent		("TRADE_SKILL_CLOSE")
@@ -2944,7 +2978,7 @@ end
 
 function ATSWTask_OnClick(arg1)
 	if arg1 == "LeftButton" then
-		if not Ctrl() and Shift() and not Alt() and not Processing and not Recipe(this.Position).Cooldown then
+		if not Ctrl() and Shift() and not Alt() and not Processing.Active and not Recipe(this.Position).Cooldown then
 			local QName 			= Task(this.TaskIndex).Name
 			local QAmount 		= Task(this.TaskIndex).Amount
 			local IncludeTasks 	= true
@@ -2985,7 +3019,7 @@ function ATSWCreateButton_OnClick()
 	
 	if IsBeastTraining() then
 		Craft(GetRecipePosition(Name))
-	elseif not Processing then
+	elseif not Processing.Active then
 		if Amount == 0 then
 			if TradeSkill then
 				Amount = ATSW_HowManyItemsArePossibleToCreate(Name)
@@ -3568,7 +3602,7 @@ function ATSW_UpdateTasks()
 			local R, G, B 					= GetLinkColorRGB(Link)
 			local t_Width 				= ItemTexture:GetWidth()
 			local _, _, _, t_xOfs, _ 	= ItemTexture:GetPoint(0)
-			local NameIsProcessing 	= Processing and (Name == ProcessingRecipe)
+			local NameIsProcessing 	= Processing.Active and (Name == Processing.Recipe)
 			local PossibleAmount		= ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
 			
 			if PossibleAmount > 0 then
@@ -4072,9 +4106,9 @@ function ATSW_UpdateCreateButton()
 	local Position 	= GetPositionFromGame(RecipeSelected())
 	
 	if RecipesSize() > 0 then
-		Possible = not Processing
+		Possible = not Processing.Active
 		
-		if not Processing then
+		if not Processing.Active then
 			local Type
 			
 			if Position then
@@ -4108,7 +4142,7 @@ function ATSW_UpdateCreateButton()
 					
 					if Pos and not GetCraftCooldown(Pos) then
 						if ATSW_HowManyItemsArePossibleToCreate(Task(I).Name, ATSW_POSSIBLE_NOTASK) > 0 then
-							Possible = not (Processing and ProcessingRecipe == Task(I).Name)
+							Possible = not (Processing.Active and Processing.Recipe == Task(I).Name)
 							
 							break
 						end
@@ -4118,7 +4152,7 @@ function ATSW_UpdateCreateButton()
 		end
 	end
 	
-	if not Processing then
+	if not Processing.Active then
 		SetEnabled(ATSWCreateButton, Possible)
 	end
 	
@@ -4151,21 +4185,21 @@ function ATSW_Craft(Name, Amount)
 		Possible 				= 1
 	end
 	
-	ProcessingProfession	= Profession()
-	ProcessingRecipe 		= Name
-	ProcessingTexture		= GetCraftTexture(Index)
-	ProcessingAmount 		= math.min(Amount, Possible)
-	ProcessingDelay			= GetTime()
+	Processing.Profession	= Profession()
+	Processing.Recipe 		= Name
+	Processing.Texture		= GetCraftTexture(Index)
+	Processing.Amount 		= math.min(Amount, Possible)
+	Processing.Delay			= GetTime()
 	
 	--Compatibility with otravi Cast Bar
-	oCBIcon = ProcessingTexture
+	oCBIcon = Processing.Texture
 	oCBName = Name
 	
 	ATSWFrame:RegisterEvent("SPELLCAST_START")
 	
 	ATSW_PushCreateButton()
 	Delay(function ()
-				ATSW_PushCreateButton(Processing)
+				ATSW_PushCreateButton(Processing.Active)
 			end, GetLatency()*4)
 	
 	Craft(Index, Amount)
@@ -4588,9 +4622,9 @@ ATSW_Time = 0
 function ATSW_StartProcessing()
 	ATSWFrame:RegisterEvent("SPELLCAST_INTERRUPTED")
 	
-	ProcessingComplete				= 0
-	ProcessingStop					= false
-	Processing 							= true
+	Processing.Complete			= 0
+	Processing.Stop					= false
+	Processing.Active				= true
 	
 	ATSW_UpdateTasks()
 end
@@ -4613,8 +4647,8 @@ function ATSW_StopProcessing()
 	ATSWFrame:UnregisterEvent("SPELLCAST_START")
 	ATSWFrame:UnregisterEvent("SPELLCAST_INTERRUPTED")
 	
-	Processing 							= false
-	ProcessingStop					= false
+	Processing.Active				= false
+	Processing.Stop					= false
 	ATSWProgressBar.Working 	= false
 	ATSWProgressBar.TaskItem 	= nil
 	ATSWProgressBar:Hide()
@@ -4624,19 +4658,19 @@ function ATSW_StopProcessing()
 end
 
 function ATSW_CompleteTask()
-	ATSW_DeleteTask(ProcessingRecipe, 1, ProcessingProfession)
-	ProcessingAmount 			= ProcessingAmount - 1
-	ProcessingComplete 		= ProcessingComplete + 1
+	ATSW_DeleteTask(Processing.Recipe, 1, Processing.Profession)
+	Processing.Amount 			= Processing.Amount - 1
+	Processing.Complete 		= Processing.Complete + 1
 	
-	if (ProcessingProfession == Profession()) and ATSWFrame:IsVisible() then
-		local Cooldown 			= GetCraftCooldown(GetPositionFromGame(ProcessingRecipe))
+	if (Processing.Profession == Profession()) and ATSWFrame:IsVisible() then
+		local Cooldown 			= GetCraftCooldown(GetPositionFromGame(Processing.Recipe))
 		
 		if Cooldown then
 			ATSW_UpdateFrame()
 		end
 	end
 	
-	if ProcessingAmount == 0 or ProcessingStop then
+	if Processing.Amount == 0 or Processing.Stop then
 		ATSW_StopProcessing()
 	end
 end
@@ -5385,7 +5419,7 @@ function ATSW_CheckForAtlasLootLoaded()
 	return AtlasLoot_Data and AtlasLoot_Data["AtlasLootCrafting"]
 end
 
-local SkillUpCache = {}
+ATSWSkillUpCache = {}
 
 function ATSW_SkillUps(Name)
 	local skill
@@ -5393,8 +5427,8 @@ function ATSW_SkillUps(Name)
 	if ATSW_AtlasLootLoaded then
 		local Found = false
 		
-		if SkillUpCache[Name] then
-			local C = SkillUpCache[Name]
+		if ATSWSkillUpCache[Name] then
+			local C = ATSWSkillUpCache[Name]
 			
 			return C[1], C[2], C[3], C[4]
 		end
@@ -5419,7 +5453,7 @@ function ATSW_SkillUps(Name)
 							SU3 = tonumber(SU3)
 							SU4 = tonumber(SU4)
 							
-							SkillUpCache[Name] = {SU1, SU2, SU3, SU4}
+							ATSWSkillUpCache[Name] = {SU1, SU2, SU3, SU4}
 
 							return SU1, SU2, SU3, SU4
 						end
