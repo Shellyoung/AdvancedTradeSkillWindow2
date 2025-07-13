@@ -3828,6 +3828,7 @@ local function GetAttributes(Recipe)
 
 			if Return == ''
 			and I == ATSWRecipeItemTooltip:NumLines()
+			and I > 1
 			and not string.find(Text, 'races: ')
 			and not string.find(Text, 'classes: ') 
 			and not string.find(Text, 'tools: ') 
