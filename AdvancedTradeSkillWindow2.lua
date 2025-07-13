@@ -3939,9 +3939,11 @@ function ATSW_UpdateRecipes()
 				Text = GetAttributes(R)
 				Button:SetFont('Fonts\\FRIZQT__.ttf', 10)
 			else
-				Text = R.Name .. SubNameToString(R.SubName) .. (Possible or '') .. (ConvertCooldown(R.Cooldown) or '')
+				Text = R.Name .. SubNameToString(R.SubName)
 				Button:SetFont('Fonts\\FRIZQT__.ttf', 12)
 			end
+			
+			Text = Text .. (Possible or '') .. (ConvertCooldown(R.Cooldown) or '')
 
 			if TP and TP > 0 then
 				SubText = format(TRAINER_LIST_TP, TP)
