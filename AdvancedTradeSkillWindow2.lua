@@ -3810,12 +3810,12 @@ local function GetAttributes(Recipe)
 							Return = StrLeft .. Amount .. Color.LIGHTGREY .. ' all resist' .. StrRight
 						end
 						
-						if (cR == 1 and cG == 1 and cB == 1)
-						or	string.len(Text) - (PEnd-PStart+1) < 11 then -- Optimization: detection of full pattern match
+						if string.find(string.sub(Text, 1, 26), 'enchant[s]* ') then
 							break
 						end
 						
-						if string.find(string.sub(Text, 1, 26), 'enchant[s]* ') then
+						if (cR == 1 and cG == 1 and cB == 1)
+						or	string.len(Text) - (PEnd-PStart+1) < 11 then -- Optimization: detection of full pattern match
 							break
 						end
 						
