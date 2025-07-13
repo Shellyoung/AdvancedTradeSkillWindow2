@@ -1,9 +1,9 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft vanilla
 
-<sub>version 2.1.11</sub>
+<sub>version 2.1.12</sub>
 
-![face](https://github.com/user-attachments/assets/ba7f43d9-ed65-49b5-8f34-e7564d40165d)
+![face](https://github.com/user-attachments/assets/cffb06ff-b310-4fb7-ba07-a04caf6e34a3)
 
 
 
@@ -70,7 +70,8 @@ Improved window for your professions for World of Warcraft vanilla
   
   ### Configuration
   
-  ![Config face](https://github.com/Shellyoung/AdvancedTradeSkillWindow2/assets/40469927/14bb999e-3cf2-4657-8dfd-728f545a7169)
+  ![Config face](https://github.com/user-attachments/assets/75dac068-a3e6-4f7d-b7ed-abb8f4786ad6)
+
 
   
   ATSW can be configured via built-in options menu. The menu can be shown by entering chat command **/atsw config**.
@@ -80,9 +81,9 @@ Improved window for your professions for World of Warcraft vanilla
   Supported languages: English, Русский, Español, Français, Deutsch, 简体中文
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.11/AdvancedTradeSkillWindow2.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.12/AdvancedTradeSkillWindow2.rar)
   
-  2. Extract the folder	**AdvancedTradeSkillWindow2** from the archive and place it into the folder **World of Warcraft\Interface\Addons**.
+  2. Extract the folder	**AdvancedTradeSkillWindow2** from the archive and place it into the folder **World of Warcraft\Interface\AddOns**.
   
   ## Credits
   
@@ -99,6 +100,6 @@ Improved window for your professions for World of Warcraft vanilla
   https://wowwiki-archive.fandom.com/wiki/Category:Interface_customization
 
   ###### Thank you
-  Suggestions: [flyinbed](https://github.com/flyinbed).
+  Suggestions: [flyinbed](https://github.com/flyinbed), [selax1](https://github.com/selax1).
   
   翻译成中文: [flyinbed](https://github.com/flyinbed).
