@@ -1,6 +1,8 @@
 -- copyright 2006 by Rene Schneider (Slarti on EU-Blackhand), 2017 by laytya
 -- Modified by Alexander Shelokhnev (Dreamios on Tel'Abim (Turtle-WoW)) in 2022
 
+local _G = getfenv(0)
+
 ATSW_MAX_TRADESKILL_TABS 			= 8
 ATSW_TRADESKILL_HEIGHT 				= 18
 
@@ -28,26 +30,26 @@ ATSW_FADEOUT 								= 3
 ATSW_FLASH_TIME							= 5/60
 ATSW_FADEOUT_TIME						= 10/60
 
-ERR_LEARN_RECIPE_PATTERN 			= string.gsub(ERR_LEARN_RECIPE_S, 			"%%s", "(.+)"		)
-ERR_LEARN_SPELL_PATTERN 				= string.gsub(ERR_LEARN_SPELL_S, 			"%%s", "(.+)"		)
-ERR_LEARN_ABILITY_PATTERN 			= string.gsub(ERR_LEARN_ABILITY_S, 		"%%s", "(.+)"		)
-ERR_UNLEARN_RECIPE_PATTERN			= string.gsub(ERR_SPELL_UNLEARNED_S, 	"%%s", "(.+)"		)
-ERR_SKILL_UP_PATTERN 					= string.gsub(string.gsub(ERR_SKILL_UP_SI,"%%d", "%%d+"),"%%s","(.+)")
-ERR_SKILL_GAINED_PATTERN 				= string.gsub(ERR_SKILL_GAINED_S, 			"%%s", "(.+)"		)
-LOOT_ITEM_CREATED_SELF_PATTERN = string.gsub(LOOT_ITEM_CREATED_SELF,	"%%s",	"(.+)"		)
+ERR_LEARN_RECIPE_PATTERN 			= string.gsub(ERR_LEARN_RECIPE_S, 			'%%s', '(.+)'		)
+ERR_LEARN_SPELL_PATTERN 				= string.gsub(ERR_LEARN_SPELL_S, 			'%%s', '(.+)'		)
+ERR_LEARN_ABILITY_PATTERN 			= string.gsub(ERR_LEARN_ABILITY_S, 		'%%s', '(.+)'		)
+ERR_UNLEARN_RECIPE_PATTERN			= string.gsub(ERR_SPELL_UNLEARNED_S, 	'%%s', '(.+)'		)
+ERR_SKILL_UP_PATTERN 					= string.gsub(string.gsub(ERR_SKILL_UP_SI,'%%d', '%%d+'),'%%s','(.+)')
+ERR_SKILL_GAINED_PATTERN 				= string.gsub(ERR_SKILL_GAINED_S, 			'%%s', '(.+)'		)
+LOOT_ITEM_CREATED_SELF_PATTERN = string.gsub(LOOT_ITEM_CREATED_SELF,	'%%s',	'(.+)'		)
 
-UIPanelWindows["ATSWFrame"		] 	= { area = "left", 		pushable = 8 }
-UIPanelWindows["ATSWCSFrame"		] 	= { area = "left", 		pushable = 8 }
-UIPanelWindows["ATSWConfigFrame"]	= { area = "center", 	pushable = 1 }
+UIPanelWindows['ATSWFrame'			] 	= { area = 'left', 		pushable = 8 }
+UIPanelWindows['ATSWCSFrame'		] 	= { area = 'left', 		pushable = 8 }
+UIPanelWindows['ATSWConfigFrame'	]	= { area = 'center', 	pushable = 1 }
 
 ATSWTypeColor = {
-	["optimal"	] 	= {	R = 1.00,	G = 0.50,	B = 0.25	},
-	["medium"	] 	= {	R = 1.00,	G = 1.00,	B = 0.00	},
-	["easy"		]  = {	R = 0.25,	G = 0.75,	B = 0.25	},
-	["trivial"		] 	= {	R = 0.50,	G = 0.50,	B = 0.50	},
-	["used"		]  	= {	R = 0.50,	G = 0.50,	B = 0.50	},
-	["header"	]  	= {	R = 1.00,	G = 0.82,	B = 0		},
-	["none"		]    = {	R = 0.25,	G = 0.75,	B = 0.25	}
+	['optimal'	]	= {	R = 1.00,	G = 0.50,	B = 0.25	},
+	['medium'	]	= {	R = 1.00,	G = 1.00,	B = 0.00	},
+	['easy'		]	= {	R = 0.25,	G = 0.75,	B = 0.25	},
+	['trivial'		]	= {	R = 0.50,	G = 0.50,	B = 0.50	},
+	['used'		]	= {	R = 0.50,	G = 0.50,	B = 0.50	},
+	['header'	]	= {	R = 1.00,	G = 0.82,	B = 0		},
+	['none'		]	= {	R = 0.25,	G = 0.75,	B = 0.25	}
 }
 
 local QualityColor = {
@@ -61,224 +63,183 @@ local QualityColor = {
 	[8] = {	R = 0,		G = 0.8, 	B = 1		}
 }
 
-local QualityNames = {
-	["grey"		] 					= 1,
-	["white"	] 					= 2,
-	["green"	] 					= 3,
-	["blue"		] 					= 4,
-	["purple"	]					= 5,
-	["orange"	]	 				= 6,
-	["gold"		] 					= 7,
-	["cyan"		] 					= 8,
-
-	["poor"			] 				= 1,
-	["common"	] 				= 2,
-	["uncommon"	] 				= 3,
-	["rare"			] 				= 4,
-	["epic"			]				= 5,
-	["legendary"	] 				= 6,
-	["artifact"		] 				= 7,
-	["heirloom"		] 				= 8
-}
-
 local ToolID = {
-	["Blacksmith Hammer"			] 		= 5956,
-	["Arclight Spanner"				] 		= 6219,
-	["Gyromatic Micro-Adjustor"	]		= 10498,
-	["Philosopher's Stone"			] 		= 9149,
-	["Runed Copper Rod"			] 		= 6218,
-	["Runed Silver Rod"				] 		= 6339,
-	["Runed Golden Rod"			] 		= 11130,
-	["Runed Truesilver Rod"		] 		= 11145,
-	["Runed Arcanite Rod"			] 		= 16207
+	['Blacksmith Hammer'			] 		= 5956,
+	['Arclight Spanner'				] 		= 6219,
+	['Gyromatic Micro-Adjustor'	]		= 10498,
+	['Philosopher\'s Stone'			] 		= 9149,
+	['Runed Copper Rod'			] 		= 6218,
+	['Runed Silver Rod'				] 		= 6339,
+	['Runed Golden Rod'			] 		= 11130,
+	['Runed Truesilver Rod'		] 		= 11145,
+	['Runed Arcanite Rod'			] 		= 16207
 }
 
 local Professions	= {
-	"Trade_Engraving",					-- Enchanting
-	"Trade_Tailoring",					-- Tailoring
-	"Trade_Engineering",				-- Engineering
-	"Trade_BlackSmithing",			-- Blacksmithing
-	"INV_Jewelry_Necklace_11",	-- Jewelcrafting
-	"Spell_Fire_FlameBlades",			-- Smelting
-	"Trade_Alchemy",					-- Alchemy
-	"INV_Misc_ArmorKit_17",			-- Leatherworking
-	"INV_Misc_Food_15",				-- Cooking
-	"Spell_Holy_SealOfSacrifice",		-- First Aid
-	"Trade_Survival",						-- Survival
-	"Ability_Hunter_BeastCall02",	-- Beast Training
-	"Trade_BrewPoison"				-- Poisons
+	'Trade_Engraving',				-- Enchanting
+	'Trade_Tailoring',				-- Tailoring
+	'Trade_Engineering',			-- Engineering
+	'Trade_BlackSmithing',			-- Blacksmithing
+	'INV_Jewelry_Necklace_11',	-- Jewelcrafting
+	'Spell_Fire_FlameBlades',		-- Smelting
+	'Trade_Alchemy',				-- Alchemy
+	'INV_Misc_ArmorKit_17',		-- Leatherworking
+	'INV_Misc_Food_15',			-- Cooking
+	'Spell_Holy_SealOfSacrifice',	-- First Aid
+	'Trade_Survival',					-- Survival
+	'Ability_Hunter_BeastCall02',	-- Beast Training
+	'Trade_BrewPoison'				-- Poisons
 }
 
 -- For AtlasLoot addon
 local ProfessionNamesForAtlasLoot = {
-	["Interface\\Icons\\Trade_Engraving"] = { -- Enchanting
-		"EnchantingApprentice1",
-		"EnchantingJourneyman1",
-		"EnchantingJourneyman2",
-		"EnchantingExpert1",
-		"EnchantingExpert2",
-		"EnchantingArtisan1",
-		"EnchantingArtisan2",
-		"EnchantingArtisan3"
+	['Interface\\Icons\\Trade_Engraving'] = { -- Enchanting
+		'EnchantingApprentice1',
+		'EnchantingJourneyman1',
+		'EnchantingJourneyman2',
+		'EnchantingExpert1',
+		'EnchantingExpert2',
+		'EnchantingArtisan1',
+		'EnchantingArtisan2',
+		'EnchantingArtisan3'
 	},
-	["Interface\\Icons\\Trade_Tailoring"] = { -- Tailoring
-		"TailoringApprentice1",
-		"TailoringJourneyman1",
-		"TailoringJourneyman2",
-		"TailoringExpert1",
-		"TailoringExpert2",
-		"TailoringArtisan1",
-		"TailoringArtisan2",
-		"TailoringArtisan3",
-		"TailoringArtisan4"
+	['Interface\\Icons\\Trade_Tailoring'] = { -- Tailoring
+		'TailoringApprentice1',
+		'TailoringJourneyman1',
+		'TailoringJourneyman2',
+		'TailoringExpert1',
+		'TailoringExpert2',
+		'TailoringArtisan1',
+		'TailoringArtisan2',
+		'TailoringArtisan3',
+		'TailoringArtisan4'
 	},
-	["Interface\\Icons\\Trade_Engineering"] = { -- Engineering
-		"EngineeringApprentice1",
-		"EngineeringJourneyman1",
-		"EngineeringJourneyman2",
-		"EngineeringExpert1",
-		"EngineeringExpert2",
-		"EngineeringArtisan1",
-		"EngineeringArtisan2",
-		"Gnomish1",
-		"Goblin1"
+	['Interface\\Icons\\Trade_Engineering'] = { -- Engineering
+		'EngineeringApprentice1',
+		'EngineeringJourneyman1',
+		'EngineeringJourneyman2',
+		'EngineeringExpert1',
+		'EngineeringExpert2',
+		'EngineeringArtisan1',
+		'EngineeringArtisan2',
+		'Gnomish1',
+		'Goblin1'
 	},
-	["Interface\\Icons\\Trade_BlackSmithing"] ={ -- Blacksmithing
-		"SmithingApprentice1",
-		"SmithingJourneyman1",
-		"SmithingJourneyman2",
-		"SmithingExpert1",
-		"SmithingExpert2",
-		"SmithingArtisan1",
-		"SmithingArtisan2",
-		"SmithingArtisan3",
-		"Armorsmith1",
-		"Weaponsmith1",
-		"Axesmith1",
-		"Hammersmith1",
-		"Swordsmith1"
+	['Interface\\Icons\\Trade_BlackSmithing'] ={ -- Blacksmithing
+		'SmithingApprentice1',
+		'SmithingJourneyman1',
+		'SmithingJourneyman2',
+		'SmithingExpert1',
+		'SmithingExpert2',
+		'SmithingArtisan1',
+		'SmithingArtisan2',
+		'SmithingArtisan3',
+		'Armorsmith1',
+		'Weaponsmith1',
+		'Axesmith1',
+		'Hammersmith1',
+		'Swordsmith1'
 	},
-	["Interface\\Icons\\INV_Jewelry_Necklace_11"] = { -- Jewelcrafting
-		"JewelcraftingApprentice1",
-		"JewelcraftingJourneyman1",
-		"JewelcraftingJourneyman2",
-		"JewelcraftingExpert1",
-		"JewelcraftingExpert2",
-		"JewelcraftingExpert3",
-		"JewelcraftingArtisan1",
-		"JewelcraftingArtisan2",
-		"JewelcraftingGemology1",
-		"JewelcraftingGoldsmithing1",
-		"JewelcraftingGemstones1",
-		"JewelcraftingRings1",
-		"JewelcraftingRings2",
-		"JewelcraftingAmulets1",
-		"JewelcraftingHelm1",
-		"JewelcraftingBracers1",
-		"JewelcraftingOffHands1",
-		"JewelcraftingStaves1",
-		"JewelcraftingTrinkets1",
-		"JewelcraftingMisc1"
+	['Interface\\Icons\\INV_Jewelry_Necklace_11'] = { -- Jewelcrafting
+		'JewelcraftingApprentice1',
+		'JewelcraftingJourneyman1',
+		'JewelcraftingJourneyman2',
+		'JewelcraftingExpert1',
+		'JewelcraftingExpert2',
+		'JewelcraftingExpert3',
+		'JewelcraftingArtisan1',
+		'JewelcraftingArtisan2'
 	},
-	["Interface\\Icons\\Spell_Fire_FlameBlades"] = { -- Smelting
-		"Smelting1"
+	['Interface\\Icons\\Spell_Fire_FlameBlades'] = { -- Smelting
+		'Smelting1'
 	},
-	["Interface\\Icons\\Trade_Alchemy"] = { -- Alchemy
-		"AlchemyApprentice1",
-		"AlchemyJourneyman1",
-		"AlchemyExpert1",
-		"AlchemyArtisan1",
-		"AlchemyArtisan2"
+	['Interface\\Icons\\Trade_Alchemy'] = { -- Alchemy
+		'AlchemyApprentice1',
+		'AlchemyJourneyman1',
+		'AlchemyExpert1',
+		'AlchemyArtisan1',
+		'AlchemyArtisan2'
 	},
-	["Interface\\Icons\\INV_Misc_ArmorKit_17"] = { -- Leatherworking
-		"LeatherApprentice1",
-		"LeatherJourneyman1",
-		"LeatherJourneyman2",
-		"LeatherExpert1",
-		"LeatherExpert2",
-		"LeatherArtisan1",
-		"LeatherArtisan2",
-		"LeatherArtisan3",
-		"Dragonscale1",
-		"Elemental1",
-		"Tribal1"
+	['Interface\\Icons\\INV_Misc_ArmorKit_17'] = { -- Leatherworking
+		'LeatherApprentice1',
+		'LeatherJourneyman1',
+		'LeatherJourneyman2',
+		'LeatherExpert1',
+		'LeatherExpert2',
+		'LeatherArtisan1',
+		'LeatherArtisan2',
+		'LeatherArtisan3',
+		'Dragonscale1',
+		'Elemental1',
+		'Tribal1'
 	},
-	["Interface\\Icons\\INV_Misc_Food_15"] = { -- Cooking
-		"CookingApprentice1",
-		"CookingJourneyman1",
-		"CookingExpert1",
-		"CookingArtisan1"
+	['Interface\\Icons\\INV_Misc_Food_15'] = { -- Cooking
+		'CookingApprentice1',
+		'CookingJourneyman1',
+		'CookingExpert1',
+		'CookingArtisan1'
 	},
-	["Interface\\Icons\\Spell_Holy_SealOfSacrifice"] = { -- First Aid
-		"FirstAid1"
+	['Interface\\Icons\\Spell_Holy_SealOfSacrifice'] = { -- First Aid
+		'FirstAid1'
 	},
-	["Interface\\Icons\\Trade_Survival"] = { -- Survival
-		"Survival1",
-		"Survival2"
+	['Interface\\Icons\\Trade_Survival'] = { -- Survival
+		'Survival1',
+		'Survival2'
 	}, 
-	["Interface\\Icons\\Ability_Hunter_BeastCall02"] = {""}, -- Beast Training
-	["Interface\\Icons\\Trade_BrewPoison"] = { -- Poisons
-		"Poisons1"
+	['Interface\\Icons\\Ability_Hunter_BeastCall02'] = {''}, -- Beast Training
+	['Interface\\Icons\\Trade_BrewPoison'] = { -- Poisons
+		'Poisons1'
 	}
 }
 
 ATSW_Specializations = {
-	["Interface\\Icons\\Trade_Engineering"] = {		-- Engineering
-		"INV_Gizmo_02", 					-- Gnomish Engineer
-		"Spell_Fire_SelfDestruct" 			-- Goblin Engineer
+	['Interface\\Icons\\Trade_Engineering'] = {		-- Engineering
+		'INV_Gizmo_02', 					-- Gnomish Engineer
+		'Spell_Fire_SelfDestruct' 			-- Goblin Engineer
 	},
-	["Interface\\Icons\\Trade_BlackSmithing"] ={		-- Blacksmithing
-		"INV_Chest_Plate04", 				-- Armorsmith
-		"INV_Sword_25", 					-- Weaponsmith
-		"INV_Axe_05", 						-- Master Axesmith
-		"INV_Hammer_23", 				-- Master Hammersmith
-		"INV_Sword_41" 					-- Master Swordsmith
+	['Interface\\Icons\\Trade_BlackSmithing'] ={		-- Blacksmithing
+		'INV_Chest_Plate04', 				-- Armorsmith
+		'INV_Sword_25', 					-- Weaponsmith
+		'INV_Axe_05', 						-- Master Axesmith
+		'INV_Hammer_23', 					-- Master Hammersmith
+		'INV_Sword_41' 						-- Master Swordsmith
 	},
-	["Interface\\Icons\\INV_Misc_ArmorKit_17"] = {	-- Leatherworking
-		"INV_Misc_MonsterScales_03",	-- Dragonscale Leatherworking
-		"Spell_Fire_Volcano", 				-- Elemental Leatherworking
-		"Spell_Nature_NullWard"	 		-- Tribal Leatherworking
+	['Interface\\Icons\\INV_Misc_ArmorKit_17'] = {	-- Leatherworking
+		'INV_Misc_MonsterScales_03',	-- Dragonscale Leatherworking
+		'Spell_Fire_Volcano', 				-- Elemental Leatherworking
+		'Spell_Nature_NullWard'	 		-- Tribal Leatherworking
 	}
 }
 
 ATSW_Background = {
-	["Interface\\Icons\\Trade_Engineering"				] 	= "Engineering",
-	["Interface\\Icons\\Trade_Engraving"				]	= "Enchanting",
-	["Interface\\Icons\\Trade_Tailoring"					]	= "Tailoring",
-	["Interface\\Icons\\Trade_Engineering"				]	= "Engineering",
-	["Interface\\Icons\\Trade_BlackSmithing"			]	= "Blacksmithing",
-	["Interface\\Icons\\INV_Jewelry_Necklace_11"	]	= "Jewelcrafting",
-	["Interface\\Icons\\Spell_Fire_FlameBlades"			]	= "Smelting",
-	["Interface\\Icons\\Trade_Alchemy"					]	= "Alchemy",
-	["Interface\\Icons\\INV_Misc_ArmorKit_17"		]	= "Leatherworking",
-	["Interface\\Icons\\INV_Misc_Food_15"				]	= "Cooking",
-	["Interface\\Icons\\Spell_Holy_SealOfSacrifice"	]	= "FirstAid",
-	["Interface\\Icons\\Trade_Survival"					]	= "Survival",
-	["Interface\\Icons\\Ability_Hunter_BeastCall02"	]	= "BeastTraining",
-	["Interface\\Icons\\Trade_BrewPoison"				]	= "Poisons"
+	['Interface\\Icons\\Trade_Engraving'					]	= 'Enchanting',
+	['Interface\\Icons\\Trade_Tailoring'					]	= 'Tailoring',
+	['Interface\\Icons\\Trade_Engineering'				]	= 'Engineering',
+	['Interface\\Icons\\Trade_BlackSmithing'			]	= 'Blacksmithing',
+	['Interface\\Icons\\INV_Jewelry_Necklace_11'	]	= 'Jewelcrafting',
+	['Interface\\Icons\\Spell_Fire_FlameBlades'			]	= 'Smelting',
+	['Interface\\Icons\\Trade_Alchemy'					]	= 'Alchemy',
+	['Interface\\Icons\\INV_Misc_ArmorKit_17'			]	= 'Leatherworking',
+	['Interface\\Icons\\INV_Misc_Food_15'				]	= 'Cooking',
+	['Interface\\Icons\\Spell_Holy_SealOfSacrifice'		]	= 'FirstAid',
+	['Interface\\Icons\\Trade_Survival'						]	= 'Survival',
+	['Interface\\Icons\\Ability_Hunter_BeastCall02'	]	= 'BeastTraining',
+	['Interface\\Icons\\Trade_BrewPoison'				]	= 'Poisons'
 }
 
 -- Colors are stored for code readability
-local GREY 		= "|cff7f7f7f"
-local RED 			= "|cffff0000"
-local WHITE 		= "|cffFFFFFF"
-local GREEN 		= "|cff3fbf3f"
-local PURPLE 		= "|cff9F3FFF"
-local BLUE 		= "|cff0070dd"
-local ORANGE 	= "|cffff7f3f"
-local YELLOW 	= "|cffffff00"
-local DEFAULT 	= "|cffFFd200"
-
-local ClassColor = {
-	['Druid']		= "|cffff7c0a",
-	['Hunter']	= "|cffaad372",
-	['Mage']		= "|cff3fc7eb",
-	['Paladin']	= "|cfff48cba",
-	['Priest']	= "|cffffffff",
-	['Rogue']	= "|cfffff468",
-	['Shaman']	= "|cff0070dd",
-	['Warlock']	= "|cff8788ee",
-	['Warrior']	= "|cffc69b6d"
+local Color = {
+	GREY 		= '|cff7f7f7f',
+	LIGHTGREY= '|cff9F9F9F',
+	RED 			= '|cffff0000',
+	WHITE 		= '|cffFFFFFF',
+	GREEN 		= '|cff00FF00',
+	DARKGREEN = '|cff1f8f1f',
+	PURPLE 	= '|cff9F3FFF',
+	BLUE 		= '|cff0070dd',
+	ORANGE 	= '|cffff7f3f',
+	YELLOW 	= '|cffffff00',
+	DEFAULT 	= '|cffFFd200'
 }
 
 local function GetUnitClass(Unit)
@@ -295,8 +256,8 @@ local function GetUnitClass(Unit)
 end
 
 local realm 										= GetRealmName()
-local player 										= UnitName("player")
-local class											= GetUnitClass("player")
+local player 										= UnitName('player')
+local class											= GetUnitClass('player')
 ATSW_player										= player
 ATSW_realm										= realm
 
@@ -320,8 +281,8 @@ local LastCastName 							= nil
 local NoDropDownUpdate					= false
 local BankFrameOpened						= false
 
-local s 				= ERR_USE_LOCKED_WITH_ITEM_S 		-- "Requires %s"
-local sRequires 	= string.sub(s, 1, string.find(s, "%s")) 	-- Delete %s
+local s 				= ERR_USE_LOCKED_WITH_ITEM_S 		-- 'Requires %s'
+local sRequires 	= string.sub(s, 1, string.find(s, '%s')) 	-- Delete %s
 
 ATSW_Debug 									= false
 
@@ -397,27 +358,55 @@ local Processing = {
 }
 
 -- Options
-ATSW_Unified 									= true
-ATSW_ConsiderBank 							= false
-ATSW_ConsiderAlts 							= false
-ATSW_ConsiderMerchants 					= false
-ATSW_RecipeTooltip 							= true
-ATSW_AutoBuy 									= false
-ATSW_DisplayShoppingList 					= true
+ATSW_Options = {
+	Unified 							= true,
+	ConsiderBank 					= false,
+	ConsiderAlts 					= false,
+	ConsiderMerchants 			= false,
+	RecipeTooltip 				= true,
+	AutoBuy 						= false,
+	DisplayShoppingList 			= true,
+}
+
+ATSW_Attributes = {}
+ATSW_Attributes[realm] = {}
+ATSW_Attributes[realm][player] = {}
+
+-- Transform old settings. Remove in the future, 2026 year maybe.
+if ATSW_Unified ~= nil then
+	ATSW_Options.Unified 						= ATSW_Unified
+	ATSW_Options.ConsiderBank 				= ATSW_ConsiderBank
+	ATSW_Options.ConsiderAlts 				= ATSW_ConsiderAlts
+	ATSW_Options.ConsiderMerchants 		= ATSW_ConsiderMerchants
+	ATSW_Options.RecipeTooltip 				= ATSW_RecipeTooltip
+	ATSW_Options.AutoBuy 						= ATSW_AutoBuy
+	ATSW_Options.DisplayShoppingList 		= ATSW_DisplayShoppingList
+	ATSW_Unified = nil
+	ATSW_ConsiderBank = nil
+	ATSW_ConsiderAlts = nil
+	ATSW_ConsiderMerchants = nil
+	ATSW_RecipeTooltip = nil
+	ATSW_AutoBuy = nil
+	ATSW_DisplayShoppingList = nil
+end
 
 -- Controllable tables instead of standard tables do not leave garbage if they change in the game
-ATSW_Recipes 									= {}
-ATSW_Recipes[realm] 						= {}
-ATSW_Recipes[realm][player] 				= {}
-ATSW_RecipesSize 								= {}
-ATSW_RecipesSize[realm] 					= {}
-ATSW_RecipesSize[realm][player] 			= {}
-ATSW_RecipesSorted 							= {}
-ATSW_RecipesSorted[realm] 				= {}
-ATSW_RecipesSorted[realm][player] 		= {}
-ATSW_RecipesSortedSize 					= {}
-ATSW_RecipesSortedSize[realm] 			= {}
-ATSW_RecipesSortedSize[realm][player] = {}
+
+ATSW = {
+	Recipes 									= {},
+	RecipesSize 							= {},
+	RecipesSorted 						= {},
+	RecipesSortedSize 					= {},
+}
+
+ATSW.Recipes[realm] 							= {}
+ATSW.Recipes[realm][player] 				= {}
+ATSW.RecipesSize[realm] 					= {}
+ATSW.RecipesSize[realm][player] 			= {}
+ATSW.RecipesSorted[realm] 				= {}
+ATSW.RecipesSorted[realm][player] 		= {}
+ATSW.RecipesSortedSize[realm] 			= {}
+ATSW.RecipesSortedSize[realm][player]	= {}
 
 -- Utility functions
 local function SetVisible(Frame, State)
@@ -440,23 +429,28 @@ local function SetEnabled(Frame, State)
 	end
 end
 
+local function SetSize(Object, Size, SizeY)
+	Object:SetWidth(Size)
+	Object:SetHeight(SizeY or Size)
+end
+
 local function FormatTime(Seconds, FourDigits)
 	if tonumber(Seconds) then
 		local Time
 		local D, H, M, S = ChatFrame_TimeBreakDown(Seconds)
 	  
 		if D > 0 then
-			Time =  string.format("%dd:%dh", D, H)
+			Time =  string.format('%dd:%dh', D, H)
 		elseif H > 0 then
-			Time = string.format("%dh:%dm", H, M)
+			Time = string.format('%dh:%dm', H, M)
 		else
 			if FourDigits then
-				Time = string.format( "%02d:%02d", M, S)
+				Time = string.format( '%02d:%02d', M, S)
 			else
 				if M > 0 then
-					Time = string.format("%d:%02d", M, S)
+					Time = string.format('%d:%02d', M, S)
 				elseif S > 0 then
-					Time = string.format("%d", S)
+					Time = string.format('%d', S)
 				end
 			end
 		end
@@ -471,10 +465,10 @@ local function FormatCooldown(Cooldown)
 		
 		if Time > 0 then
 			Time = SecondsToTime(Time, false)
-			Time = string.gsub(Time, "Day", "day")
-			Time = string.gsub(Time, "Hr", "hour")
-			Time = string.gsub(Time, "Min", "minute")
-			Time = string.gsub(Time, "Sec", "second")
+			Time = string.gsub(Time, 'Day', 'day')
+			Time = string.gsub(Time, 'Hr', 'hour')
+			Time = string.gsub(Time, 'Min', 'minute')
+			Time = string.gsub(Time, 'Sec', 'second')
 		end
 		
 		return Time
@@ -485,7 +479,7 @@ local function ShortFormatCooldown(Cooldown, FourDigits)
 	if Cooldown and type(Cooldown) == 'number' and Cooldown >= 0 then
 		return FormatTime(Cooldown, FourDigits)
 	else
-		return ""
+		return ''
 	end
 end
 
@@ -497,7 +491,7 @@ local function ConvertCooldown(Cooldown, Long)
 			if Long then
 				return FormatCooldown(S)
 			else
-				return " |cffE00000(" .. ShortFormatCooldown(S) .. ")|r"
+				return ' |cffE00000(' .. ShortFormatCooldown(S) .. ')|r'
 			end
 		end
 	end
@@ -530,13 +524,13 @@ end
 
 local function LinkToName(Link)
 	if Link then
-		return string.gsub(Link,"^.*%[(.*)%].*$","%1")
+		return string.gsub(Link,'^.*%[(.*)%].*$','%1')
 	end
 end
 
 local function LinkToColor(Link)
     if Link then
-        return string.gsub(Link, "^.*|cff(.-)|.*$", "%1")
+        return string.gsub(Link, '^.*|cff(.-)|.*$', '%1')
     end
 end
 
@@ -571,19 +565,15 @@ local function LinkToQuality(Link)
 	return ColorToQuality(R, G, B)
 end
 
-local function LinkToID(Link)
+local function ATSW_LinkToID(Link)
     if Link then
-		local _, _, LinkType, ID = string.find(Link, "^.*|H?([^:]*):?(%d+)")
+		local _, _, LinkType, ID = string.find(Link, '^.*|H?([^:]*):?(%d+)')
 		
         return tonumber(ID)
     end
 end
 
-function ATSW_LinkToID(Link)
-	return LinkToID(Link)
-end
-
-local ITEM_MIN_LEVEL_PATTERN = string.gsub(ITEM_MIN_LEVEL,"%%d", "(%%d+)")
+local ITEM_MIN_LEVEL_PATTERN = string.gsub(ITEM_MIN_LEVEL,'%%d', '(%%d+)')
 
 local function GetItemMinLevel(ID, Reagent)
 	local Stats = {GetTradeSkillItemStats(ID)}
@@ -606,17 +596,17 @@ end
 local function RemoveEscapeCharacters(String)
 	local Result = tostring(String)
 	
-	Result = gsub(Result, "|c........", ""			) 	-- Remove color start.
-	Result = gsub(Result, "|r", ""					) 	-- Remove color end.
-	Result = gsub(Result, "|H.-|h(.-)|h", "%1"	) 	-- Remove links.
-	Result = gsub(Result, "|T.-|t", ""				) 	-- Remove textures.
-	Result = gsub(Result, "{.-}", ""				) 	-- Remove raid target icons.
+	Result = gsub(Result, '|c........', ''			) 	-- Remove color start.
+	Result = gsub(Result, '|r', ''						) 	-- Remove color end.
+	Result = gsub(Result, '|H.-|h(.-)|h', '%1'	) 	-- Remove links.
+	Result = gsub(Result, '|T.-|t', ''				) 	-- Remove textures.
+	Result = gsub(Result, '{.-}', ''					) 	-- Remove raid target icons.
 	
 	return Result
 end
 
 local function GetCategoryTexture(Expanded)
-	return "Interface\\Buttons\\UI-" .. (Expanded and "Min" or "Pl") .. "usButton-Up"
+	return 'Interface\\Buttons\\UI-' .. (Expanded and 'Min' or 'Pl') .. 'usButton-Up'
 end
 
 local function GetSpellNum(Name)
@@ -641,42 +631,42 @@ local function GetProfessionTexture(Name)
 end
 
 local function Icon(Name)
-	return Name and ("Interface\\Icons\\" .. Name)
+	return Name and ('Interface\\Icons\\' .. Name)
 end
 
 local function IsEnchant(Index)
-	local I = Icon("Spell_Holy_GreaterHeal")
+	local I = Icon('Spell_Holy_GreaterHeal')
 	
-	if type(Index) == "string" then
+	if type(Index) == 'string' then
 		return Index == I
-	elseif type(Index) == "number" then
+	elseif type(Index) == 'number' then
 		return ATSW_GetCraftTexture(Index) == I
 	end
 end
 
 local function GetLatency()
-	local _,_,lag = GetNetStats()
+	local _, _, lag = GetNetStats()
 	
 	return lag / 1000
 end
 
 local function Debug(Message)
 	if ATSW_Debug then
-		ChatFrame1:AddMessage("ATSW Debug: " .. (Message or "nil"))
+		ChatFrame1:AddMessage('ATSW Debug: ' .. (Message or 'nil'))
 	end
 end
 
-local function Ctrl()
-	return IsControlKeyDown()
-end
-
-local function Shift()
-	return IsShiftKeyDown()
-end
-
-local function Alt()
-	return IsAltKeyDown()
-end
+local Key = {
+	Ctrl = function()
+		return IsControlKeyDown()
+	end,
+	Shift = function()
+		return IsShiftKeyDown()
+	end,
+	Alt = function()
+		return IsAltKeyDown()
+	end
+}
 
 local Delayed										= false
 ATSW_InTime									= 0
@@ -707,7 +697,7 @@ end
 local function GetFirstCraft()
 	if TradeSkill	then	return GetFirstTradeSkill()
 						else	local _, _, Type = GetCraftInfo(1)
-								return 1 + (Type == "header" and 1 or 0) end
+								return 1 + (Type == 'header' and 1 or 0) end
 end
 
 local function GetCraftNameType		(Index)
@@ -727,50 +717,27 @@ end
 ATSW_AtlasIDCache = {}
 
 local function CraftIDtoAtlasID(ID, Enchants)
-	local function Find(ID)
-		local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
-		local Table
-		
-		if Enchants then
-			Table = DB["enchants"]
-		else
-			Table = DB["craftspells"]
-		end
-		
-		for I, V in pairs(Table) do
-			local item = V.craftItem or V.item
+	if ATSW_AtlasIDCache[ID] then
+		return ATSW_AtlasIDCache[ID]
+	end
+	
+	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
+	local Table
+	
+	if Enchants then
+		Table = DB['enchants']
+	else
+		Table = DB['craftspells']
+	end
+	
+	if Table then
+		for I, Value in pairs(Table) do
+			local Item = Value.craftItem or Value.item
 			
-			if item and item == ID then
+			if Item == ID then
 				ATSW_AtlasIDCache[ID] = I
 				
 				return I
-			end
-		end
-	end
-	
-	return ATSW_AtlasIDCache[ID] or Find(ID)
-end
-
-local function GetAtlasCraftInfo(ID)
-	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
-	
-	return DB["enchants"][ID] or DB["craftspells"][ID]
-end
-
-local function GetAtlasInfo(ID)
-	local DB = GetSpellInfoVanillaDB or GetSpellInfoAtlasLootDB
-	local Info
-	
-	if DB then
-		for I, V in pairs(DB["craftspells"]) do
-			if V.craftItem and V.craftItem == ID then
-				return V
-			end
-		end
-		
-		for I, V in pairs(DB["enchants"]) do
-			if V.item and V.item == ID then
-				return V
 			end
 		end
 	end
@@ -783,9 +750,9 @@ local function GetCraftTexture			(Index)
 	if DB then
 		local ID = ATSW_LinkToID(GetCraftLink(Index))
 		local AtlasID = CraftIDtoAtlasID(ID, not TradeSkill)
-		local Info = GetAtlasCraftInfo(AtlasID)
+		local Info = DB['enchants'][AtlasID] or DB['craftspells'][AtlasID]
 		
-		Icon = Info and (Info["icon"] or GetItemTexture(Info["craftItem"]))
+		Icon = Info and (Info['icon'] or GetItemTexture(Info['craftItem']))
 	end
 	
 	if not Icon then
@@ -873,33 +840,11 @@ local function Craft							(Index, Amount)
 						else	DoCraft(Index) end
 end
 
-local function TransformSettings(Table) -- Transition to v2.1.0
-	if Table[player] then
-		local temp = Table[player]
-		
-		Table[player] = nil
-		
-		if not Table[realm] then
-			Table[realm] = {}
-		end
-		
-		Table[realm][player] = temp
-	end
-end
-
-function ATSW_TransformSettings(Table)
-	TransformSettings(Table)
-end
-
 local function Profession()
-	TransformSettings(ATSW_Profession)
-
 	return ATSW_Profession[realm] and ATSW_Profession[realm][player]
 end
 
 local function RecipeSelected()
-	TransformSettings(ATSW_SelectedRecipe)
-
 	return ATSW_SelectedRecipe[realm][player][Profession()]
 end
 
@@ -908,16 +853,14 @@ function ATSW_RecipeSelected()
 end
 
 local function Recipes(Prof)
-	return ATSW_Recipes[realm][player][Prof or Profession()]
+	return ATSW.Recipes[realm][player][Prof or Profession()]
 end
 
-local function RecipesSize(Prof)
-	return ATSW_RecipesSize[realm][player][Prof or Profession()] or 0
-end
-
-local function SetRecipesSize(Value)
-	if Profession() then
-		ATSW_RecipesSize[realm][player][Profession()] = Value
+local function RecipesSize(Value)
+	if tonumber(Value) and Profession() then
+		ATSW.RecipesSize[realm][player][Profession()] = Value
+	else
+		return ATSW.RecipesSize[realm][player][Value or Profession()] or 0
 	end
 end
 
@@ -980,21 +923,19 @@ local function AddRecipe(Index)
 		R.Cooldown = GetTime() + R.Cooldown
 	end
 	
-	SetRecipesSize(Size)
+	RecipesSize(Size)
 end
 
 local function RecipesSorted()
-	return ATSW_RecipesSorted[realm][player][Profession()]
+	return ATSW.RecipesSorted[realm][player][Profession()]
 end
 
-local function RecipesSortedSize()
-	return ATSW_RecipesSortedSize[realm][player][Profession()] or 0
-end
-
-local function SetRecipesSortedSize(Value)
-	if Profession() then
-		ATSW_RecipesSortedSize[realm][player][Profession()] = Value
+local function RecipesSortedSize(Value)
+	if Value and Profession() then
+		ATSW.RecipesSortedSize[realm][player][Profession()] = Value
 	end
+	
+	return ATSW.RecipesSortedSize[realm][player][Profession()] or 0
 end
 
 local function RecipeSorted(I)
@@ -1011,7 +952,7 @@ local function AddRecipeSorted(R)
 	end
 	
 	RecipesSorted()[Size] = R
-	SetRecipesSortedSize(Size)
+	RecipesSortedSize(Size)
 end
 
 -- Wrap functions with smaller names for easy access from code
@@ -1033,8 +974,6 @@ local function SetNeedToUpdate(Prof, Value)
 end
 
 local function PreviousRecipes(Prof)
-	TransformSettings(ATSW_PreviousRecipes)
-	
 	return ATSW_PreviousRecipes[realm][player][Prof or Profession()]
 end
 
@@ -1047,14 +986,10 @@ local function PreviousRecipe(I)
 end
 
 local function SortBy()
-	TransformSettings(ATSW_SortBy)
-
 	return ATSW_SortBy[realm][player][Profession()]
 end
 
 local function SearchString()
-	TransformSettings(ATSW_SearchString)
-
 	return ATSW_SearchString[realm][player][Profession()]
 end
 
@@ -1063,14 +998,10 @@ local function SetSearchString(Text)
 end
 
 local function ScrollOffset()
-	TransformSettings(ATSW_ScrollOffset)
-
 	return ATSW_ScrollOffset[realm][player][Profession()]
 end
 
 local function Contracted()
-	TransformSettings(ATSW_ContractedCategories)
-
 	return ATSW_ContractedCategories[realm][player][Profession()][SortBy()]
 end
 
@@ -1079,14 +1010,10 @@ function ATSW_Contracted()
 end
 
 local function SubClass()
-	TransformSettings(ATSW_SubClassFilter)
-
 	return ATSW_SubClassFilter[realm][player][Profession()]
 end
 
 local function InvSlot()
-	TransformSettings(ATSW_InvSlotFilter)
-	
 	return ATSW_InvSlotFilter[realm][player][Profession()]
 end
 
@@ -1103,8 +1030,6 @@ local function SetInvSlot(Value)
 end
 
 local function Tasks(Prof)
-	TransformSettings(ATSW_Tasks)
-	
 	return ATSW_Tasks[realm][player][Prof or Profession()]
 end
 
@@ -1139,8 +1064,6 @@ local function NoTasks()
 end
 
 local function NecessaryReagents()
-	TransformSettings(ATSW_NecessaryReagents)
-
 	return ATSW_NecessaryReagents[realm][player]
 end
 
@@ -1155,6 +1078,18 @@ end
 local function ResetNecessaries()
 	for I = 1, NecessaryReagentsSize() do
 		table.remove(NecessaryReagents(), NecessaryReagentsSize()+1-I)
+	end
+end
+
+function ATSW_ShowAttributes(Value)
+	if Value ~= nil and Profession() then
+		ATSW_Attributes[realm][player][Profession()] = Value
+		
+		if SearchString() ~= '' then
+			ATSW_GetRecipesSorted(true)
+		end
+	else
+		return ATSW_Attributes[realm][player][Profession()]
 	end
 end
 
@@ -1191,7 +1126,7 @@ CastSpell = MyCastSpell
 
 local function GetNameFromTooltip(Slot)
 	ATSWActionNameTooltip:SetParent(UIParent)
-	ATSWActionNameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+	ATSWActionNameTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
 	ATSWActionNameTooltip:SetAction(Slot)
 	
 	return ATSWActionNameTooltipTextLeft1:GetText()
@@ -1243,7 +1178,7 @@ ReplaceTradeEnchant = MyReplaceTradeEnchant
 
 local function GetRecipeID(Name)
 	if Name then
-		return LinkToID(Recipe(ATSW_GetRecipePosition(Name)).Link)
+		return ATSW_LinkToID(Recipe(ATSW_GetRecipePosition(Name)).Link)
 	end
 end
 
@@ -1266,7 +1201,7 @@ local function DropDownFilterPass(Name)
 end
 
 local function SubNameToString(SubName)
-	return SubName and SubName ~= "" and ("     " .. GREY .. "(" .. SubName .. ")|r") or ""
+	return SubName and SubName ~= '' and ('     ' .. Color.GREY .. '(' .. SubName .. ')|r') or ''
 end
 
 function ATSW_SubNameToString(SubName)
@@ -1276,10 +1211,10 @@ end
 local function SubNameToName(Name)
 	if Name then
 		local LName
-		local _, _, SubName = string.find(Name, "%s%s%s%(+(.+)%)+")
+		local _, _, SubName = string.find(Name, '%s%s%s%(+(.+)%)+')
 		
 		-- Triple space means SubName is in Name
-		local TripleSpace = string.find(Name, "%s%s%s")
+		local TripleSpace = string.find(Name, '%s%s%s')
 		
 		if TripleSpace then
 			LName = string.sub(Name, 1, TripleSpace - 1)
@@ -1295,7 +1230,7 @@ local function RecipePosition(Name, List, ListSize)
 	if Name and ListSize > 0 then
 		local LName, SubName = SubNameToName(Name)
 		
-		if SubName == "" then
+		if SubName == '' then
 			SubName = nil
 		end
 		
@@ -1371,21 +1306,33 @@ function ATSW_GetProfessionTexture(Name)
 end
 
 local function IsBeastTraining()
-	return GetProfessionTexture(Profession()) == Icon("Ability_Hunter_BeastCall02")
+	return GetProfessionTexture(Profession()) == Icon('Ability_Hunter_BeastCall02')
 end
 
 local function IsSmelting()
-	return GetProfessionTexture(Profession()) == Icon("Spell_Fire_FlameBlades")
+	return GetProfessionTexture(Profession()) == Icon('Spell_Fire_FlameBlades')
 end
 
 local function IsPoisons()
-	return GetProfessionTexture(Profession()) == Icon("Trade_BrewPoison")
+	return GetProfessionTexture(Profession()) == Icon('Trade_BrewPoison')
 end
 
 local function ClassColorize(Name)
+	local Color = {
+		['Druid']		= '|cffff7c0a',
+		['Hunter']	= '|cffaad372',
+		['Mage']		= '|cff3fc7eb',
+		['Paladin']	= '|cfff48cba',
+		['Priest']	= '|cffffffff',
+		['Rogue']	= '|cfffff468',
+		['Shaman']	= '|cff0070dd',
+		['Warlock']	= '|cff8788ee',
+		['Warrior']	= '|cffc69b6d'
+	}
+
 	for I in ipairs(ATSW_Characters[realm]) do
 		if ATSW_Characters[realm][I].Name == Name then
-			return ClassColor[ATSW_Characters[realm][I].Class] .. Name .. "|r"
+			return Color[ATSW_Characters[realm][I].Class] .. Name .. '|r'
 		end
 	end
 	
@@ -1399,65 +1346,74 @@ local function GetCraftingTime(Name, Amount)
 	
 	if Cost then
 		return Cost*(Amount or 0)
-	else
-		if DB then
-			local AtlasID = CraftIDtoAtlasID(ID)
+	elseif DB then
+		local AtlasID = CraftIDtoAtlasID(ID)
+		
+		if AtlasID then
+			local castTime = DB['craftspells'][AtlasID]['castTime']
 			
-			if AtlasID then
-				local castTime = DB["craftspells"][AtlasID]["castTime"]
-				
-				return castTime
-			end
+			return castTime
 		end
+	end
+end
+
+ATSW_TEST = 9000
+
+function ATSW_TooltipSetSkill(Tooltip, Index)
+	if ATSW_TradeSkill() then
+		Tooltip:SetTradeSkillItem(Index)
+	else
+		Tooltip:SetCraftSpell(Index)
 	end
 end
 
 -- Main code section
 
 local function SetSizeAndPoints(S, Width, Point, RelativePoint, RelativeTo, X, Y)
-	S:SetJustifyH("LEFT")
-	S:SetJustifyV("TOP")
+	S:SetJustifyH('LEFT')
+	S:SetJustifyV('TOP')
 	S:SetWidth(Width)
 	S:SetPoint(Point, RelativePoint, RelativeTo, X, Y)
 end
 
+local HelpItems = 0
+
 local function AddHelpItem(Parameter, Description, NoReplace)
-	local StringsAmount 	= 0
-	local C = StringsAmount
+	local C = HelpItems
 	
-	if not Parameter 	then Parameter 	= "" end
-	if not Description 	then Description	= "" end
+	if not Parameter 	then Parameter 	= '' end
+	if not Description 	then Description	= '' end
 	
 	if not NoReplace then
-		Parameter 	= string.gsub(Parameter, "|c", "|cffFFD100")
-		Description = string.gsub(Description, "|c", "|cffFFD100")
+		Parameter 	= string.gsub(Parameter, '|c', '|cffFFD100')
+		Description = string.gsub(Description, '|c', '|cffFFD100')
 	end
 	
 	local Frame 				= ATSWSearchHelpFrame
 	
-	local S = Frame:CreateFontString("ATSWHelp" .. C + 1, "ARTWORK", "GameFontHighlightSmall")
+	local S = Frame:CreateFontString('ATSWHelp' .. C + 1, 'ARTWORK', 'GameFontHighlightSmall')
 	
 	if C == 0 then
-		SetSizeAndPoints(S, 120, "TOPLEFT", ATSWSearchHelpFrame, "TOPLEFT", 20, -50)
+		SetSizeAndPoints(S, 120, 'TOPLEFT', ATSWSearchHelpFrame, 'TOPLEFT', 20, -50)
 	else
-		SetSizeAndPoints(S, 120, "TOPLEFT", "ATSWHelp" .. C, "BOTTOMLEFT", 0, -15)
+		SetSizeAndPoints(S, 120, 'TOPLEFT', 'ATSWHelp' .. C, 'BOTTOMLEFT', 0, -15)
 	end
 	
 	S:SetText(Parameter)
 	
-	local D = Frame:CreateFontString("ATSWHelp" .. C + 1 .. "Description", "ARTWORK", "GameFontHighlightSmall")
+	local D = Frame:CreateFontString('ATSWHelp' .. C + 1 .. 'Description', 'ARTWORK', 'GameFontHighlightSmall')
 	
-	SetSizeAndPoints(D, 265, "TOPLEFT", S, "TOPRIGHT")
+	SetSizeAndPoints(D, 265, 'TOPLEFT', S, 'TOPRIGHT')
 	
 	D:SetText(Description)
 	
-	StringsAmount = C + 1
+	HelpItems = C + 1
 end
 
 function ATSW_CreateListButtons()
 	-- Create recipe buttons
 	for R = 1, ATSW_RECIPES_DISPLAYED do
-		local B = CreateFrame("Button", "ATSWRecipe" .. R, ATSWFrame, "ATSWRecipeButtonTemplate")
+		local B = CreateFrame('Button', 'ATSWRecipe' .. R, ATSWFrame, 'ATSWRecipeButtonTemplate')
 		
 		B.XOffset 	= 22
 		B.Position	= nil
@@ -1467,15 +1423,15 @@ function ATSW_CreateListButtons()
 		B.Text		= nil
 		
 		if R == 1 then
-			B:SetPoint	("TOP", ATSWFrame, "TOP", 0, -77)
+			B:SetPoint	('TOP', ATSWFrame, 'TOP', 0, -77)
 		else
-			B:SetPoint	("TOP", "ATSWRecipe" .. R - 1, "BOTTOM", 0, 0)
+			B:SetPoint	('TOP', 'ATSWRecipe' .. R - 1, 'BOTTOM', 0, 0)
 		end
 		
 		B:SetWidth	(ATSWListScrollFrame:GetWidth())
 		B:SetHeight	(ATSW_TRADESKILL_HEIGHT)
 		
-		B:SetPoint		("LEFT", ATSWFrame, "LEFT", B.XOffset, 0)
+		B:SetPoint		('LEFT', ATSWFrame, 'LEFT', B.XOffset, 0)
 	end
 	
 	-- Set highlight frame
@@ -1483,12 +1439,12 @@ function ATSW_CreateListButtons()
 	
 	-- Create tool buttons
 	for T = 1, ATSW_TOOLS_DISPLAYED do
-		local B = CreateFrame("Button", "ATSWTool" .. T, ATSWFrame, "ATSWToolTemplate")
+		local B = CreateFrame('Button', 'ATSWTool' .. T, ATSWFrame, 'ATSWToolTemplate')
 		
 		if T == 1 then
-			B:SetPoint	("LEFT", ATSWToolsLabel, "RIGHT", 4, 0)
+			B:SetPoint	('LEFT', ATSWToolsLabel, 'RIGHT', 4, 0)
 		else
-			B:SetPoint	("LEFT", "ATSWTool" .. T - 1, "RIGHT", 6, 0)
+			B:SetPoint	('LEFT', 'ATSWTool' .. T - 1, 'RIGHT', 6, 0)
 		end
 	end
 	
@@ -1497,19 +1453,19 @@ function ATSW_CreateListButtons()
 	local Row, Column
 	
 	for R = 1, MAX_TRADE_SKILL_REAGENTS do
-		local B 	= CreateFrame("Button", "ATSWReagent" .. R, ATSWFrame, "ATSWReagentTemplate")
+		local B 	= CreateFrame('Button', 'ATSWReagent' .. R, ATSWFrame, 'ATSWReagentTemplate')
 		
 		Row 		= math.ceil(R/Columns)
 		Column 	= R - ((Row - 1) * Columns)
 		
 		if Column == 1 then
 			if Row == 1 then
-				B:SetPoint	("TOPLEFT", ATSWReagentsLabel, "BOTTOMLEFT", 11, -6)
+				B:SetPoint	('TOPLEFT', ATSWReagentsLabel, 'BOTTOMLEFT', 11, -6)
 			else
-				B:SetPoint	("TOPLEFT", "ATSWReagent" .. 1 + (Columns * (math.max(Row - 2, 0))) , "BOTTOMLEFT", 0, -30)
+				B:SetPoint	('TOPLEFT', 'ATSWReagent' .. 1 + (Columns * (math.max(Row - 2, 0))) , 'BOTTOMLEFT', 0, -30)
 			end
 		else
-			B:SetPoint		("LEFT", "ATSWReagent" .. R - 1, "RIGHT", 55, 0)
+			B:SetPoint		('LEFT', 'ATSWReagent' .. R - 1, 'RIGHT', 55, 0)
 		end
 		
 		B:SetID(R)
@@ -1517,24 +1473,24 @@ function ATSW_CreateListButtons()
 	
 	-- Create task buttons
 	for T = 1, ATSW_TASKS_DISPLAYED do
-		local B 	= CreateFrame("Button", "ATSWTask" .. T, ATSWFrame, "ATSWTaskButtonTemplate")
+		local B 	= CreateFrame('Button', 'ATSWTask' .. T, ATSWFrame, 'ATSWTaskButtonTemplate')
 		
 		if T == 1 then
-			B:SetPoint	("TOPLEFT", ATSWHorizontalBar1Left, "TOPLEFT", 6, -14)
+			B:SetPoint	('TOPLEFT', ATSWHorizontalBar1Left, 'TOPLEFT', 6, -14)
 		else
-			B:SetPoint	("TOPLEFT", "ATSWTask" .. T - 1, "BOTTOMLEFT", 0, -5)
+			B:SetPoint	('TOPLEFT', 'ATSWTask' .. T - 1, 'BOTTOMLEFT', 0, -5)
 		end
 		
 		B:SetWidth	(314)
 		B:SetHeight	(ATSW_TRADESKILL_HEIGHT)
 		
-		local D = CreateFrame("Button", "ATSWTask" .. T .. "DeleteButton", B, "UIPanelCloseButton")
+		local D = CreateFrame('Button', 'ATSWTask' .. T .. 'DeleteButton', B, 'UIPanelCloseButton')
 		
 		D:SetWidth	(18)
 		D:SetHeight	(18)
-		D:SetPoint		("RIGHT", ATSWTaskScrollFrame, "RIGHT", -3, 0)
-		D:SetPoint		("TOP", B, "TOP", 0, 1)
-		D:SetScript	("OnClick", ATSW_TaskDeleteOnClick)
+		D:SetPoint		('RIGHT', ATSWTaskScrollFrame, 'RIGHT', -3, 0)
+		D:SetPoint		('TOP', B, 'TOP', 0, 1)
+		D:SetScript	('OnClick', ATSW_TaskDeleteOnClick)
 	end
 	
 	-- Create search help strings
@@ -1564,71 +1520,71 @@ end
 
 function ATSW_OnLoad()
 	-- Unregister events from Blizzard professions frames
-	EnableAddOn("Blizzard_TradeSkillUI")
-	EnableAddOn("Blizzard_CraftUI")
-	LoadAddOn("Blizzard_TradeSkillUI")
-	LoadAddOn("Blizzard_CraftUI")
+	EnableAddOn('Blizzard_TradeSkillUI')
+	EnableAddOn('Blizzard_CraftUI')
+	LoadAddOn('Blizzard_TradeSkillUI')
+	LoadAddOn('Blizzard_CraftUI')
 	
 	UnregisterEvents(TradeSkillFrame,
-		"SKILL_LINES_CHANGED",
-		"PLAYER_ENTERING_WORLD",
-		"TRADE_SKILL_UPDATE",
-		"UNIT_PORTRAIT_UPDATE")
+		'SKILL_LINES_CHANGED',
+		'PLAYER_ENTERING_WORLD',
+		'TRADE_SKILL_UPDATE',
+		'UNIT_PORTRAIT_UPDATE')
 	
 	UnregisterEvents(CraftFrame,
-		"SKILL_LINES_CHANGED",
-		"CRAFT_UPDATE",
-		"UNIT_PORTRAIT_UPDATE",
-		"SPELLS_CHANGED",
-		"UNIT_PET_TRAINING_POINTS")
+		'SKILL_LINES_CHANGED',
+		'CRAFT_UPDATE',
+		'UNIT_PORTRAIT_UPDATE',
+		'SPELLS_CHANGED',
+		'UNIT_PET_TRAINING_POINTS')
 	
 	UnregisterEvents(UIParent,
-		"TRADE_SKILL_SHOW",
-		"TRADE_SKILL_CLOSE",
-		"CRAFT_SHOW",
-		"CRAFT_CLOSE")
+		'TRADE_SKILL_SHOW',
+		'TRADE_SKILL_CLOSE',
+		'CRAFT_SHOW',
+		'CRAFT_CLOSE')
 	
 	-- Register slash commands
-    SLASH_ATSW1 				= "/atsw"
-    SLASH_ATSW2 				= "/advancedtradeskillwindow"
-    SlashCmdList["ATSW"] 	= ATSW_Command
+    SLASH_ATSW1 				= '/atsw'
+    SLASH_ATSW2 				= '/advancedtradeskillwindow'
+    SlashCmdList['ATSW'] 	= ATSW_Command
 	
 	-- Register events
 	RegisterEvents(ATSWFrame,
-		"TRADE_SKILL_SHOW",
-		"TRADE_SKILL_CLOSE",
-		"CRAFT_SHOW",
-		"CRAFT_CLOSE",
-		"UNIT_PET",
-		"UNIT_PET_TRAINING_POINTS",
-		"BAG_UPDATE",
-		"BANKFRAME_OPENED",
-		"BANKFRAME_CLOSED",
-		"MERCHANT_SHOW",
-		"MERCHANT_UPDATE",
-		"MERCHANT_CLOSED",
-		"AUCTION_HOUSE_CLOSED",
-		"AUCTION_HOUSE_SHOW",
-		"PLAYERBANKSLOTS_CHANGED",
-		"PLAYERBANKBAGSLOTS_CHANGED",
-		"PLAYER_ENTERING_WORLD",
-		"CHAT_MSG_SYSTEM",
-		"CHAT_MSG_SKILL",
-		"CHAT_MSG_LOOT",
-		"CVAR_UPDATE",
-		"UI_ERROR_MESSAGE")
+		'TRADE_SKILL_SHOW',
+		'TRADE_SKILL_CLOSE',
+		'CRAFT_SHOW',
+		'CRAFT_CLOSE',
+		'UNIT_PET',
+		'UNIT_PET_TRAINING_POINTS',
+		'BAG_UPDATE',
+		'BANKFRAME_OPENED',
+		'BANKFRAME_CLOSED',
+		'MERCHANT_SHOW',
+		'MERCHANT_UPDATE',
+		'MERCHANT_CLOSED',
+		'AUCTION_HOUSE_CLOSED',
+		'AUCTION_HOUSE_SHOW',
+		'PLAYERBANKSLOTS_CHANGED',
+		'PLAYERBANKBAGSLOTS_CHANGED',
+		'PLAYER_ENTERING_WORLD',
+		'CHAT_MSG_SYSTEM',
+		'CHAT_MSG_SKILL',
+		'CHAT_MSG_LOOT',
+		'CVAR_UPDATE',
+		'UI_ERROR_MESSAGE')
 	
 	-- Attach name sort checkbox
-	ATSWNameSortCheckbox:SetPoint("LEFT", ATSWDifficultySortCheckbox, "RIGHT", ATSWDifficultySortCheckboxText2:GetWidth()+5, 0)
+	ATSWNameSortCheckbox:SetPoint('LEFT', ATSWDifficultySortCheckbox, 'RIGHT', ATSWDifficultySortCheckboxText2:GetWidth()+5, 0)
 	
 	-- Create side tabs
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
-		local CB = CreateFrame("CheckButton", "ATSWFrameTab" .. T, ATSWFrameSideTabsFrame, "ATSWTabTemplate")
+		local CB = CreateFrame('CheckButton', 'ATSWFrameTab' .. T, ATSWFrameSideTabsFrame, 'ATSWTabTemplate')
 		
 		if T == 1 then
-			CB:SetPoint("TOPLEFT", ATSWFrameSideTabsFrame, "TOPRIGHT", 0, -36)
+			CB:SetPoint('TOPLEFT', ATSWFrameSideTabsFrame, 'TOPRIGHT', 0, -36)
 		else
-			CB:SetPoint("TOPLEFT", "ATSWFrameTab" .. T - 1, "BOTTOMLEFT", 0, -17)
+			CB:SetPoint('TOPLEFT', 'ATSWFrameTab' .. T - 1, 'BOTTOMLEFT', 0, -17)
 		end
 	end
 	
@@ -1638,12 +1594,12 @@ function ATSW_OnLoad()
 	GameTooltip:SetBackdrop({bgFile=[[Interface\Tooltips\UI-Tooltip-Background]], edgeFile=[[Interface\Tooltips\UI-Tooltip-Border]], tile = true, edgeSize = 16, tileSize = 16, insets = {left = 4, right = 4, top = 4, bottom = 4}})
 	GameTooltip:SetBackdropColor(R, G, B, A)
 	
-	-- Fix a bug which shows error "skillOffset is nil" on line 171 of Blizzard_TradeSkillUI.lua (modified by Turtle-WoW team)
+	-- Fix a bug which shows error 'skillOffset is nil' on line 171 of Blizzard_TradeSkillUI.lua (modified by Turtle-WoW team)
 	FauxScrollFrame_SetOffset(TradeSkillListScrollFrame, 0)
 end
 
 local function SetDropDownFilter(SubClass, InvSlot)
-	ATSWFrame:UnregisterEvent(	"TRADE_SKILL_UPDATE"	)
+	ATSWFrame:UnregisterEvent(	'TRADE_SKILL_UPDATE'	)
 	
 	local SubClasses 	= table.getn({GetTradeSkillSubClasses()})
 	local InvSlots 	= table.getn({GetTradeSkillInvSlots()})
@@ -1660,7 +1616,7 @@ local function SetDropDownFilter(SubClass, InvSlot)
 	SetTradeSkillInvSlotFilter			(	InvSlot, 1, 1					)
 	
 	if ATSWFrame.UpdateIsRegistered then
-		ATSWFrame:RegisterEvent	(	"TRADE_SKILL_UPDATE"	)
+		ATSWFrame:RegisterEvent	(	'TRADE_SKILL_UPDATE'	)
 	end
 end
 
@@ -1688,8 +1644,8 @@ local OldCraftCount = 0
 
 local function WhatReagentIsLackingData()
 	for I = 1, MAX_TRADE_SKILL_REAGENTS do
-		local Button 				= getglobal("ATSWReagent" .. I)
-		local ButtonTexture 	= getglobal("ATSWReagent" .. I .. "Texture")
+		local Button 				= _G['ATSWReagent' .. I]
+		local ButtonTexture 	= _G['ATSWReagent' .. I .. 'Texture']
 		
 		if Button:IsVisible() then
 			if not (ButtonTexture:GetTexture() and Button.Name and Button.Link) then
@@ -1703,7 +1659,7 @@ end
 
 local function SetButtonCooldown(Button)
 	if Button:IsVisible() and Button.Position then
-		Button:SetText(Button.Text .. (ConvertCooldown(Recipe(Button.Position).Cooldown) or ""))
+		Button:SetText(Button.Text .. (ConvertCooldown(Recipe(Button.Position).Cooldown) or ''))
 	end
 end
 
@@ -1749,7 +1705,7 @@ function ATSW_OnUpdate(TimePassed)
 					for I = 1, RecipesSize() do
 						local R = Recipe(I)
 						
-						if R.Type ~= "header" then
+						if R.Type ~= 'header' then
 							if not (R.Name and R.Texture) then
 								local Name 	= GetCraftNameType(I)
 								local Texture	= GetCraftTexture(I)
@@ -1809,12 +1765,12 @@ function ATSW_OnUpdate(TimePassed)
 		if GetTime() - 1 >= CooldownUpdateTime then
 			-- Set cooldowns for recipe buttons
 			for I = 1, ATSW_RECIPES_DISPLAYED do
-				SetButtonCooldown(getglobal("ATSWRecipe" .. I))
+				SetButtonCooldown(_G['ATSWRecipe' .. I])
 			end
 			
 			-- Set cooldowns for task buttons
 			for I = 1, ATSW_TASKS_DISPLAYED do
-				SetButtonCooldown(getglobal("ATSWTask" .. I))
+				SetButtonCooldown(_G['ATSWTask' .. I])
 			end
 			
 			-- Set cooldown for schematic
@@ -1822,10 +1778,10 @@ function ATSW_OnUpdate(TimePassed)
 				local CD = ConvertCooldown(ATSWRecipeCooldown.Cooldown, true)
 				
 				if CD then
-					ATSWRecipeCooldown:SetText(COOLDOWN_REMAINING .. " " .. CD)
+					ATSWRecipeCooldown:SetText(COOLDOWN_REMAINING .. ' ' .. CD)
 				else
 					ATSWRecipeCooldown.Cooldown = nil
-					ATSWRecipeCooldown:SetText("")
+					ATSWRecipeCooldown:SetText('')
 				end
 			end
 			
@@ -1859,14 +1815,14 @@ function ATSW_OnUpdate(TimePassed)
 		local ItemFound
 		
 		for I = 1, ATSW_TASKS_DISPLAYED do
-			local Button 	= getglobal("ATSWTask" .. I)
+			local Button 	= _G['ATSWTask' .. I]
 		
 			if Button.Name == Processing.Recipe then	
 				ItemFound = true
 				
 				if not Bar.TaskItem or Bar.TaskItem ~= Button then
 					Bar:		SetParent(Button)
-					Bar:		SetPoint("TOPLEFT", Button:GetName(), "TOPLEFT", -2, 0)
+					Bar:		SetPoint('TOPLEFT', Button:GetName(), 'TOPLEFT', -2, 0)
 					Bar:		SetFrameLevel(12)
 					Border:	SetFrameLevel(13)
 					Spark:	SetFrameLevel(14)
@@ -1898,7 +1854,7 @@ function ATSW_OnUpdate(TimePassed)
 		if Bar.Mode == ATSW_CAST then
 			if GetTime() < Bar.EndTime then
 				Bar:		SetValue(GetTime())
-				Spark:	SetPoint("CENTER", Bar, "LEFT", (1 - (Bar.EndTime - GetTime())/(Bar.EndTime - Bar.StartTime)) * Bar:GetWidth(), -1)
+				Spark:	SetPoint('CENTER', Bar, 'LEFT', (1 - (Bar.EndTime - GetTime())/(Bar.EndTime - Bar.StartTime)) * Bar:GetWidth(), -1)
 			else
 				if IsEnchant(Processing.Texture) then
 					Bar.Mode = ATSW_FLASH
@@ -1966,8 +1922,8 @@ function ATSW_ProfessionExists(Prof)
 			local ProfessionTexture = Icon(Professions[I])
 		
 			for B = 1, NumSpells do
-				local Texture 	= GetSpellTexture	(B, "BOOKTYPE_SPELL")
-				local Name		= GetSpellName		(B, "BOOKTYPE_SPELL")
+				local Texture 	= GetSpellTexture	(B, 'BOOKTYPE_SPELL')
+				local Name		= GetSpellName		(B, 'BOOKTYPE_SPELL')
 				
 				if Texture and Texture == ProfessionTexture and string.find(Name, Prof) then
 					return true
@@ -1985,10 +1941,10 @@ local function GetFirstProfession()
 		local ProfessionTexture = Icon(Professions[I])
 		
 		for B = 1, NumSpells do
-			local Texture	= GetSpellTexture	(B, "BOOKTYPE_SPELL")
+			local Texture	= GetSpellTexture	(B, 'BOOKTYPE_SPELL')
 			
 			if Texture and Texture == ProfessionTexture then
-				return GetSpellName(B, "BOOKTYPE_SPELL")
+				return GetSpellName(B, 'BOOKTYPE_SPELL')
 			end
 		end
 	end
@@ -1996,7 +1952,7 @@ end
 
 local function ResetTabs()
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
-		local Tab = getglobal("ATSWFrameTab"..T)
+		local Tab = _G['ATSWFrameTab'..T]
 		
 		if Tab then
 			Tab.Name = nil
@@ -2012,7 +1968,7 @@ end
 
 local function TabExists(Texture)
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
-		local Tab = getglobal("ATSWFrameTab"..T)
+		local Tab = _G['ATSWFrameTab'..T]
 		
 		if Tab then
 			local NormalTexture = Tab:GetNormalTexture()
@@ -2029,8 +1985,8 @@ local function TabExists(Texture)
 end
 
 local function ChangeSmeltingIcon(Texture)
-	if Texture == "Interface\\Icons\\Spell_Fire_FlameBlades" then
-		return "Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Smelting"
+	if Texture == 'Interface\\Icons\\Spell_Fire_FlameBlades' then
+		return 'Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Smelting'
 	end
 	
 	return Texture
@@ -2043,7 +1999,7 @@ function ATSW_ConfigureSkillButtons(Exception)
 	
 	-- Iterate tabs
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
-		local Tab = getglobal("ATSWFrameTab" .. T)
+		local Tab = _G['ATSWFrameTab' .. T]
 		local TabName, TabTexture
 		
 		-- Iterate professions
@@ -2055,13 +2011,13 @@ function ATSW_ConfigureSkillButtons(Exception)
 			if not TabExists(ProfessionTexture) then
 				-- Scan spell book for professions
 				for B = 1, NumSpells do
-					local Texture 	= GetSpellTexture	(B, "BOOKTYPE_SPELL")
-					local Name		= GetSpellName		(B, "BOOKTYPE_SPELL")
+					local Texture 	= GetSpellTexture	(B, 'BOOKTYPE_SPELL')
+					local Name		= GetSpellName		(B, 'BOOKTYPE_SPELL')
 					
 					Texture = ChangeSmeltingIcon(Texture)
 					
 					if Name ~= Exception and Texture and Texture == ProfessionTexture then
-						TabName 		= GetSpellName(B, "BOOKTYPE_SPELL")
+						TabName 		= GetSpellName(B, 'BOOKTYPE_SPELL')
 						TabTexture 	= Texture
 						
 						break
@@ -2087,7 +2043,7 @@ end
 
 function ATSW_SelectTab(Name)
 	for T = 1, ATSW_MAX_TRADESKILL_TABS do
-		local Tab = getglobal("ATSWFrameTab" .. T)
+		local Tab = _G['ATSWFrameTab' .. T]
 		
 		Tab:SetChecked(Tab.Name == Name)
 	end
@@ -2096,7 +2052,7 @@ end
 function ATSW_AttachTabsTo(Frame)
 	if ATSWFrameSideTabsFrame:GetParent() ~= Frame then
 		ATSWFrameSideTabsFrame:SetParent(Frame)
-		ATSWFrameSideTabsFrame:SetPoint("TOPLEFT", Frame, "TOPRIGHT", -59, -28)
+		ATSWFrameSideTabsFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', -59, -28)
 		ATSWFrameSideTabsFrame:Show()
 	end
 end
@@ -2113,7 +2069,7 @@ function ATSW_SwitchToFrame(Frame)
 		ATSW_SwitchingToMain = false
 	else
 		if Frame and not (GetFrame(1):IsVisible() or GetFrame(2):IsVisible()) then
-			Original_PlaySound("igCharacterInfoOpen")
+			Original_PlaySound('igCharacterInfoOpen')
 		end
 	end
 	
@@ -2170,10 +2126,10 @@ local function LoadAllProfessionsOnce()
 		
 		local _, _, _, NumSpells 	= GetSpellTabInfo(1)
 		
-		ATSWFrame:	UnregisterEvent(	"TRADE_SKILL_SHOW"	)
-		ATSWFrame:	UnregisterEvent(	"TRADE_SKILL_CLOSE"	)
-		ATSWFrame:	UnregisterEvent(	"CRAFT_SHOW"				)
-		ATSWFrame:	UnregisterEvent(	"CRAFT_CLOSE"				)
+		ATSWFrame:	UnregisterEvent(	'TRADE_SKILL_SHOW'	)
+		ATSWFrame:	UnregisterEvent(	'TRADE_SKILL_CLOSE'	)
+		ATSWFrame:	UnregisterEvent(	'CRAFT_SHOW'				)
+		ATSWFrame:	UnregisterEvent(	'CRAFT_CLOSE'				)
 		
 		local function Stub() end
 		local OldSound 				= PlaySound
@@ -2183,8 +2139,8 @@ local function LoadAllProfessionsOnce()
 			local ProfessionTexture = Icon(Professions[I])
 			
 			for B = 1, NumSpells do
-				local Texture			= GetSpellTexture	(B, "BOOKTYPE_SPELL")
-				local Name 			= GetSpellName		(B, "BOOKTYPE_SPELL")
+				local Texture			= GetSpellTexture	(B, 'BOOKTYPE_SPELL')
+				local Name 			= GetSpellName		(B, 'BOOKTYPE_SPELL')
 				
 				if Name and not string.find(Name, CurrentProfession) and Texture == ProfessionTexture then
 					CastSpellByName(Name)
@@ -2203,10 +2159,10 @@ local function LoadAllProfessionsOnce()
 		
 		PlaySound 						= OldSound
 		
-		ATSWFrame:	RegisterEvent(	"TRADE_SKILL_SHOW"	)
-		ATSWFrame:	RegisterEvent(	"TRADE_SKILL_CLOSE"	)
-		ATSWFrame:	RegisterEvent(	"CRAFT_SHOW"				)
-		ATSWFrame:	RegisterEvent(	"CRAFT_CLOSE"				)
+		ATSWFrame:	RegisterEvent(	'TRADE_SKILL_SHOW'	)
+		ATSWFrame:	RegisterEvent(	'TRADE_SKILL_CLOSE'	)
+		ATSWFrame:	RegisterEvent(	'CRAFT_SHOW'				)
+		ATSWFrame:	RegisterEvent(	'CRAFT_CLOSE'				)
 	end
 end
 
@@ -2219,16 +2175,12 @@ local function ATSW_Show()
 		ATSW_CreateListButtons()
 		
 		for I = 1, ATSW_TASKS_DISPLAYED do
-			getglobal("ATSWTask" .. I .. "DeleteButton"):GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
-			getglobal("ATSWTask" .. I .. "DeleteButton"):GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
-		end
-		
-		for I = 1, 20 do
-			getglobal("ATSWRecipeTooltipTextureLeft" .. 3+I):SetTexCoord(0.08, 0.92, 0.08, 0.92)
+			_G['ATSWTask' .. I .. 'DeleteButton']:GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
+			_G['ATSWTask' .. I .. 'DeleteButton']:GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
 		end
 		
 		ATSW_ConfigureSkillButtons()
-		ATSW_AtlasLootLoaded = ATSW_CheckForAtlasLootLoaded()
+		ATSW_AtlasLoot = ATSW_CheckForAtlasLootLoaded()
 		
 		InitializedOnShow = true
 	end
@@ -2245,12 +2197,14 @@ local function ATSW_Show()
 	ATSW_ShowTaskButton				(not IsBeastTraining())
 	ATSW_ShowTrainingPointsMenu	(IsBeastTraining())
 	
+	ATSWAttributesButton:SetChecked(ATSW_ShowAttributes())
+	
 	if RecipesSize() > 0 then
 		ATSW_GetRecipes()
 		ATSW_ShowSelection()
 		ATSW_UpdateTasks()
 		
-		if SortBy() == "Custom" then
+		if SortBy() == 'Custom' then
 			ATSWCS_FillAllRecipes()
 			ATSWCS_Update()
 		end
@@ -2277,13 +2231,13 @@ end
 function ATSW_Hide()
 	if UIParent:IsVisible() then
 		ATSW_SwitchToFrame()
-		Original_PlaySound("igCharacterInfoClose")
+		Original_PlaySound('igCharacterInfoClose')
 	end
 	
 	if ATSW_SwitchingToEditor then
 		ATSW_SwitchingToEditor = false
 	else
-		PlaySound("igCharacterInfoClose")
+		PlaySound('igCharacterInfoClose')
 	end
 	
 	ATSWUpdaterFrame:Hide()
@@ -2293,9 +2247,7 @@ local function InitializeTable(Table, Value, Prof)
 	if Prof == nil then
 		Prof = Profession()
 	end
-	
-	TransformSettings(Table)
-	
+
 	if Table 							== nil 	then Table 								= {} 		end
 	if Table[realm] 					== nil 	then Table[realm] 						= {} 		end
 	if Table[realm][player] 		== nil 	then Table[realm][player] 			= {} 		end
@@ -2306,27 +2258,26 @@ local function InitializeTables()
 	local function InitializeContractedCategories()
 		local Table = ATSW_ContractedCategories
 		
-		TransformSettings(Table)
-		
 		InitializeTable(Table, {})
 		
-		if 	Table[realm][player][Profession()]["Category"] == nil 	then
-			Table[realm][player][Profession()]["Category"] = {}
+		if 	Table[realm][player][Profession()]['Category'] == nil 	then
+			Table[realm][player][Profession()]['Category'] = {}
 		end
 		
-		if 	Table[realm][player][Profession()]["Custom"] == nil 	then
-			Table[realm][player][Profession()]["Custom"] = {}
+		if 	Table[realm][player][Profession()]['Custom'] == nil 	then
+			Table[realm][player][Profession()]['Custom'] = {}
 		end
 	end
 	
-	InitializeTable(ATSW_Recipes, 				{}			)
-	InitializeTable(ATSW_RecipesSize, 			0				)
-	InitializeTable(ATSW_RecipesSorted, 		{}			)
-	InitializeTable(ATSW_RecipesSortedSize, 0				)
+	InitializeTable(ATSW.Recipes, 				{}			)
+	InitializeTable(ATSW.RecipesSize, 			0				)
+	InitializeTable(ATSW.RecipesSorted, 		{}			)
+	InitializeTable(ATSW.RecipesSortedSize, 0				)
 	InitializeTable(ATSW_SelectedRecipe, 	nil			)
+	InitializeTable(ATSW_Attributes, 			false			)
 	InitializeTable(ATSW_NeedToUpdate, 	true			)
-	InitializeTable(ATSW_SortBy, 				"Category"	)
-	InitializeTable(ATSW_SearchString, 		""				)
+	InitializeTable(ATSW_SortBy, 				'Category'	)
+	InitializeTable(ATSW_SearchString, 		''				)
 	InitializeTable(ATSW_SubClassFilter, 		0				)
 	InitializeTable(ATSW_InvSlotFilter, 		0				)
 	InitializeTable(ATSW_ScrollOffset, 			0				)
@@ -2335,7 +2286,7 @@ local function InitializeTables()
 	InitializeTable(ATSW_Tasks, 					{}			)
 	InitializeTable(ATSW_CustomCategories, {}			)
 	InitializeTable(ATSW_CSOpenCategory, 	0				)
-	InitializeTable(ATSW_CSSelected, 			""				)
+	InitializeTable(ATSW_CSSelected, 			''				)
 	
 	InitializeContractedCategories()
 end
@@ -2353,7 +2304,7 @@ local function GetProfession()
 	
 	local Skill = GetCraftCaption()
 	
-	if Skill and Skill ~= "UNKNOWN" then
+	if Skill and Skill ~= 'UNKNOWN' then
 		ATSW_Profession[realm][player] = Skill
 	end
 	
@@ -2374,7 +2325,7 @@ function ATSW_UpdateStatusBarRank()
 	end
 	
 	if ATSWRankFrameRank:IsVisible() then
-		ATSWRankFrameRank:		SetText(Rank .. "/" .. MaxRank)
+		ATSWRankFrameRank:		SetText(Rank .. '/' .. MaxRank)
 	end
 end
 
@@ -2398,7 +2349,7 @@ function ATSW_UpdateBackground()
 	local BG = ATSW_Background[GetProfessionTexture(Profession())]
 	
 	if BG then
-		ATSWBackground:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Background\\" .. BG)
+		ATSWBackground:SetTexture('Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\Background\\' .. BG)
 	else
 		ATSWBackground:SetTexture(nil)
 	end
@@ -2419,14 +2370,14 @@ function ATSW_UpdateCaption()
 				if STexture then
 					for S = 1, table.getn(Specs) do
 						if STexture == Icon(Specs[S]) then
-							return GREY .. " (" .. GetSpellName(I, BOOKTYPE_SPELL) .. ")|r"
+							return Color.GREY .. ' (' .. GetSpellName(I, BOOKTYPE_SPELL) .. ')|r'
 						end
 					end
 				end
 			until not STexture or I == 36
 		end
 		
-		return ""
+		return ''
 	end
 	
 	InitializeFrame()
@@ -2453,7 +2404,7 @@ function ATSW_UpdateFrame()
 		ATSW_ShowDropDown()
 	end
 	
-	if SortBy() == "Custom" then
+	if SortBy() == 'Custom' then
 		ATSWCS_FillAllRecipes()
 		ATSWCS_Update()
 	end
@@ -2461,8 +2412,8 @@ function ATSW_UpdateFrame()
 	SetNeedToUpdate(Profession(), false)
 	
 	if not ATSWFrame.UpdateIsRegistered and RecipesSize() > 0 and RecipesSize() == GetCraftCount()  then
-		ATSWFrame:RegisterEvent(	"TRADE_SKILL_UPDATE"				)
-		ATSWFrame:RegisterEvent(	"CRAFT_UPDATE"						)
+		ATSWFrame:RegisterEvent(	'TRADE_SKILL_UPDATE'				)
+		ATSWFrame:RegisterEvent(	'CRAFT_UPDATE'						)
 		ATSWFrame.UpdateIsRegistered = true
 	end
 	
@@ -2472,51 +2423,51 @@ end
 
 function ATSW_OnEvent()
 	if ATSW_Debug then
-		local s = ""
+		local s = ''
 		
-		if arg1 	then s = s .. " (|cffB0B0B0arg1|r = "  .. 	"|cffFFD100" .. arg1 .. "|r" 	end
-		if arg2 	then s = s .. ", |cffB0B0B0arg2|r = "  ..	"|cffFFD100" .. arg2 .. "|r" 	end
-		if arg3 	then s = s .. ", |cffB0B0B0arg3|r = "  ..	"|cffFFD100" .. arg3 .. "|r" 	end
-		if arg4 	then s = s .. ", |cffB0B0B0arg4|r = "  ..	"|cffFFD100" .. arg4 .. "|r" 	end
-		if arg5 	then s = s .. ", |cffB0B0B0arg5|r = "  ..	"|cffFFD100" .. arg5 .. "|r" 	end
-		if arg6 	then s = s .. ", |cffB0B0B0arg6|r = "  ..	"|cffFFD100" .. arg6 .. "|r" 	end
-		if arg7 	then s = s .. ", |cffB0B0B0arg7|r = "  ..	"|cffFFD100" .. arg7 .. "|r" 	end
-		if arg8 	then s = s .. ", |cffB0B0B0arg8|r = "  ..	"|cffFFD100" .. arg8 .. "|r" 	end
-		if arg9 	then s = s .. ", |cffB0B0B0arg9|r = "  ..	"|cffFFD100" .. arg9 .. "|r" 	end
-		if arg10	then s = s .. ", |cffB0B0B0arg10|r = " ..	"|cffFFD100" .. arg10 .. "|r" 	end
+		if arg1 	then s = s .. ' (|cffB0B0B0arg1|r = '  .. 	'|cffFFD100' .. arg1 .. '|r' 	end
+		if arg2 	then s = s .. ', |cffB0B0B0arg2|r = '  ..	'|cffFFD100' .. arg2 .. '|r' 	end
+		if arg3 	then s = s .. ', |cffB0B0B0arg3|r = '  ..	'|cffFFD100' .. arg3 .. '|r' 	end
+		if arg4 	then s = s .. ', |cffB0B0B0arg4|r = '  ..	'|cffFFD100' .. arg4 .. '|r' 	end
+		if arg5 	then s = s .. ', |cffB0B0B0arg5|r = '  ..	'|cffFFD100' .. arg5 .. '|r' 	end
+		if arg6 	then s = s .. ', |cffB0B0B0arg6|r = '  ..	'|cffFFD100' .. arg6 .. '|r' 	end
+		if arg7 	then s = s .. ', |cffB0B0B0arg7|r = '  ..	'|cffFFD100' .. arg7 .. '|r' 	end
+		if arg8 	then s = s .. ', |cffB0B0B0arg8|r = '  ..	'|cffFFD100' .. arg8 .. '|r' 	end
+		if arg9 	then s = s .. ', |cffB0B0B0arg9|r = '  ..	'|cffFFD100' .. arg9 .. '|r' 	end
+		if arg10	then s = s .. ', |cffB0B0B0arg10|r = ' ..	'|cffFFD100' .. arg10 .. '|r' 	end
 		
-		if s ~= "" then s = s .. ")" end
+		if s ~= '' then s = s .. ')' end
 		
 		-- Filter NPCScan TargetUnit() spam
-		if not (event == "UI_ERROR_MESSAGE" and string.find(arg1, ERR_UNIT_NOT_FOUND)) then
-			Debug("|cffB0B0B0event|r = " .. "|cffFFD100" .. tostring(event) .. "|r" .. s)
+		if not (event == 'UI_ERROR_MESSAGE' and string.find(arg1, ERR_UNIT_NOT_FOUND)) then
+			Debug('|cffB0B0B0event|r = ' .. '|cffFFD100' .. tostring(event) .. '|r' .. s)
 		end
 	end
 	
-    if 			event == "UNIT_PET"									then
+    if 			event == 'UNIT_PET'									then
 	
 		ATSW_ShowTrainingPoints()
 		
-    elseif 	event == "UNIT_PET_TRAINING_POINTS" 		then
+    elseif 	event == 'UNIT_PET_TRAINING_POINTS' 		then
 	
 		ATSW_ShowTrainingPoints()
 	
-    elseif 	event == "BANKFRAME_OPENED"
-    or 		event == "PLAYERBANKSLOTS_CHANGED"
-    or 		event == "PLAYERBANKBAGSLOTS_CHANGED" 	then
+    elseif 	event == 'BANKFRAME_OPENED'
+    or 		event == 'PLAYERBANKSLOTS_CHANGED'
+    or 		event == 'PLAYERBANKBAGSLOTS_CHANGED' 	then
 		
 		BankFrameOpened = true
         ATSW_SaveBank()
 	
-    elseif 	event == "BANKFRAME_CLOSED" 					then
+    elseif 	event == 'BANKFRAME_CLOSED' 					then
 	
 		BankFrameOpened = false
 	
-    elseif 	event == "MERCHANT_SHOW" 						then
+    elseif 	event == 'MERCHANT_SHOW' 						then
 		
         ATSW_UpdateMerchant()
         
-		if ATSW_AutoBuy then
+		if ATSW_Options.AutoBuy then
 			ATSW_BuyFromMerchant()
 		else
 			ATSW_SetBuyFrameVisible()
@@ -2529,7 +2480,7 @@ function ATSW_OnEvent()
 			SetCenterFrame(ATSWFrame)
 			UIParent.center = oldCenter
 		end
-    elseif 	event == "MERCHANT_CLOSED" 						then
+    elseif 	event == 'MERCHANT_CLOSED' 						then
 	
 		ATSWBuyNecessaryFrame:Hide()
 		
@@ -2540,19 +2491,19 @@ function ATSW_OnEvent()
 			SetLeftFrame(ATSWFrame)
 			UIParent.left = oldLeft
 		end
-    elseif 	event == "MERCHANT_UPDATE" 						then
+    elseif 	event == 'MERCHANT_UPDATE' 						then
 	
 		ATSW_UpdateMerchant()
 	
-    elseif 	event == "AUCTION_HOUSE_SHOW" 				then
+    elseif 	event == 'AUCTION_HOUSE_SHOW' 				then
 	
         ATSW_ShowAuctionShoppingList()
 	
-    elseif 	event == "AUCTION_HOUSE_CLOSED" 			then
+    elseif 	event == 'AUCTION_HOUSE_CLOSED' 			then
 	
         ATSWShoppingListFrame:Hide()
 	
-    elseif 	event == "BAG_UPDATE" 								then
+    elseif 	event == 'BAG_UPDATE' 								then
 		if BankFrameOpened then
 			ATSW_SaveBank()
 		end
@@ -2564,7 +2515,7 @@ function ATSW_OnEvent()
 			for Slot = 1, GetContainerNumSlots(arg1) do
 				local function ToolIsUpdating(BID)
 					for I = 1, ATSW_TOOLS_DISPLAYED do
-						local Button = getglobal("ATSWTool" .. I)
+						local Button = _G['ATSWTool' .. I]
 						
 						if Button:IsVisible() then
 							local ToolID = ToolID[Button.Name]
@@ -2578,7 +2529,7 @@ function ATSW_OnEvent()
 					return false
 				end
 				
-				local BID = LinkToID(GetContainerItemLink(arg1, Slot))
+				local BID = ATSW_LinkToID(GetContainerItemLink(arg1, Slot))
 				
 				if ToolIsUpdating(BID) then
 					ATSW_SelectRecipe(RecipeSelected())
@@ -2601,12 +2552,12 @@ function ATSW_OnEvent()
 		if MerchantFrame:				IsVisible() 	then 	ATSW_SetBuyFrameVisible			() 	end
 		if ATSWShoppingListFrame:	IsVisible() 	then 	ATSW_UpdateAuctionList			() 	end
 		
-    elseif 	event == "TRADE_SKILL_UPDATE"
-	or 		event == "CRAFT_UPDATE" 							then
+    elseif 	event == 'TRADE_SKILL_UPDATE'
+	or 		event == 'CRAFT_UPDATE' 							then
 		
 		UpdateCount = UpdateCount + 1
 	
-    elseif 	event == "SPELLCAST_START"  						then
+    elseif 	event == 'SPELLCAST_START'  						then
 		
 		if arg1 == Processing.Recipe and not Processing.Active then
 			local function ColorizeProgressBar()
@@ -2658,11 +2609,11 @@ function ATSW_OnEvent()
 			ATSW_StartProcessing()
 		end
 		
-	elseif	event == "SPELLCAST_INTERRUPTED"				then
+	elseif	event == 'SPELLCAST_INTERRUPTED'				then
 		
 		ATSW_StopProcessing()
 		
-	elseif 	event == "PLAYER_ENTERING_WORLD" 			then
+	elseif 	event == 'PLAYER_ENTERING_WORLD' 			then
 		
 		ATSW_SaveBag(0)
 		ATSW_Hide()
@@ -2700,7 +2651,7 @@ function ATSW_OnEvent()
 			Class		= class
 		})
 		
-	elseif 	event == "CHAT_MSG_SYSTEM" 						then
+	elseif 	event == 'CHAT_MSG_SYSTEM' 						then
 	
 		if string.find(arg1, ERR_LEARN_RECIPE_PATTERN)
 		or string.find(arg1, ERR_LEARN_SPELL_PATTERN) then 				-- Learn new recipe event
@@ -2725,8 +2676,8 @@ function ATSW_OnEvent()
 				
 				-- Reset necessary settings
 				ATSW_SelectedRecipe	[realm][player][Skill]	= nil
-				ATSW_RecipesSize			[realm][player][Skill]	= 0
-				ATSW_RecipesSortedSize	[realm][player][Skill]	= 0
+				ATSW.RecipesSize			[realm][player][Skill]	= 0
+				ATSW.RecipesSortedSize	[realm][player][Skill]	= 0
 				ATSW_SubClassFilter		[realm][player][Skill]	= 0
 				ATSW_InvSlotFilter			[realm][player][Skill]	= 0
 				ATSW_SelectedRecipe	[realm][player][Skill]	= nil
@@ -2739,11 +2690,11 @@ function ATSW_OnEvent()
 				end
 			end
 		end
-	elseif 	event == "CHAT_MSG_LOOT" 						then
+	elseif 	event == 'CHAT_MSG_LOOT' 						then
 		
 		-- Task completion
 		if Processing.Active then
-			if string.find(arg1, LOOT_ITEM_CREATED_SELF_PATTERN) then -- React on "You create: %s" pattern
+			if string.find(arg1, LOOT_ITEM_CREATED_SELF_PATTERN) then -- React on 'You create: %s' pattern
 				Bar = ATSWProgressBar
 				
 				if Processing.Amount > 1 then
@@ -2766,7 +2717,7 @@ function ATSW_OnEvent()
 				Bar:SetMinMaxValues(Bar.StartTime, Bar.EndTime)
 			end
 		end
-	elseif 	event == "CHAT_MSG_SKILL" 							then
+	elseif 	event == 'CHAT_MSG_SKILL' 							then
 	
 		if string.find(arg1, ERR_SKILL_UP_PATTERN) then						-- Increase profession rank event
 			local _, _, Skill = string.find(arg1, ERR_SKILL_UP_PATTERN)
@@ -2783,24 +2734,26 @@ function ATSW_OnEvent()
 		elseif string.find(arg1, ERR_SKILL_GAINED_PATTERN) then 			-- Learn new profession event
 			ATSW_ConfigureSkillButtons()
 		end
-	elseif 	event == "CVAR_UPDATE" 								then
-		if arg1 		== "USE_UISCALE" 		then
-			ATSWRecipeTooltip:SetScale(GetCVar("uiscale"))
-		elseif arg1	== "WINDOWED_MODE"	then
+	elseif 	event == 'CVAR_UPDATE' 								then
+		if arg1 		== 'USE_UISCALE' 		then
+			ATSWRecipeTooltip:SetScale(GetCVar('uiscale'))
+		elseif arg1	== 'WINDOWED_MODE'	then
 			-- Fix for BarGlow texture becomes white if toggling windowed mode
 			ATSWProgressBarGlow:SetTexture(nil)
-			ATSWProgressBarGlow:SetTexture("Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\ProgressBarFlash")
+			ATSWProgressBarGlow:SetTexture('Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\ProgressBarFlash')
+			ATSWOptionsMenuHeader:SetTexture(nil)
+			ATSWOptionsMenuHeader:SetTexture('Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\UI-DialogBox-Header')
 		end
-	elseif 	event == "UI_ERROR_MESSAGE" 						then
+	elseif 	event == 'UI_ERROR_MESSAGE' 						then
 		if Processing.Active and (string.find(arg1, ERR_INV_FULL) or string.find(arg1, sRequires)) then
 			ATSW_StopProcessing()
 		end
-	elseif 	event == "TRADE_SKILL_SHOW" 						then
+	elseif 	event == 'TRADE_SKILL_SHOW' 						then
 		if UIParent:IsVisible() then
 			if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
-				ATSWFrame:	UnregisterEvent	("CRAFT_CLOSE"		)
+				ATSWFrame:	UnregisterEvent	('CRAFT_CLOSE'		)
 				CloseCraft()
-				ATSWFrame:	RegisterEvent		("CRAFT_CLOSE"		)
+				ATSWFrame:	RegisterEvent		('CRAFT_CLOSE'		)
 			end
 			
 			TradeSkill = true
@@ -2808,17 +2761,17 @@ function ATSW_OnEvent()
 		else
 			CloseTradeSkill()
 		end
-	elseif 	event == "CRAFT_SHOW" 									then
+	elseif 	event == 'CRAFT_SHOW' 									then
 		if UIParent:IsVisible() then
 			if ATSWFrame:IsVisible() or ATSWCSFrame:IsVisible() then
-				ATSWFrame:	UnregisterEvent	("TRADE_SKILL_CLOSE")
+				ATSWFrame:	UnregisterEvent	('TRADE_SKILL_CLOSE')
 				CloseTradeSkill()
 				
 				if TradeSkill then
 					Processing.Stop = true
 				end
 				
-				ATSWFrame:	RegisterEvent		("TRADE_SKILL_CLOSE")
+				ATSWFrame:	RegisterEvent		('TRADE_SKILL_CLOSE')
 			end
 		
 			TradeSkill = false
@@ -2826,9 +2779,9 @@ function ATSW_OnEvent()
 		else
 			CloseCraft()
 		end
-	elseif event == "TRADE_SKILL_CLOSE" then
+	elseif event == 'TRADE_SKILL_CLOSE' then
 		ATSW_Hide()
-	elseif event == "CRAFT_CLOSE" then
+	elseif event == 'CRAFT_CLOSE' then
 		ATSW_Hide()
     end
 end
@@ -2836,11 +2789,11 @@ end
 -- Control
 
 local function SetSortCheckboxes(Sort)
-	ATSWCategorySortCheckbox:	SetChecked(	Sort == "Category"	)
-	ATSWDifficultySortCheckbox:	SetChecked(	Sort == "Difficulty"		)
-	ATSWNameSortCheckbox:		SetChecked(	Sort == "Name"			)
-	ATSWCustomSortCheckbox:		SetChecked(	Sort == "Custom"		)
-	SetVisible(ATSWCustomEditorButton, Sort == "Custom")
+	ATSWCategorySortCheckbox:	SetChecked(	Sort == 'Category'	)
+	ATSWDifficultySortCheckbox:	SetChecked(	Sort == 'Difficulty'		)
+	ATSWNameSortCheckbox:		SetChecked(	Sort == 'Name'			)
+	ATSWCustomSortCheckbox:		SetChecked(	Sort == 'Custom'		)
+	SetVisible(ATSWCustomEditorButton, Sort == 'Custom')
 end
 
 function ATSW_SortCheckbox_OnClick()
@@ -2869,14 +2822,14 @@ function ATSWInvSlotDropDownButton_OnClick()
 end
 
 local function InsertIntoAuction(Link)
-	local _, _, Name = string.find(Link, "%[?([^%[%]]*)%]")
+	local _, _, Name = string.find(Link, '%[?([^%[%]]*)%]')
 
 	if aux_frame and aux_frame:IsVisible() then
 		local aux = require 'aux'
 		local info = require 'aux.util.info'
 		
-		local _, _, ID = string.find(Link, "item:(%d+)")
-		local Item = string.format("item:%d", tonumber(ID))
+		local _, _, ID = string.find(Link, 'item:(%d+)')
+		local Item = string.format('item:%d', tonumber(ID))
 		local item_info = info.item(tonumber(aux.select(3, strfind(Item, '^item:(%d+)'))))
 		
 		if item_info and aux.get_tab().CLICK_LINK then
@@ -2898,24 +2851,24 @@ end
 function ATSWRecipeButton_OnClick(Button)
 	local Link 		= this.Link
 	
-	if Button == "LeftButton" then
+	if Button == 'LeftButton' then
 		local Name 	= this.Name
 		local Type 	= this.Type
 		
-		if not Ctrl() and Shift() and not Alt() and not (Type == "header") then
+		if not Key.Ctrl() and Key.Shift() and not Key.Alt() and not (Type == 'header') then
 			if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
 				ATSW_SayReagents(this.Position)
-			elseif not (IsBeastTraining() or Type == "header") then
+			elseif not (IsBeastTraining() or Type == 'header') then
 				local Possible = ATSW_HowManyItemsArePossibleToCreate(Name)
 				
 				ATSW_AddTask(Name, Possible > 0 and Possible or 1)
 			end
-		elseif Ctrl() and not Shift() and not Alt() and Link then
+		elseif Key.Ctrl() and not Key.Shift() and not Key.Alt() and Link then
 			DressUpItemLink(Link)
 		else
 			ATSW_SelectRecipe(Name, Type)
 		end
-	elseif Button == "RightButton" then
+	elseif Button == 'RightButton' then
 		InsertIntoAuction(Link)
 	end
 end
@@ -2925,7 +2878,7 @@ function ATSW_TaskDeleteOnClick()
 end
 
 function ATSWTool_OnClick(Button)
-	if Button == "LeftButton" then
+	if Button == 'LeftButton' then
 		table.insert(PreviousRecipes(), RecipeSelected())
 		ATSW_SelectRecipe(this.Name)
 	end
@@ -2936,12 +2889,12 @@ function ATSWReagentsButton_OnClick()
         ATSWReagentsFrame:Hide()
     else
 		for R = 1, ATSW_NECESSARIES_DISPLAYED do -- Create reagent frame buttons
-			local F = CreateFrame("Frame", "ATSWRFReagent" .. R, ATSWReagentsFrame, "ATSWRFReagentTemplate")
+			local F = CreateFrame('Frame', 'ATSWRFReagent' .. R, ATSWReagentsFrame, 'ATSWRFReagentTemplate')
 			
 			if R == 1 then
-				F:SetPoint("TOPLEFT", 26, -59)
+				F:SetPoint('TOPLEFT', 26, -59)
 			else
-				F:SetPoint("TOPLEFT", "ATSWRFReagent" .. R - 1, "BOTTOMLEFT")
+				F:SetPoint('TOPLEFT', 'ATSWRFReagent' .. R - 1, 'BOTTOMLEFT')
 			end
 		end
 		
@@ -2953,7 +2906,7 @@ end
 local function Crement(Edge, Step)
 	local Amount	= ATSWAmountBox:GetNumber()
 	
-	if not Ctrl() and Shift() and not Alt() then
+	if not Key.Ctrl() and Key.Shift() and not Key.Alt() then
 		Amount = Edge
 	end
 	
@@ -2977,8 +2930,8 @@ function ATSWFrameIncrement_OnClick()
 end
 
 function ATSWTask_OnClick(arg1)
-	if arg1 == "LeftButton" then
-		if not Ctrl() and Shift() and not Alt() and not Processing.Active and not Recipe(this.Position).Cooldown then
+	if arg1 == 'LeftButton' then
+		if not Key.Ctrl() and Key.Shift() and not Key.Alt() and not Processing.Active and not Recipe(this.Position).Cooldown then
 			local QName 			= Task(this.TaskIndex).Name
 			local QAmount 		= Task(this.TaskIndex).Amount
 			local IncludeTasks 	= true
@@ -2998,7 +2951,7 @@ function ATSWTaskButton_OnClick()
 	local Name = RecipeSelected()
 	
 	if Amount == 0 and TradeSkill then
-		if ATSW_ConsiderBank or ATSW_ConsiderAlts or ATSW_ConsiderMerchants then
+		if ATSW_Options.ConsiderBank or ATSW_Options.ConsiderAlts or ATSW_Options.ConsiderMerchants then
 			Amount = ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
 		else
 			Amount = ATSW_HowManyItemsArePossibleToCreate(Name)
@@ -3050,7 +3003,7 @@ function ATSWCreateButton_OnClick()
 end
 
 function ATSW_ShowFrame()
-	CastSpellByName(ATSW_ProfessionExists(Profession()) and Profession() or GetFirstProfession() or "")
+	CastSpellByName(ATSW_ProfessionExists(Profession()) and Profession() or GetFirstProfession() or '')
 end
 
 function ATSW_Command(Command)
@@ -3058,11 +3011,11 @@ function ATSW_Command(Command)
 		DEFAULT_CHAT_FRAME:AddMessage(msg)
 	end
 	
-    if 			Command == "options"
-	or 		Command == "configuration" 
-	or 		Command == "config" 	then
+    if 			Command == 'options'
+	or 		Command == 'configuration' 
+	or 		Command == 'config' 	then
 		ATSW_ToggleOptionsFrame()
-	elseif 	Command == "debug" 	then
+	elseif 	Command == 'debug' 	then
 		ATSW_Debug = not ATSW_Debug
     else
 		ATSW_ShowFrame()
@@ -3073,14 +3026,14 @@ function ATSW_ToggleOptionsFrame()
     if ATSWConfigFrame:IsVisible() then
 		HideUIPanel(ATSWConfigFrame)
     else
-		ATSWOFUnifiedButton:					SetChecked(ATSW_Unified)
-		ATSWOFSeparateButton:					SetChecked(not ATSW_Unified)
-		ATSWOFIncludeBankButton:			SetChecked(ATSW_ConsiderBank)
-		ATSWOFIncludeAltsButton:				SetChecked(ATSW_ConsiderAlts)
-		ATSWOFIncludeMerchantsButton:		SetChecked(ATSW_ConsiderMerchants)
-		ATSWOFAutoBuyButton:					SetChecked(ATSW_AutoBuy)
-		ATSWOFTooltipButton:					SetChecked(ATSW_RecipeTooltip)
-		ATSWOFShoppingListButton:			SetChecked(ATSW_DisplayShoppingList)
+		ATSWOFUnifiedButton:					SetChecked(ATSW_Options.Unified)
+		ATSWOFSeparateButton:					SetChecked(not ATSW_Options.Unified)
+		ATSWOFIncludeBankButton:			SetChecked(ATSW_Options.ConsiderBank)
+		ATSWOFIncludeAltsButton:				SetChecked(ATSW_Options.ConsiderAlts)
+		ATSWOFIncludeMerchantsButton:		SetChecked(ATSW_Options.ConsiderMerchants)
+		ATSWOFAutoBuyButton:					SetChecked(ATSW_Options.AutoBuy)
+		ATSWOFTooltipButton:					SetChecked(ATSW_Options.RecipeTooltip)
+		ATSWOFShoppingListButton:			SetChecked(ATSW_Options.DisplayShoppingList)
 		
         ShowUIPanel(ATSWConfigFrame)
     end
@@ -3089,26 +3042,26 @@ end
 function ATSWRecipe_OnClick()
 	local Link = this.Link
 	
-    if arg1 == "RightButton" then
+    if arg1 == 'RightButton' then
         InsertIntoAuction(Link)
-	elseif arg1 == "LeftButton" then
-		if Ctrl() and not Shift() and not Alt() then
+	elseif arg1 == 'LeftButton' then
+		if Key.Ctrl() and not Key.Shift() and not Key.Alt() then
 			DressUpItemLink(Link)
-		elseif not Ctrl() and Shift() and not Alt() then
+		elseif not Key.Ctrl() and Key.Shift() and not Key.Alt() then
 			if WIM_EditBoxInFocus then
 				WIM_EditBoxInFocus:Insert(Link)
 			elseif ChatFrameEditBox:IsVisible() then
 				ChatFrameEditBox:Insert(Link)
 			else
 				if Link then
-					ATSWSearchBox:SetText(":r " .. (LinkToName(Link) or ""))
+					ATSWSearchBox:SetText(':r ' .. (LinkToName(Link) or ''))
 				end
 			end
-		elseif string.find(this:GetName(), "ATSWReagent") then
-			local ReagentID = LinkToID(GetReagentLink(GetPositionFromGame(RecipeSelected()), this:GetID()))
+		elseif string.find(this:GetName(), 'ATSWReagent') then
+			local ReagentID = ATSW_LinkToID(GetReagentLink(GetPositionFromGame(RecipeSelected()), this:GetID()))
 			
 			for I = 1, RecipesSize() do
-				if ReagentID == LinkToID(Recipe(I).Link) then
+				if ReagentID == ATSW_LinkToID(Recipe(I).Link) then
 					table.insert(PreviousRecipes(), RecipeSelected())
 					
 					ATSW_SelectRecipe(Recipe(I).Name)
@@ -3123,7 +3076,7 @@ function ATSWPreviousItemButton_OnClick()
 end
 
 function ATSWSubClassDropDown_OnLoad()
-	getglobal(this:GetName().."Button"):SetHeight(26)
+	_G[this:GetName()..'Button']:SetHeight(26)
 	UIDropDownMenu_Initialize(this, ATSWSubClassDropDown_Initialize)
 	UIDropDownMenu_SetWidth(120)
 	UIDropDownMenu_SetSelectedID(ATSWSubClassDropDown, 1)
@@ -3194,7 +3147,7 @@ function ATSWFilterFrame_LoadSubClasses(...)
 end
 
 function ATSWInvSlotDropDown_OnLoad()
-	getglobal(this:GetName().."Button"):SetHeight(26)
+	_G[this:GetName()..'Button']:SetHeight(26)
 	UIDropDownMenu_Initialize(this, ATSWInvSlotDropDown_Initialize)
 	UIDropDownMenu_SetWidth(120)
 	UIDropDownMenu_SetSelectedID(ATSWInvSlotDropDown, 1)
@@ -3255,7 +3208,7 @@ end
 function ATSW_GetRecipes(New)
 	if RecipesSize() == 0 or New then
 		SetDropDownFilter(0, 0) -- It is needed for full trade skill list initial loading
-		SetRecipesSize(0)
+		RecipesSize(0)
 		
 		for I = 1, GetCraftCount() do
 			AddRecipe(I)
@@ -3268,10 +3221,10 @@ end
 
 function ATSW_GetRecipesSorted(New)
 	if RecipesSortedSize() == 0 or New then
-		if 			SortBy() == "Category" 	then ATSW_GetRecipesSortedByCategory	()
-		elseif 	SortBy() == "Difficulty" 	then ATSW_GetRecipesSortedByDifficulty	()
-		elseif 	SortBy() == "Name" 		then ATSW_GetRecipesSortedByName		()
-		elseif 	SortBy() == "Custom" 	then ATSW_GetRecipesSortedByCustom	() end
+		if 			SortBy() == 'Category' 	then ATSW_GetRecipesSortedByCategory	()
+		elseif 	SortBy() == 'Difficulty' 	then ATSW_GetRecipesSortedByDifficulty	()
+		elseif 	SortBy() == 'Name' 		then ATSW_GetRecipesSortedByName		()
+		elseif 	SortBy() == 'Custom' 	then ATSW_GetRecipesSortedByCustom	() end
 	end
 	
 	ATSW_UpdateRecipes()
@@ -3280,17 +3233,17 @@ end
 -- Sorting of recipes
 
 function ATSW_GetRecipesSortedByCategory()
-	SetRecipesSortedSize(0)
+	RecipesSortedSize(0)
 	
 	local Expanded, H = true
 	
 	for I = 1, RecipesSize() do
 		local R = Recipe(I)
 		
-		if R.Type == "header" then
+		if R.Type == 'header' then
 			H = R
 		else
-			if ATSW_Filter(R.Name) and DropDownFilterPass(R.Name) then
+			if ATSW_Filter(R) and DropDownFilterPass(R.Name) then
 				if H then
 					Expanded = IsExpanded(H.Name)
 					AddRecipeSorted(H)
@@ -3306,12 +3259,12 @@ function ATSW_GetRecipesSortedByCategory()
 end
 
 local function GetRecipesSortedWithoutHeaders()
-	SetRecipesSortedSize(0)
+	RecipesSortedSize(0)
 	
 	for I = 1, RecipesSize() do
 		local R = Recipe(I)
 		
-		if R.Type ~= "header" and ATSW_Filter(R.Name) and DropDownFilterPass(R.Name) then
+		if R.Type ~= 'header' and ATSW_Filter(R) and DropDownFilterPass(R.Name) then
 			AddRecipeSorted(R)
 		end
 	end
@@ -3320,11 +3273,11 @@ end
 function ATSW_TypeToNumber(Type)
 	local Number = 0
 	
-	if Type 	== "trivial" 	then Number = 4 end
-	if Type 	== "easy" 	then Number = 3 end
-	if Type 	== "medium"	then Number = 2 end
-	if Type 	== "optimal" 	then Number = 1 end
-	if Type 	== "none" 	then Number = 0 end
+	if Type 	== 'trivial' 	then Number = 4 end
+	if Type 	== 'easy' 	then Number = 3 end
+	if Type 	== 'medium'	then Number = 2 end
+	if Type 	== 'optimal' 	then Number = 1 end
+	if Type 	== 'none' 	then Number = 0 end
 	
 	return Number
 end
@@ -3343,7 +3296,7 @@ function ATSW_GetRecipesSortedByDifficulty()
 	ATSW_Sort(RecipesSorted(), RecipesSortedSize(), ATSW_CompareDifficulty)
 	
 	-- Compatibility with AtlasLoot
-	if ATSW_AtlasLootLoaded then
+	if ATSW_AtlasLoot then
 		ATSW_Sort(RecipesSorted(), RecipesSortedSize(), ATSW_CompareDifficultyUsingExternalData)
 	end
 end
@@ -3358,12 +3311,10 @@ function ATSW_GetRecipesSortedByName()
 end
 
 function ATSW_GetRecipesSortedByCustom()
-	SetRecipesSortedSize(0)
+	RecipesSortedSize(0)
 	
 	-- First add all custom categories and recipes in them
 	local function Categories()
-		TransformSettings(ATSW_CustomCategories)
-	
 		return ATSW_CustomCategories[realm][player][Profession()]
 	end
 	
@@ -3386,7 +3337,7 @@ function ATSW_GetRecipesSortedByCustom()
 		for I = 1, table.getn(Category(C).Items) do
 			local R = CatRecipe(C, I)
 
-			if R.Type ~= "header" and ATSW_Filter(R.Name) and DropDownFilterPass(R.Name) and IsInTradeSkills(R.Name) then
+			if R.Type ~= 'header' and ATSW_Filter(R) and DropDownFilterPass(R.Name) and IsInTradeSkills(R.Name) then
 				if not HeaderAdded then
 					AddRecipeSorted(Category(C))
 					HeaderAdded = true
@@ -3399,16 +3350,16 @@ function ATSW_GetRecipesSortedByCustom()
 		end
 	end
 	
-	-- Then add uncategorized recipes into the category "Uncategorized"
+	-- Then add uncategorized recipes into the category 'Uncategorized'
 	
 	HeaderAdded = false
 	
 	for I = 1, RecipesSize() do
 		local R = Recipe(I)
 		
-		if R.Type ~= "header" and not ATSWCS_IsCategorized(R.Name, R.SubName) and ATSW_Filter(R.Name) and DropDownFilterPass(R.Name) then
+		if R.Type ~= 'header' and not ATSWCS_IsCategorized(R.Name, R.SubName) and ATSW_Filter(R) and DropDownFilterPass(R.Name) then
 			if not HeaderAdded then
-				AddRecipeSorted({Name = ATSW_UNCATEGORIZED, Type = "header"})
+				AddRecipeSorted({Name = ATSW_UNCATEGORIZED, Type = 'header'})
 				HeaderAdded = true
 			end
 			
@@ -3443,18 +3394,489 @@ function ATSW_Sort(Table, Size, SortingFunction)
 	Sort(Table, 1, Size, SortingFunction)
 end
 
+local StatW = Color.WHITE .. '%d' .. Color.LIGHTGREY
+local StatWP = Color.WHITE .. '%d%%' .. Color.LIGHTGREY
+local StatWS = Color.WHITE .. '%s' .. Color.LIGHTGREY
+local StatG = Color.GREEN .. '%d' .. Color.LIGHTGREY
+local StatGS = Color.GREEN .. '%s' .. Color.LIGHTGREY
+
+local EnchantPatterns = {
+	{Pattern = 'enchant[s]* a piece of (%a+) .+ increase[s]* the ([%a%s]+) of the wearer by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 1},
+    {Pattern = 'enchant[s]* a piece of ([%a%s]+) armor to [%a]+ [+]*(%d+%%*) [to%s]*([%a%s]+).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* a piece of ([%a%s]+) armor so it has.+ (%d+%%*) chance per hit of giving.+ (%d+) points of ([%a%s]+).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%4$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to [%a]+ [+]*(%d+%%*) ([%a%s]+) skill.', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to increase (%a+).* resistance by (%d+).', Return = Color.WHITE .. '%3$d' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_RESIST .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 4},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to [%a]+ [+]*(%d+%%*).* (%a+) resistance', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_RESIST .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 4},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to restore (%d+%%*) (%a+) every (.+).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_EVERY .. Color.WHITE .. '%4$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to do (%d+%%*) additional[%s%a]* damage [%a]+ (%a+).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_DAMAGE_TO .. Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to [%a]+ [+]*(%d+%%*)[%s%a]* ([%a%s]+).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to [%a]+ [%a%s]*(%d+%%*) chance [%s%a]* ([%a%s]+).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to decrease (%a+) .+by (%d+%%*).', Return = Color.WHITE .. '-%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = 'enchant[s]* [a%s]*([%a%s]+) to [%a%s]+ [+]*(%d*%%*)([%a%s]+) bonus([%a%s]*).', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s%4$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to [%a]+ a slight ([%a%s]+) increase.', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to often .+ the target reducing their ([%a%s]+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_TO_REDUCE .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to often strike.+ (%d+).+ (%a+) damage.', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_DAMAGE_ON_HIT .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s-]+) to have a chance of (%a+) and [%a%s]+ damage to (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%2$s' .. ATSW_AND_DAMAGING .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_ON_HIT_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) so .+ the ([%a%s]+) skill of the wearer is increased by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) so that it increases[%a%s]* resistance to (%a+) [%a%s]*by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_RESIST .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 2},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) so that it increases the ([%a%s]+) of .+ by (%d+).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 2},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) so that it increases ([%a%s]+) by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 2},
+    {Pattern = 'enchant[s]*[%s]*[a%s]*.* (%a+) so .+ the wearer\'s ([%a%s]+) by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = 'enchant[s]* [a%s]*([%a%s]+) to increase the ([%a%s]+) of the wearer by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 1},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to increase.* healing.+ by.* (%d+%%*).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_HEALING .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 1},
+    {Pattern = 'enchant[s]*[%a%s]* (%a+) to increase ([%a%s]+) by (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 1},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to [%a]+ ([%a%s]+) damage by[%a%s]* (%d+%%*).', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_SPELL_DAMAGE .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to [%a]+ .+(%d+%%*).+ (%a+) damage when casting.+spells.', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%3$s' .. ATSW_SPELL_DAMAGE .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to [%a%s]+ (%d+%%*) ([%a%s]*)damage to .*spells.', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. '%3$s' .. ATSW_SPELL_DAMAGE .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to do (%d+%%*) additional[%s%a]* damage.', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_DAMAGE .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) to.* steal life.* and give it to.+', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. ATSW_VAMPIRISM .. Color.LIGHTGREY .. ATSW_ON_HIT_FOR .. Color.WHITE .. '%1$s'}, -- Lifestealing
+    {Pattern = 'enchant[s]* [a%s]*([%a%s]+) so that often when attacking.* heals.* (%d+) to (%d+).* (%a+) by (%d+) for (.+)', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.GREEN .. '%2$d' .. Color.WHITE .. '-' .. Color.GREEN .. '%3$d' .. Color.LIGHTGREY .. ATSW_HEALTH_AND .. Color.WHITE .. '%5$d' .. Color.LIGHTGREY .. ' ' .. '%4$s' .. ATSW_FOR .. Color.WHITE .. '%6$s' .. Color.LIGHTGREY .. ATSW_ON_HIT_FOR .. Color.WHITE .. '%1$s'} -- Crusader
+}
+
+local PoisonPatterns = {
+    {Pattern = '.+ (%d+)%% chance .+ (%d+) to (%d+) ([%a%s]*)damage', Return = Color.WHITE .. '%1$d%%' .. Color.LIGHTGREY .. ATSW_TO .. Color.WHITE .. '%2$d-%3$d ' .. Color.LIGHTGREY .. '%4$sdmg', Similar = 1},
+    {Pattern = '.+ threat.+', Return = Color.WHITE .. ATSW_PLUS_THREAT},
+    {Pattern = '.+ (%d+)%% chance .+ (%d+) (%a*[%s]*)damage', Return = Color.WHITE .. '%1$d%%' .. Color.LIGHTGREY .. ATSW_TO .. Color.WHITE .. '%2$d ' .. Color.LIGHTGREY .. '%3$sdmg', Similar = 1},
+    {Pattern = '.+ (%d+)%% chance .+ slowing their ([%a%s]+) by (%d+)%% for (%d+) (%a+)', Return = Color.WHITE .. '%1$d%%' .. Color.LIGHTGREY .. ATSW_TO .. Color.WHITE .. '-%3$d%% ' .. Color.LIGHTGREY .. '%2$s' .. ATSW_FOR .. Color.WHITE .. '%4$d %5$s', Similar = 1},
+    {Pattern = '.+ (%d+)%% chance .+ increasing their casting time by (%d+)%% for (%d+) (%a+)', Return = Color.WHITE .. '%1$d%%' .. Color.LIGHTGREY .. ATSW_TO .. Color.WHITE .. '-%2$d%% ' .. Color.LIGHTGREY .. ATSW_CAST_TIME .. ATSW_FOR .. Color.WHITE .. '%3$d %4$s', Similar = 1},
+    {Pattern = '.+ (%d+)%% chance .+ reducing all healing .+ by (%d+%%*) for (%d+) (%a+)', Return = Color.WHITE .. '%1$d%%' .. Color.LIGHTGREY .. ATSW_TO .. Color.WHITE .. '-%2$s ' .. Color.LIGHTGREY .. ATSW_INC_HEAL .. ATSW_FOR .. Color.WHITE .. '%3$d %4$s', Similar = 1},
+    {Pattern = '. Stacks up to (%d+) times.', Return = Color.LIGHTGREY .. ATSW_STACK .. Color.WHITE .. '%1$d'},
+    {Pattern = '(%d+) charges.', Return = Color.WHITE .. '%1$d' .. Color.LIGHTGREY .. ATSW_CHARGES},
+}
+
+local AttributePatterns = {
+	{Pattern = '(%d+) Armor', Return = StatW .. ATSW_ARMOR},
+    {Pattern = '[+-]+(%d+) [%a%s]*Strength', Return = StatW .. ATSW_STR},
+    {Pattern = '[+-]+(%d+) [%a%s]*Agility', Return = StatW .. ATSW_AGI},
+    {Pattern = '[+-]+(%d+) [%a%s]*Stamina', Return = StatW .. ATSW_STA},
+    {Pattern = '[+-]+(%d+) [%a%s]*Intellect', Return = StatW .. ATSW_INT},
+    {Pattern = '[+-]+(%d+) [%a%s]*Spirit', Return = StatW .. ATSW_SPI},
+	
+	{Pattern = 'gain (%d+) [%a%s]*Strength', Return = StatW .. ATSW_STR},
+    {Pattern = 'gain (%d+) [%a%s]*Agility', Return = StatW .. ATSW_AGI},
+    {Pattern = 'gain (%d+) [%a%s]*Stamina', Return = StatW .. ATSW_STA},
+    {Pattern = 'gain (%d+) [%a%s]*Intellect', Return = StatW .. ATSW_INT},
+    {Pattern = 'gain (%d+) [%a%s]*Spirit', Return = StatW .. ATSW_SPI},
+	
+	{Pattern = ' eat.+ increase.* (%a+) by (%d+)', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ' ' .. '%1$s'},
+	
+	{Pattern = 'gain (%d+)%% ([%a]+)', Return = StatWP .. ' ' .. '%2$s'},
+    {Pattern = 'gain .+ and (%d+) ([%a]+)', Return = StatW .. ' ' .. '%2$s'},
+    {Pattern = 'eat.+ [%a]+ (%d+) ([%a]+) every (%d+) (%a+)', Return = StatW .. ' ' .. '%2$s' .. ATSW_EVERY .. '%3$d %4$s'},
+	
+    {Pattern = 'All Stats (.%d+)', Return = StatW .. ATSW_ALL_ATTRIBUTES},
+    {Pattern = '[+-]+(%d+) (%a+) Resistance[%.]*$', Return = Color.WHITE .. '%1$d' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_RESIST},
+    {Pattern = '[+-]+(%d+) All Resistances', Return = StatW .. ATSW_ALL_RESIST},
+	
+    {Pattern = '(%d+) Slot([%a%s]*) (%a+)', Return = StatW .. ATSW_SLOTS .. '%2$s' .. ' ' .. '%3$s'},
+    {Pattern = 'Equip: (%a+) [+](%d+).', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ' ' .. '%1$s'},
+	
+	{Pattern = 'gain[s]* (.%d+) (%a+) damage', Return = Color.WHITE .. '%1$d ' .. Color.LIGHTGREY .. '%2$s' .. ATSW_DAMAGE},
+    {Pattern = 'Absorb[s]* (%d+) to (%d+) (%a+) damage.+Lasts (.+).', Return = Color.WHITE .. '%1$d-%2$d ' .. Color.LIGHTGREY .. '%3$s' .. ATSW_DAMAGE_ABSORB .. ATSW_FOR .. Color.WHITE .. '%4$s', Similar = 4},
+    {Pattern = 'Absorb[s]* (%d+) (%a+) damage.+Lasts (.+).', Return = Color.WHITE .. '%1$d ' .. Color.LIGHTGREY .. '%2$s' .. ATSW_DAMAGE_ABSORB .. ATSW_FOR .. Color.WHITE .. '%3$s', Similar = 4},
+    {Pattern = 'Reflect[s]* (%a+) .+ (%d+) sec.', Return = Color.LIGHTGREY .. '%1$s' .. ATSW_REFLECT .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%2$d sec.'},
+	{Pattern = 'Chance on hit: decrease the ([%a%s]+) by (%d+%%*) for ([%d%.]+) (%a+).+affected.+ cannot stealth or turn invisible', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '-%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ', ' .. ATSW_MINUS_STEALTH_INVIS .. ATSW_FOR .. Color.WHITE .. '%3$d %4$s', Similar = 13},
+	{Pattern = 'decrease the ([%a%s]+) by (%d+%%*) for ([%d%.]+) (%a+).', Return = Color.WHITE .. '-%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_FOR .. Color.WHITE .. '%3$s %4$s', Similar = 13},
+    {Pattern = 'increases Fishing by (%d+) (.+)', Return = StatW .. ATSW_FISHING .. '%s', Similar = 1},
+    {Pattern = 'Increase[s]*[d]* Defense %+(%d+)', Return = StatW .. ATSW_DEFENSE},
+    {Pattern = 'Reduces([%s%a]+) spell damage taken by (%d+%%*).', Return = Color.WHITE .. '-%2$s' .. Color.LIGHTGREY .. '%1$s' .. ATSW_DAMAGE_TAKEN},
+    {Pattern = 'Reduc[%a]+ damage taken from critical hits and damage over time effects by (%d+)%%.', Return = Color.WHITE .. '-%1$d%%' .. Color.LIGHTGREY .. ATSW_DMG_TAKEN_CRITS_DOTS},
+    {Pattern = 'Increases damage and healing done by magical spells and effects(.*) by up to (%d+)', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ATSW_SPELL_POWER .. '%1$s', Similar = 1},
+    {Pattern = 'Increases (%a+) spell damage by up to (%d+) for (.+).', Return = Color.WHITE .. '%2$d ' .. Color.LIGHTGREY .. '%1$s' .. ATSW_DAMAGE_FOR .. Color.WHITE .. ' %3$s.'},
+    {Pattern = 'Increases spell (%a+) damage by up to (%d+) for (.+).', Return = Color.WHITE .. '%2$d ' .. Color.LIGHTGREY .. '%1$s' .. ATSW_DAMAGE_FOR .. Color.WHITE .. ' %3$s.'},
+    {Pattern = 'Increases (%a+) damage by up to (%d+) for (.+).', Return = Color.WHITE .. '%2$d ' .. Color.LIGHTGREY .. '%1$s' .. ATSW_DAMAGE_FOR .. Color.WHITE .. ' %3$s.'},
+    {Pattern = 'Increases damage done to (%a+) by magical spells and effects by up to (%d+)', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ATSW_SPELL_DAMAGE_TO .. '%1$s', Similar = 1},
+    {Pattern = 'Increases damage done by (%a+) spells and effects by up to (%d+)', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_DAMAGE, Similar = 1},
+    {Pattern = 'Increases healing done by spells and effects by up to (%d+)', Return = StatW .. ATSW_HEALING, Similar = 1},
+    {Pattern = '(%d+%.?%d*)%% of damage dealt is returned as healing', Return = StatWP .. ' ' .. ATSW_VAMPIRISM, Similar = 1},
+    {Pattern = 'Increases .+ chance to block attacks .+ (%d+)%%.', Return = StatWP .. ATSW_BLOCK, Similar = 1},
+    {Pattern = 'Increases .+ block value .+ (%d+).', Return = StatW .. ATSW_BLOCK, Similar = 1},
+    {Pattern = 'Increases your chance to parry an attack by (%d+).', Return = StatWP .. ATSW_PARRY, Similar = 1},
+    {Pattern = 'Decreases your chance to parry an attack by (%d+).', Return = Color.WHITE .. '-%1$d%%' .. Color.LIGHTGREY .. ATSW_PARRY, Similar = 1},
+    {Pattern = 'Increases your chance to dodge an attack by (%d+).', Return = StatWP .. ATSW_DODGE, Similar = 1},
+    {Pattern = 'Increases your attack and casting speed by (%d+).', Return = StatWP .. ATSW_ATTACK_AND_CASTING_SPEED, Similar = 1},
+    {Pattern = 'Equip: .*Increases ([%a%s]+) by (%d+)%%%.', Return = Color.WHITE .. '%2$d%%' .. Color.LIGHTGREY .. ' ' .. '%1$s', Similar = 1},
+	{Pattern = 'Equip: .*Increases [your]*[%s]*(.+) by ([%d]+[%%]*).', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s', Similar = 1},
+	{Pattern = 'Equip: .*Increases [the]*[your]*[%s]*([%a%s%d]+).', Return = Color.WHITE .. '+ %s', Similar = 1},
+	{Pattern = 'Use: Slightly increases [the]*[your]*[%s]*([%a%s%d]+) for ([%a%s%d]+).', Return = Color.WHITE .. '+ %s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s', Similar = 1},
+	{Pattern = 'Equip: .*Increase[s]* [your]*[%s]*(.+) by (%d+)%%.', Return = Color.WHITE .. '+%2$d%%' .. Color.LIGHTGREY .. ' ' .. '%1$s', Similar = 1},
+	{Pattern = '.*Increase [your]*[%s]*([%a%s]+) for ([%a%s%d]+).', Return = Color.LIGHTGREY .. '+ %s' .. ATSW_FOR .. Color.WHITE .. '%s.', Similar = 1},
+	{Pattern = 'Use: Increases [%a%s]*resistance to (%a+)[%a%s]* by (%d+%%*) for ([%d%s%a]+).', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_RESIST .. ATSW_FOR .. Color.WHITE .. '%3$s', Similar = 3},
+	{Pattern = 'Increases [%a%s]*resistance to (%a+)[%a%s]* by (%d+%%*).', Return = Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_RESIST, Similar = 3},
+	{Pattern = 'Increases (%a+) by (%d+) and .+ critical hit by (%d+)%% for (.+).', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ' %1$s' .. ATSW_AND .. Color.WHITE .. '%3$d%%' .. Color.LIGHTGREY .. ATSW_CRIT .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%4$s'},
+	{Pattern = 'the attacker has a (%d+)%%+ chance of being inflicted with disease that increases their damage taken by (%d+) for ([%a%s%d%.]+). Lasts for ([%a%s%d%.]+).', Return = StatWP .. ATSW_OF .. Color.WHITE .. '+%d' .. Color.LIGHTGREY .. ' ' .. ATSW_DAMAGE_ATTACKER_FOR .. Color.WHITE .. '%s,' .. Color.LIGHTGREY .. ATSW_LASTS .. Color.WHITE .. '%s.'},
+	{Pattern = '(%d+%%*) chance of dealing (%d+)([%s%a]*) on a successful melee attack.', Return = StatWS .. ' ' .. '%1$d%2$s' .. ATSW_ON_MELEE},
+	{Pattern = 'Use: Imbiber is ([%a%s%d]+) for the next ([%a%s%d]+).', Return = StatWS .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Use: Increases your ([%a%s]+) by (%d+%%*) for ([%d%s%a%.]+).', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_FOR .. Color.WHITE .. '%3$s', Similar = 3},
+	{Pattern = 'Use: Increases the player\'s ([%a%s]+) by (%d+%%*) for ([%d%s%a]+).', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_FOR .. Color.WHITE .. '%3$s', Similar = 3},
+	{Pattern = 'Use: Increases ([%a%s]+) by (%d+%%*) for ([%d%s%a%.]+).', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_FOR .. Color.WHITE .. '%3$s', Similar = 3},
+	{Pattern = 'Use: attempts to remove one (%a+), one (%a+) and one (%a+) from.+', Return = Color.WHITE .. '-%s, -%s, -%s'},
+	
+	{Pattern = 'Use: Increases ([%a%s%d]+) by (%d+) to (%d+) and increases (%a+) by (%d+) for ([%a%s%d%.]+).', Return = Color.WHITE .. '%2$d-%3$d ' .. Color.LIGHTGREY .. '%1$s, ' .. Color.WHITE .. '%5$d' .. Color.LIGHTGREY .. ' ' .. '%4$s' .. ATSW_FOR .. Color.WHITE .. '%6$s', Similar = 6},
+	{Pattern = 'Use: Increases (.+) by (%d+) to (%d+).', Return = Color.WHITE .. '%2$d-%3$d ' .. Color.LIGHTGREY .. '%1$s', Similar = 6},
+	{Pattern = 'Use: Your (.+) is increased and your (.+) goes up by (%d+%%*).+Lasts (.+).', Return = Color.WHITE .. '+%3$s ' .. Color.LIGHTGREY .. '%2$s' .. ATSW_AND .. '%1$s' .. ATSW_FOR .. Color.WHITE .. '%4$s'},
+	{Pattern = 'Use: [%a]+ is cured of up to ([%a%s%d]+) poison[s]* up to ([%a%s%d]+).', Return = Color.WHITE .. '-%s' .. Color.LIGHTGREY .. ATSW_POISONS_OF .. Color.WHITE .. '%s'},
+	{Pattern = 'Decreases the magical resistances of your spell targets by (%d+).', Return = Color.WHITE .. '-%d' .. Color.LIGHTGREY .. ATSW_TARGETS_ALL_RESIST},
+	{Pattern = ': Removes (%d+) magic, curse, poison.+ disease effect.+ every (%d+) seconds for ([%a%s%d]+).', Return = Color.WHITE .. '-%d ' .. Color.LIGHTGREY .. ATSW_NON_PHYSICAL_DEBUFF .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_SECONDS_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Use: Regenerate (.+) for (.+).', Return = StatWS .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Use: Makes you immune to (.+) for [the%snext]*[%s]*([%a%s%d]+).', Return = Color.LIGHTGREY .. ATSW_IMMUNITY_TO .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s', Similar = 5},
+	{Pattern = 'Use: Allows the imbiber to ([%a%s%d]+) for ([%a%s%d]+).', Return = Color.WHITE .. '+ %s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s', Similar = 2},
+	{Pattern = 'Use: [%a]+s the imbiber ([%a%s%d]+) for ([%a%s%d]+).', Return = Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s', Similar = 2},
+	{Pattern = 'Use: [%a]+s the imbiber ([%a%s%d]+) for ([%a%s%d]+).', Return = Color.WHITE .. '+ %s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s', Similar = 2},
+	{Pattern = 'Shows the location of all nearby (%a+) on.+ minimap for ([%a%s%d]+)', Return = Color.LIGHTGREY .. ATSW_SHOWS .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Use: When applied to a melee weapon it gives a (%d+%%+) chance of casting (.+) at the opponent.+Lasts ([%a%s%d]+).', Return = Color.WHITE .. '+%s' .. Color.LIGHTGREY .. ATSW_TO_CAST .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Equip: Allows (%d+%%*) of your (%a+) regeneration to [%a]+ while ([%a%s]+).', Return = Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_REGEN_IF .. Color.WHITE .. '%s', Similar = 2},
+	{Pattern = 'Equip: Allows ([%a%s%d]+).', Return = Color.WHITE .. '%s', Similar = 2},
+	{Pattern = '.*Allows [%a%s%d]+ to ([%a%s%d]+).', Return = Color.WHITE .. '%s', Similar = 2},
+	{Pattern = '.*Allows control of a mechanical target for a short time.', Return = Color.WHITE .. ATSW_CONTROL_MECHANICAL},
+	{Pattern = 'Shoots a firework .+ that (.+).', Return = Color.LIGHTGREY .. '%s'},
+	{Pattern = 'reducing its melee and spell damage by (%d+) and its movement rate by (%d+)%% for (%d+) (%a+).', Return = Color.WHITE .. '-%d' .. Color.LIGHTGREY .. ATSW_MELEE_SPELL_DAMAGE_AND .. Color.WHITE .. '-%d%%' .. Color.LIGHTGREY .. ATSW_MOVEMENT_FOR .. Color.WHITE .. '%d %s'},
+	
+	{Pattern = 'Use: shrinks .+ reducing [%a]+ ([%a%s]+) by (%d+)', Return = Color.WHITE .. '-%2$d' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_OF_TARGET},
+	{Pattern = 'Causes all (%a+) .+ to run away for (%d+) (%a+).', Return = Color.LIGHTGREY .. ATSW_SCARES .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%d %s.'},
+	{Pattern = '.*Attaches [%a%s]+ to a (.+) that .+ (%a+) by (%d+%%*)', Return = Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ' ' .. '%2$s' .. ATSW_FOR .. Color.WHITE .. ' %1$s', Similar = 3},
+	{Pattern = 'Drops a target dummy .+ (%d+) seconds', Return = Color.LIGHTGREY .. ATSW_ATTRACTS_MONSTERS .. Color.WHITE .. '%d sec.', Similar = 3},
+	{Pattern = 'Use: .+ weapon.+ swing (%d+)%%.* for (%d+) (%a+).', Return = StatWP .. ATSW_ATTACK_SPEED_FOR .. Color.WHITE .. '%d %s.'},
+	{Pattern = 'Creates a battle chicken.', Return = Color.WHITE .. ATSW_WILL_FIGHT},
+	{Pattern = ': Gives you a ([%a%s%d]+) that lets you ([%a%s%d]+).', Return = StatWS .. ATSW_TO_OTHER .. Color.WHITE .. '%s', Similar = 3},
+	{Pattern = 'Use: Increases your (.+) by up to (%d+) and your (.+) by up to (%d+) for (.+).', Return = Color.WHITE .. '%2$d %1$s' .. Color.LIGHTGREY .. ATSW_AND .. Color.WHITE .. '%4$d %3$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%5$s', Similar = 3},
+	{Pattern = 'Use: Improves your chance to hit by (%d+)%% for (.+).', Return = StatWP .. ATSW_HIT_FOR .. Color.WHITE .. '%s.', Similar = 3},
+	{Pattern = 'Use: Improves your chance to hit with spells by (%d+)%% for (.+).', Return = StatWP .. ATSW_SPELL_HIT_FOR .. Color.WHITE .. '%s.', Similar = 3},
+	{Pattern = 'Equip: Improves your chance to get a critical strike with ([%a%s]+) by (%d+)%%.', Return = Color.WHITE .. '%2$d%%' .. Color.LIGHTGREY .. ' ' .. '%1$s' .. ATSW_CRIT, Similar = 3},
+	{Pattern = 'Use: Improves your chance to get a critical strike by (%d+)%% for (.+).', Return = StatWP .. ATSW_CRIT_FOR .. Color.WHITE .. ' %s.', Similar = 3},
+	{Pattern = 'Use: Improves your chance to get a critical strike with([%s%a]*) spells by (%d+)%% for (.+).', Return = Color.WHITE .. '%2$d%% %1$s' .. ATSW_SPELL_CRIT_FOR .. Color.WHITE .. '%3$s.', Similar = 3},
+	{Pattern = 'Use: [%a]+s your [%a%d%s]+ to ([%a%s%d]+).', Return = Color.WHITE .. ATSW_WILL .. Color.WHITE .. '%s', Similar = 3},
+	{Pattern = '.+: Reduces your (.+)[%a%s%d]* for (%d+)', Return = Color.WHITE .. '-' .. Color.LIGHTGREY .. '%s' .. ATSW_FOR .. Color.WHITE .. '%d sec.', Similar = 3},
+	{Pattern = 'Chance on hit: Blasts up to (%d+) (%a+) for (%d+) to (%d+) (%a+) damage', Return = Color.LIGHTGREY .. ATSW_CHANCE_FOR .. Color.WHITE .. '%3$d-%4$d ' .. Color.LIGHTGREY .. '%5$s' .. ATSW_DAMAGE_TO .. ' %1$d %2$s', Similar = 4},
+	{Pattern = 'Chance on hit: Blasts .+ (%d+) (%a+) damage', Return = Color.LIGHTGREY .. ATSW_CHANCE_FOR .. Color.WHITE .. '%d ' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE, Similar = 4},
+	{Pattern = 'Chance on hit: Sends a .+ at the enemy.+ (%d+) to (%d+) (%a+) damage', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. ' %s' .. ATSW_DAMAGE, Similar = 4},
+	{Pattern = 'Use: Blasts ([%a%s]+).', Return = StatWS .. '', Similar = 14},
+	{Pattern = 'Use: Deals (%d+) (%a+) damage every (.+) to (.+) for (.+).', Return = StatWS .. Color.LIGHTGREY .. ' ' .. '%s' .. ATSW_DAMAGE_PER .. Color.WHITE .. '%s ' .. Color.LIGHTGREY .. ATSW_TO_OTHER .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Use: Does (%d+) (%a+) damage .+ yard .+ every (%d+) seconds for ([%a%s%d]+)', Return = Color.WHITE .. '%d' .. Color.LIGHTGREY .. ' ' .. '%s' .. ATSW_DAMAGE_PER .. Color.WHITE .. ' %d sec.' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s.'},
+	{Pattern = '.(%d+) attack power in ([%a%s%,]+) forms only', Return = StatW .. ATSW_ATTACK_POWER_IN .. Color.WHITE .. '%s form', Similar = 9},
+	{Pattern = '.(%d+) attack power', Return = StatW .. ATSW_ATTACK_POWER, Similar = 9},
+	{Pattern = '.(%d+) ranged Attack Power', Return = StatW .. ATSW_RANGED_POWER},
+	{Pattern = 'increases attack power by (%d+) against (%a+)', Return = StatW .. ATSW_ATTACK_POWER_AGAINST .. Color.WHITE .. '%s'},
+	{Pattern = 'Your attacks ignore (%d+) of the target\'s armor', Return = StatW .. ATSW_ARMOR_IGNORE},
+	{Pattern = '[+]+ (%d+) [-]+ (%d+) (%a+) damage', Return = Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. ' ' .. '%s' .. ATSW_DAMAGE},
+	{Pattern = '(%d+%.?%d*) damage per second', Return = StatWS .. ATSW_DPS},
+	{Pattern = 'Improves your chance to hit by (%d+)', Return = StatWP .. ATSW_HIT, Similar = 3},
+	{Pattern = 'Improves your chance to hit with spells by (%d+)', Return = StatWP .. ATSW_SPELL_HIT, Similar = 3},
+	{Pattern = 'Improves your chance to get a critical strike by (%d+)', Return = StatWP .. ATSW_CRIT, Similar = 3},
+	{Pattern = 'Improves your chance to get a critical strike with([%s%a]*) spells by (%d+)', Return = Color.WHITE .. '%2$d%%' .. Color.LIGHTGREY .. '%1$s' .. ATSW_SPELL_CRIT, Similar = 3},
+	{Pattern = 'Heals (%d+) damage over (.+)', Return = StatG .. ATSW_HEALTH_OVER .. Color.WHITE .. '%s'},
+	{Pattern = 'Heals (%d+) health and (%d+) mana', Return = StatG .. ATSW_HEALTH .. Color.WHITE .. ', ' .. StatW .. ATSW_MANA},
+	{Pattern = 'Dispels polymorph', Return = Color.LIGHTGREY .. ATSW_DISPEL .. ' ' .. Color.WHITE .. ATSW_POLYMORPH},
+	{Pattern = 'Restores (%d+) ([^t][%a%s%d][%a%s%d][%a%s%d]*)(%.?%s?)', Return = StatG .. ' %s'},
+	{Pattern = 'Restores (%d+) to (%d+) (.+).', Return = Color.GREEN .. '%d' .. Color.LIGHTGREY .. '-' .. Color.GREEN .. '%d' .. Color.LIGHTGREY .. ' ' .. '%s'},
+	
+	{Pattern = 'Reduces the cooldown of your (.+) ability by (.+)', Return = StatWS .. ATSW_CD_REDUCED_BY .. Color.WHITE .. '%s'},
+	{Pattern = 'Reduces the mana cost of your (.+) by (.+)', Return = StatWS .. ATSW_COST_REDUCED_BY .. Color.WHITE .. '%s'},
+	
+	{Pattern = 'Drains (%d+) to (%d+) mana .+ Silences .+ (%d+)', Return = Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. ATSW_MANA_BURN_SILENCE .. Color.WHITE .. '%d sec.'},
+	{Pattern = 'Equip: (%d+)%% chance.+ (%d+) to (%d+)([%a%s]*) damage on a successful melee attack', Return = Color.WHITE .. '%d%%' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE, Similar = 4},
+	{Pattern = 'chance to strike your ranged target.* (%d+) to (%d+)([%a%s]*) damage', Return = Color.LIGHTGREY .. ATSW_CHANCE_FOR .. Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE, Similar = 4},
+	{Pattern = 'damaging you for (%d+) to (%d+)([%s%a]*) damage', Return = Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE_TO_YOU},
+	{Pattern = '(%d+) to (%d+)([%s%a]*) damage to you', Return = Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE_TO_YOU},
+	{Pattern = '(%d+)%% chance to stun.*(%d+) sec.', Return = Color.LIGHTGREY .. ATSW_STUN .. Color.WHITE .. '%2$d sec,' .. Color.LIGHTGREY .. ATSW_CHANCE .. Color.WHITE .. '%1$d%%', Similar = 5},
+	{Pattern = 'Chance on hit: stun.*(%d+)%s*sec', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF_STUN .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_SECONDS, Similar = 5},
+	{Pattern = 'Use: Increase (%a+) by (%d+).', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ' %1$s'},
+	{Pattern = 'Use: Increase ([%a%s]+) damage by (%d+) for (.+).', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ATSW_DAMAGE_FOR .. ' ' .. Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = ': ([%a]+) Damage received is reduced by (%d+%%*).', Return = Color.WHITE .. '-%2$s' .. Color.LIGHTGREY .. ' %1$s' .. ATSW_DAMAGE_RECEIVED},
+	{Pattern = 'When struck by a harmful spell, the caster of that spell has a (%d+)%% chance to.* ([%a]+)[d].* for (.+).', Return = StatWP .. ATSW_TO_OTHER .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_ATTACKER_OF_SPELL_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'When struck by a non%-periodic damage spell you have a (%d+)%% chance of getting a (.+) spell shield that absorbs (%d+) to (%d+) of that school of damage', Return = Color.WHITE .. '%1$d%%' .. Color.LIGHTGREY .. ATSW_IF_DAMAGED_BY_SPELL .. Color.WHITE .. '%3$d-%4$d' .. Color.LIGHTGREY .. ATSW_OF_SAME_SCHOOL_FOR .. Color.WHITE .. '%2$s', Similar = 4},
+	{Pattern = '(%d+) to (%d+)([%a%s]*) damage', Return = Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE, Similar = 4},
+	{Pattern = 'When struck.* has a (%d+)%% chance to heal you for (%d+) to (%d+).', Return = StatWP .. ATSW_TO_RESTORE .. Color.WHITE .. '%d-%d' .. Color.LIGHTGREY .. ATSW_HEALTH_IF_DAMAGED, Similar = 10},
+	{Pattern = 'Heal ([%a%s]+) for (%d+) to (%d+).', Return = Color.GREEN .. '%2$d-%3$d' .. Color.LIGHTGREY .. ATSW_HEALTH_TO .. Color.WHITE .. '%1$s', Similar = 10},
+	{Pattern = 'When struck.* has a (%d+)%% chance of stealing (%d+) life from the attacker over (.+).', Return = StatWP .. ATSW_CHANCE_OF .. ATSW_VAMPIRISM .. ': ' .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_OVER .. Color.WHITE .. '%s'},
+	{Pattern = 'When struck.* has a (%d+)%% chance to reduce damage taken by (%a+) .+ by (%d+%%*) for ([%a%s%d]+)', Return = StatWP .. ATSW_CHANCE_TO_REDUCE .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_DAMAGE_TAKEN_BY .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'When struck by.* (%a+) attacker, that attacker has.* (%d+)%% chance of.+ to (%a+) for (%d+) (%a+).+ level (%d+) and below', Return = Color.WHITE .. '%2$d%%' .. Color.LIGHTGREY .. ATSW_CHANCE_TO .. Color.WHITE .. '%3$s ' .. Color.LIGHTGREY .. '%1$s' .. Color.LIGHTGREY .. ATSW_ATTACKER_OF_LEVEL .. Color.WHITE .. '%6$d' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%4$d %5$s.'},
+	{Pattern = 'Adds [+](%d+) healing and damage from spells to an item worn on the ([%a%s%,]+).+ level (%d+) and above', Return = Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_SPELL_POWER_FOR .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_OF_LEVEL .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_AND_ABOVE},
+	{Pattern = 'Adds (%d+) (%a+) damage to your [%a]+ attack', Return = StatW .. ATSW_OTHER_DAMAGE},
+	{Pattern = 'Equip: Immune to Disarm', Return = Color.LIGHTGREY .. ATSW_IMMUNE_TO .. Color.WHITE .. ATSW_DISARM},
+	{Pattern = 'Chance on hit: Disarm .* for (%d+) sec.', Return = Color.LIGHTGREY .. ATSW_CHANCE_TO .. Color.WHITE .. ATSW_DISARM .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%d sec.'},
+	{Pattern = 'Chance on hit: protect[s]*.* with a (%a+) shield.', Return = Color.LIGHTGREY .. ATSW_CHANCE_FOR .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_SHIELD},
+	{Pattern = 'Chance on hit: reduce[s]*.* threat [%a%s\']+.', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. ATSW_MINUS_THREAT},
+	{Pattern = 'Chance on hit: reduce[s]*.* (%a+) by (%d+%%*) for (%d+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '-%2$s' .. Color.LIGHTGREY .. ATSW_TARGETS_STAT .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%3$d %4$s.', Similar = 12},
+	{Pattern = 'Chance on hit: reduce[s]*.* (%a+) by (%d+%%*).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '-%2$s' .. Color.LIGHTGREY .. ATSW_TARGETS_STAT, Similar = 12},
+	{Pattern = '. Stacks up to (%d+) times.', Return = Color.LIGHTGREY .. ATSW_STACK .. Color.WHITE .. '%d'},
+	{Pattern = 'Chance on hit: dispels[%a%s\']+.', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. ATSW_DISPEL},
+	{Pattern = 'Chance on hit: .+ target for (%d+) (%a+) damage and an additional (%d+)([%s%a]*) damage over ([%d%.]+) (%a+)', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. ' %s' .. ATSW_DAMAGE_AND .. Color.WHITE .. '%d%s' .. Color.LIGHTGREY .. ATSW_DAMAGE_OVER .. Color.WHITE .. '%s %s.', Similar = 11},
+	{Pattern = 'Chance on hit: .+ (%d+)([%s%a]*) damage over ([%d%.]+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE_OVER .. Color.WHITE .. '%s %s.', Similar = 11},
+	{Pattern = 'Chance on hit: Party .+ crit increased by (%d+%%+).+Lasts.* ([%d%.]+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '+%s' .. Color.LIGHTGREY .. ATSW_CRIT_FOR_PARTY .. Color.WHITE .. '%s %s.'},
+	{Pattern = 'Give[s] (%d+).* (%a+) to.* party members.', Return = Color.WHITE .. '%d' .. Color.LIGHTGREY .. ' %s' .. ATSW_FOR_PARTY},
+	{Pattern = 'Equip: Increase[s]*.* (%a+) of.* party members by (%d+).', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ' %1$s' .. ATSW_FOR_PARTY},
+	{Pattern = 'Chance on landing a damaging spell to deal (%d+)([%s%a]*) damage while sacrificing (%d+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. '%s' .. ATSW_DAMAGE_AND .. Color.WHITE .. '-%d' .. Color.LIGHTGREY .. ATSW_HEALTH_ON_SPELL_HIT},
+	{Pattern = 'Chance on hit: Spell damage taken by target.* increased by (%d+%%*) for ([%d%.]+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '+%s' .. Color.LIGHTGREY .. ATSW_SPELL_DAMAGE_TAKEN_BY_TARGET},
+	{Pattern = 'Chance on hit: Increase[s]*.* critical strike chance of.* next attack made within (%d+) (%a+) by (%d+)%%', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '+%3$d' .. Color.LIGHTGREY .. ATSW_CRIT_OF_NEXT_ATTACK .. Color.WHITE .. '%1$d %2$s'},
+	{Pattern = 'and slowing (%a+) speed by (%d+)%% for (%d+) (%a+)', Return = Color.WHITE .. '-%2$d%%' .. Color.LIGHTGREY .. ' %1$s' .. ATSW_FOR .. '%3$d %4$s.'},
+	{Pattern = 'Chance on hit: .+ movement slow.* by (%d+)%% and increasing the time between attacks by (%d+)%% for (%d+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '-%d%%' .. Color.LIGHTGREY .. ATSW_MOVEMENT_AND .. Color.WHITE .. '-%d%% ' .. Color.LIGHTGREY .. ATSW_ATTACK_SPEED_OF_TARGET .. Color.WHITE .. '%d %s'},
+	{Pattern = 'Chance on hit: Heal self for (%d+) to (%d+) and increases ([%a%s]+) by (%d+) for ([%d%.]+) (%a+).', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%1$d-%2$d' .. Color.LIGHTGREY .. ATSW_HEALTH_AND .. Color.WHITE .. '%4$d' .. Color.LIGHTGREY .. '%3$s' .. ATSW_FOR .. Color.WHITE .. '%5$s %6$s'},
+	{Pattern = 'On successful melee or ranged attack.+ (%d+) (%a+) and.+ drain (%d+) (%a+)', Return = Color.LIGHTGREY .. ATSW_CHANCE_OF .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. '%s' .. ATSW_AND_DRAIN .. Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_MANA_ON_HIT},
+	{Pattern = 'Protects the wearer from .+ Shadow Flame', Return = Color.LIGHTGREY .. ATSW_PROTECTION_FROM .. Color.WHITE .. 'Onyxia\'s Shadow Flame'},
+	{Pattern = '(%d+) yard[s]*', Return = Color.LIGHTGREY .. ATSW_RADIUS .. Color.WHITE .. ' %d'},
+	{Pattern = 'stuns [%a%s%d]+ for (%d+) (%a+)', Return = Color.LIGHTGREY .. ATSW_STUN .. Color.WHITE .. '%d %s', Similar = 5},
+	
+	{Pattern = 'companion', Return = ATSW_COMPANION},
+	{Pattern = 'Adds a toy', Return = ATSW_TOY},
+	{Pattern = 'Goblin Jumper Cables XL', Return = Color.WHITE .. '50%%' .. Color.LIGHTGREY .. ATSW_CHANCE_TO_RESURRECT, Similar = 'cables'},
+	{Pattern = 'Goblin Jumper Cables', Return = Color.WHITE .. '33%%' .. Color.LIGHTGREY .. ATSW_CHANCE_TO_RESURRECT, Similar = 'cables'},
+	{Pattern = 'Portable Wormhole Generator: ([%a%s%d%-]+)', Return = Color.LIGHTGREY .. ATSW_PORTAL_TO .. Color.WHITE .. '%s'},
+	{Pattern = 'Use: .+ transport[s]* .+ to ([%a%s]+)', Return = Color.LIGHTGREY .. ATSW_TELEPORT_TO .. Color.WHITE .. '%s'},
+	{Pattern = 'control.* mind .+ for (%d+) (%a+)', Return = Color.LIGHTGREY .. ATSW_MIND_CONTROL_FOR .. Color.WHITE .. '%d %s'},
+	{Pattern = 'detects.* stealth.* invisible', Return = Color.WHITE .. ATSW_STEALTH_INVISIBILITY_DETECTION},
+	{Pattern = 'World Enlarger', Return = Color.LIGHTGREY .. ATSW_REDUCE_YOUR .. Color.WHITE .. ATSW_SIZE},
+	{Pattern = 'Charge an enemy, knocking it silly for (%d+) seconds.', Return = Color.LIGHTGREY .. ATSW_INCAPACITATE .. Color.WHITE .. '%d sec.'},
+	{Pattern = 'Use: .+ protect.* (%d+) damage.* over.* (%d+) (%a+).', Return = Color.WHITE .. '%d' .. Color.LIGHTGREY .. ATSW_DAMAGE_ABSORB_FOR .. Color.WHITE .. '%d %s.'},
+	{Pattern = 'Gordok Ogre Suit', Return = Color.LIGHTGREY .. ATSW_DISGUISE .. Color.WHITE .. ATSW_GORDOK_OGRE},
+	{Pattern = 'Savory Deviate Delight', Return = Color.LIGHTGREY .. ATSW_DISGUISE .. Color.WHITE .. ATSW_PIRATE_OR_NINJA},
+	{Pattern = 'Flask of Petrification', Return = Color.WHITE .. ATSW_FLASK_OF_PETRIFICATION},
+	{Pattern = 'Grants (%d+)%% spell critical and (%d+) ([%a%s]+) for (.+).', Return = Color.WHITE .. '%d%%' .. Color.LIGHTGREY .. ATSW_CRIT .. ATSW_AND .. Color.WHITE .. '%d %s' .. Color.LIGHTGREY .. ATSW_FOR .. '%s'},
+	
+	{Pattern = 'Increase[s]*.+ damage of a ([%a%s-]+) by (%d+) for (.+).', Return = Color.WHITE .. '%2$d' .. Color.LIGHTGREY .. ATSW_DAMAGE_FOR .. ' ' .. Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = 'Attach.* .+ to your ([%a%s-]+) that increase[s]* your ([%a%s]+) by (%d+).', Return = Color.WHITE .. '%3$d' .. Color.LIGHTGREY .. ' %2$s' .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+	{Pattern = 'Attach.* .+ to your ([%a%s-]+) that deal[s]* damage every time you block with it.', Return = Color.LIGHTGREY .. ATSW_DAMAGE_ON_BLOCK_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+	{Pattern = 'Attach.* .+ to your ([%a%s-]+), making it impossible to ([%a%s]+).', Return = Color.LIGHTGREY .. ATSW_IMMUNITY_TO .. Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = 'Removes existing [%a%s]+ and makes you immune to ([%a%s]+) for (.+).', Return = Color.LIGHTGREY .. ATSW_IMMUNITY_TO .. Color.WHITE .. '%s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%s'},
+	{Pattern = 'Attach.* [%a]+ to your ([%a%s]+) that increase[s]* your ([%a%s]+) slightly.', Return = Color.WHITE .. '+%2$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s', Similar = 3},
+	{Pattern = 'Attach.* a counterweight to a (.+) making it (%d+)%% faster', Return = Color.WHITE .. '+%2$d%%' .. Color.LIGHTGREY .. ATSW_ATTACK_SPEED_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = 'Use: .*increase the (%a+) .+ worn on the ([%a%s%,]+) by (%d+).+ level (%d+) and above.', Return = Color.WHITE .. '%3$d' .. Color.LIGHTGREY .. ' %1$s' .. ATSW_FOR .. Color.WHITE .. '%2$s' .. Color.LIGHTGREY .. ATSW_OF_LEVEL .. Color.WHITE .. '%4$d' .. Color.LIGHTGREY .. ATSW_AND_ABOVE, Similar = 15},
+	{Pattern = 'Use: .*increase the (%a+) .+ worn on the ([%a%s%,]+) by (%d+) and (%a+) by (%d+).', Return = Color.WHITE .. '%3$d' .. Color.LIGHTGREY .. ' %1$s' .. ATSW_AND .. Color.WHITE .. '%5$d' .. Color.LIGHTGREY .. ' %4$s' .. ATSW_FOR .. Color.WHITE .. '%2$s', Similar = 15},
+	{Pattern = 'Use: Increase critical chance on [a%s]*([%a%s]+) by (%d+)%% for (.+).', Return = Color.WHITE .. '%2$d%%' .. Color.LIGHTGREY .. ATSW_CRIT_FOR .. ' ' .. Color.WHITE .. '%3$s' .. Color.LIGHTGREY .. ATSW_FOR .. Color.WHITE .. '%1$s'},
+	{Pattern = ': [%a]+s [%a%s%d]+ that [%a]*[%s]*([%a%s%d]+).', Return = StatWS, LastResort = true},
+	{Pattern = 'Use: Increases ([%a%s%d]+) by (%d+)%.', Return = Color.WHITE .. '+%2$d ' .. Color.LIGHTGREY .. '%1$s.', LastResort = true},
+}
+
+for _, Item in pairs(EnchantPatterns) do
+	Item.Pattern = string.lower(Item.Pattern)
+end
+
+for _, Item in pairs(PoisonPatterns) do
+	Item.Pattern = string.lower(Item.Pattern)
+end
+
+for _, Item in pairs(AttributePatterns) do
+	Item.Pattern = string.lower(Item.Pattern)
+end
+
+local function ReplaceWords(w)
+	local r = ''
+	
+	if w == 'one' then
+		r = 1
+	elseif w == 'two' then
+		r = 2
+	elseif w == 'three' then
+		r = 3
+	elseif w == 'four' then
+		r = 4
+	elseif w == 'five' then
+		r = 5
+	elseif w == 'six' then
+		r = 6
+	elseif w == 'seven' then
+		r = 7
+	elseif w == 'eight' then
+		r = 8
+	elseif w == 'nine' then
+		r = 9
+	end
+	
+	return r
+end
+
+local function GetAttributes(Recipe)
+	if Recipe.Type == 'header' then
+		return ''
+	end
+	
+	if Recipe.Attributes then
+		return Recipe.Attributes
+	end
+	
+	ATSWRecipeItemTooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT')
+	ATSW_TooltipSetSkill(ATSWRecipeItemTooltip, GetPositionFromGame(Recipe.Name))
+	
+	local I, Text, TextRight = 0
+	local Return = ''
+	local IsCloth
+	local IsPoison
+	
+	repeat
+		I = I + 1
+		Text = _G['ATSWRecipeItemTooltipTextLeft' .. I]
+		TextRight = _G['ATSWRecipeItemTooltipTextRight' .. I]
+		Text = Text and Text:GetText()
+		TextRight = TextRight and TextRight:GetText()
+		
+		local Similar = false
+		
+		if TextRight == 'Cloth' then
+			IsCloth = true
+		end
+		
+		if Text then
+			Text = string.lower(Text)
+			
+			if I == 1 and string.find(Text, 'poison') then
+				IsPoison = true
+			end
+		end
+		
+		local cR, cG, cB = _G['ATSWRecipeItemTooltipTextLeft' .. I]:GetTextColor()
+		
+		cR = math.floor(cR + 0.5)
+		cG = math.floor(cG + 0.5)
+		cB = math.floor(cB + 0.5)
+		
+		if Text 
+		and string.sub(Text, 1, 1) ~= '\"'
+		and not string.find(Text, '%(%d+%) ') then
+			local Patterns, PatternFound
+			
+			if string.find(string.sub(Text, 1, 26), 'enchant[s]* ') then
+				Patterns = EnchantPatterns
+			elseif IsPoison then
+				Patterns = PoisonPatterns
+			else
+				Patterns = AttributePatterns
+			end
+			
+			for _, Item in pairs(Patterns) do
+				if Item.Similar ~= Similar
+				and not (Item.LastResort and PatternFound) then
+					local PStart, PEnd, A, B, C, D, E, F = string.find(Text, Item.Pattern)
+					
+					if PStart and not (Item.Pattern == '(%d+) armor' and IsCloth) then
+						PatternFound = true
+						
+						if Return ~= '' then
+							Return = Return .. Color.WHITE .. ',|r '
+						end
+					
+						if Item.Return then
+							local Minus = ''
+							
+							if Item.ReplaceWords == 1then
+								A = ReplaceWords(A)
+							end
+							
+							if string.sub(Text, 1, 1) == '-' then
+								Minus = Color.WHITE .. '-|r'
+							end
+							
+							Return = Return .. Minus .. string.format(Item.Return, A, B, C, D, E, F) .. '|r'
+						else
+							Return = Return .. Color.LIGHTGREY .. Text .. '|r'
+						end
+						
+						if Item.Similar then
+							Similar = Item.Similar
+						end
+						
+						if (cR == 1 and cG == 1 and cB == 1)
+						or	string.len(Text) - (PEnd-PStart+1) < 11 then -- Optimization: detection of full pattern match
+							break
+						end
+
+						if string.find(Return, 'str')
+						and string.find(Return, 'agi')
+						and string.find(Return, 'sta')
+						and string.find(Return, 'int')
+						and string.find(Return, 'spi') then
+							local _, _, str = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' str')
+							local _, _, agi = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' agi')
+							local _, _, sta = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' sta')
+							local _, _, int = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' int')
+							local _, _, spi = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' spi')
+							
+							if str == agi and str == sta and str == int and str == spi then
+								local Start = string.find(Return, '%d+' .. Color.LIGHTGREY .. ' str')
+								local _, End, Amount = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' spi.')
+								
+								local StrLeft = string.sub(Return, 1, Start-1)
+								local StrRight = string.sub(Return, End+1, string.len(Return))
+								
+								Return = StrLeft .. Amount .. Color.LIGHTGREY .. ' all attributes|r' .. StrRight
+							end
+						end
+						
+						if string.find(Return, 'arcane resist')
+						and string.find(Return, 'fire resist')
+						and string.find(Return, 'nature resist')
+						and string.find(Return, 'frost resist')
+						and string.find(Return, 'shadow resist') then
+							local Start = string.find(Return, '%d+' .. Color.LIGHTGREY .. ' arcane')
+							local _, End, Amount = string.find(Return, '(%d+)' .. Color.LIGHTGREY .. ' shadow resist')
+							
+							local StrLeft = string.sub(Return, 1, Start-1)
+							local StrRight = string.sub(Return, End+1, string.len(Return))
+							
+							Return = StrLeft .. Amount .. Color.LIGHTGREY .. ' all resist' .. StrRight
+						end
+						
+						if string.find(string.sub(Text, 1, 26), 'enchant[s]* ') then
+							break
+						end
+						
+						if PStart == 1 and PEnd == string.len(Text) then
+							break
+						end
+					end
+				end
+			end
+
+			if Return == ''
+			and I == ATSWRecipeItemTooltip:NumLines()
+			and not string.find(Text, 'races: ')
+			and not string.find(Text, 'classes: ') 
+			and not string.find(Text, 'tools: ') 
+			and not string.find(Text, 'reagents: ') then
+				if not (cR == 1 and cG == 1 and cB == 1) then
+					Text = string.sub(Text, (string.find(Text, ': ') or 0)+2, string.len(Text))
+
+					if string.len(Text) > 47 then
+						Text = string.sub(Text, 1, 47) .. '...'
+					end
+					
+					Return = Color.LIGHTGREY .. Text .. '|r'
+				end
+			end
+		end
+	until not Text
+	
+	ATSWRecipeItemTooltip:SetOwner(this, '')
+	
+	Recipe.Attributes = Return
+	
+	return Return
+end
+
+local function RemoveColorTags(Text)
+    local Result = Text
+	
+    while string.find(Result, '|c%x%x%x%x%x%x%x%x') do
+        Result = string.gsub(Result, '|c%x%x%x%x%x%x%x%x', '')
+    end
+	
+    Result = string.gsub(Result, '|r', '')
+	
+    return Result
+end
+
 function ATSW_UpdateRecipes()
 	local ScrollOffset 				= ScrollOffset() / ATSW_TRADESKILL_HEIGHT
 	local TextureWidth				= ATSWRecipe1Texture:GetWidth()
 	local _, _, _, TextureLeft	= ATSWRecipe1Texture:GetPoint(1)
-	local ButtonWidth				= ATSWListScrollFrame:GetWidth()
+	local FrameWidth				= ATSWListScrollFrame:GetWidth()
 	
 	for I = 1, ATSW_RECIPES_DISPLAYED do
-		local Button 					= getglobal("ATSWRecipe" .. I)
+		local Button 					= _G['ATSWRecipe' .. I]
 		
 		local Index 					= I + ScrollOffset
 		local Exist 						= Index <= RecipesSortedSize()
-		local R, Possible, Text
+		local R, Possible
+		local Text, SubText = ''
 		
 		SetVisible(Button, false) -- Needed for tooltip update if scrolled
 		SetVisible(Button, Exist)
@@ -3462,7 +3884,7 @@ function ATSW_UpdateRecipes()
 		if Exist then
 			R = RecipeSorted(Index)
 			
-			if R.Type == "header" then
+			if R.Type == 'header' then
 				R.Texture 				= GetCategoryTexture(IsExpanded(R.Name))
 			else
 				if not (R.Name and R.Texture and (R.Link or IsBeastTraining())) then
@@ -3471,11 +3893,11 @@ function ATSW_UpdateRecipes()
 				end
 			end
 			
-			local ButtonText		= getglobal("ATSWRecipe" .. I .. "Text")
-			local ButtonSubText	= getglobal("ATSWRecipe" .. I .. "SubText")
-			local ButtonTexture 	= getglobal("ATSWRecipe" .. I .. "Texture")
-			local QualityTexture 	= getglobal("ATSWRecipe" .. I .. "QualityTexture")
-			local ButtonHighlight 	= getglobal("ATSWRecipe" .. I .. "Highlight")
+			local ButtonText		= _G['ATSWRecipe' .. I .. 'Text']
+			local ButtonSubText	= _G['ATSWRecipe' .. I .. 'SubText']
+			local ButtonTexture 	= _G['ATSWRecipe' .. I .. 'Texture']
+			local QualityTexture 	= _G['ATSWRecipe' .. I .. 'QualityTexture']
+			local ButtonHighlight 	= _G['ATSWRecipe' .. I .. 'Highlight']
 			
 			local point, relativeTo, relativePoint, _, yOfs = Button:GetPoint(2) -- LEFT, ATSWFrame, LEFT
 			local BorderSize 			= 0.071
@@ -3487,7 +3909,7 @@ function ATSW_UpdateRecipes()
 			local HighlightSize 		= 0.2
 			local TP = R.TrainingCost
 			
-			if R.Type == "header" then
+			if R.Type == 'header' then
 				HighlightSize 			= 0
 				BorderSize 				= 0
 			else
@@ -3495,57 +3917,74 @@ function ATSW_UpdateRecipes()
 				
 				if not IsBeastTraining() then
 					PossibleAmount 		= ATSW_HowManyItemsArePossibleToCreate(R.Name,
-						ATSW_ConsiderBank 			and ATSW_POSSIBLE_BANK,
-						ATSW_ConsiderAlts 			and ATSW_POSSIBLE_ALTS,
-						ATSW_ConsiderMerchants 	and ATSW_POSSIBLE_MERCHANT)
+						ATSW_Options.ConsiderBank 			and ATSW_POSSIBLE_BANK,
+						ATSW_Options.ConsiderAlts 			and ATSW_POSSIBLE_ALTS,
+						ATSW_Options.ConsiderMerchants 	and ATSW_POSSIBLE_MERCHANT)
 					PossibleTotal 			= ATSW_HowManyItemsArePossibleToCreateWithConsidering	(R.Name)
 					
-					if ATSW_Unified then
+					if ATSW_Options.Unified then
 						Possible 			= PossibleAmount > 0 and PossibleAmount
 					elseif PossibleTotal > 0 then
-						Possible				= PossibleAmount .. "/" .. PossibleTotal
+						Possible				= PossibleAmount .. '/' .. PossibleTotal
 					end
 					
 					if Possible then
-						Possible				= " |cffB0B0B0[" .. Possible .. "]|r"
+						Possible				= ' |cffB0B0B0[' .. Possible .. ']|r'
 					end
 				end
 			end
 			
-			Text 				= R.Name .. SubNameToString(R.SubName) .. (Possible or "")
-			
+			if ATSW_ShowAttributes() and R.Type ~= 'header' then
+				Text = GetAttributes(R)
+				Button:SetFont('Fonts\\FRIZQT__.ttf', 10)
+			else
+				Text = R.Name .. SubNameToString(R.SubName) .. (Possible or '') .. (ConvertCooldown(R.Cooldown) or '')
+				Button:SetFont('Fonts\\FRIZQT__.ttf', 12)
+			end
+
 			if TP and TP > 0 then
-				TP = format(TRAINER_LIST_TP, TP)
+				SubText = format(TRAINER_LIST_TP, TP)
 				
-				if R.Type == "used" then
-					TP = GREY .. TP .. "|r"
+				if R.Type == 'used' then
+					SubText = Color.GREY .. SubText .. '|r'
 				end
 			else
-				TP = ""
+				SubText = ''
 			end
 			
-			ButtonText:		SetWidth			(0)
-			ButtonSubText:	SetText				(TP)
-			ButtonTexture:	SetTexture		(R.Texture)
-			ButtonTexture:	SetTexCoord		(0+BorderSize, 1-BorderSize, 0+BorderSize, 1-BorderSize)
-			QualityTexture:	SetVertexColor	(cR, cG, cB)
-			Button:				SetText				(Text .. (ConvertCooldown(R.Cooldown) or ""))
+			Button:SetText(RemoveColorTags(Text))
+			
+			local TextWidth = Button:GetTextWidth()
+
+			Button:				SetText				(Text)
+			ButtonSubText:	SetText				(SubText)
 			Button:				SetTextColor		(TypeColor.R, TypeColor.G, TypeColor.B)
 			Button:				SetPoint			(point, relativeTo:GetName(), relativePoint, Button.XOffset + XOffset, yOfs)
-			Button:				SetWidth			(math.min(Button:GetTextWidth() + TextureWidth + TextureLeft, ButtonWidth - XOffset))
+			Button:				SetWidth			(math.min(TextureLeft + TextureWidth + TextWidth, FrameWidth - XOffset) + 4)
+			
+			if TextWidth > FrameWidth - 40 then
+				TextWidth = FrameWidth - 40
+			else
+				TextWidth = 0
+			end
+			
+			ButtonText:		SetWidth			(TextWidth)
+			ButtonTexture:	SetTexture		(R.Texture)
+			ButtonTexture:	SetTexCoord		(0+BorderSize, 1-BorderSize, 0+BorderSize, 1-BorderSize)
 			ButtonHighlight:	SetTexCoord		(0+HighlightSize, 1-HighlightSize, 0+HighlightSize, 1-HighlightSize)
-			ButtonHighlight:	SetDesaturated	(R.Type ~= "header")
+			ButtonHighlight:	SetDesaturated	(R.Type ~= 'header')
+			QualityTexture:	SetVertexColor	(cR, cG, cB)
 			
 			SetVisible(QualityTexture, cR and cG and cB and not (cR == 1 and cG == 1 and cB == 1))
 			
-			if R.Type == "header" then
-				Button:RegisterForClicks("LeftButtonUp")
+			if R.Type == 'header' then
+				Button:RegisterForClicks('LeftButtonUp')
 			else
-				Button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				Button:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
 			end
 		end
 		
-		Button.Name 			= R and (R.Name .. (R.SubName and R.SubName ~= "" and ("   (" .. R.SubName .. ")") or ""))
+		Button.Name 			= R and (R.Name .. (R.SubName and R.SubName ~= '' and ('   (' .. R.SubName .. ')') or ''))
 		Button.SubName	= R and R.SubName
 		Button.Type 			= R and R.Type
 		Button.Link			= R and R.Link
@@ -3560,7 +3999,7 @@ end
 
 function ATSW_HideRecipes()
 	for I = 1, ATSW_RECIPES_DISPLAYED do
-		getglobal("ATSWRecipe" .. I):Hide()
+		_G['ATSWRecipe' .. I]:Hide()
 	end
 end
 
@@ -3568,8 +4007,8 @@ function ATSW_UpdateTasks()
     local Offset 				= FauxScrollFrame_GetOffset(ATSWTaskScrollFrame)
 	
 	for I = 1, ATSW_TASKS_DISPLAYED do
-		local Button 			= getglobal("ATSWTask" .. I)
-		local DeleteButton 	= getglobal("ATSWTask" .. I .. "DeleteButton")
+		local Button 			= _G['ATSWTask' .. I]
+		local DeleteButton 	= _G['ATSWTask' .. I .. 'DeleteButton']
 		
 		local Name, Type, Amount, Texture, Link, Cooldown, Pos, Text, TypeColor, Possible
 		local Index 			= I + Offset
@@ -3589,16 +4028,16 @@ function ATSW_UpdateTasks()
 			Pos = GetRecipePosition(Name)
 			
 			if Pos then
-				Type 			= Recipe(Pos).Type or "trivial"
+				Type 			= Recipe(Pos).Type or 'trivial'
 				Link				= Recipe(Pos).Link
 				Cooldown 		= Recipe(Pos).Cooldown
 				TypeColor 		= ATSWTypeColor[Type]
 				tR, tG, tB 		= TypeColor.R, TypeColor.G, TypeColor.B
 			end
 			
-			local ItemTexture 			= getglobal("ATSWTask" .. I .. "Texture")
-			local QualityTexture 		= getglobal("ATSWTask" .. I .. "QualityTexture")
-			local TimeCost		 		= getglobal("ATSWTask" .. I .. "TimeCost")
+			local ItemTexture 			= _G['ATSWTask' .. I .. 'Texture']
+			local QualityTexture 		= _G['ATSWTask' .. I .. 'QualityTexture']
+			local TimeCost		 		= _G['ATSWTask' .. I .. 'TimeCost']
 			local R, G, B 					= GetLinkColorRGB(Link)
 			local t_Width 				= ItemTexture:GetWidth()
 			local _, _, _, t_xOfs, _ 	= ItemTexture:GetPoint(0)
@@ -3606,10 +4045,10 @@ function ATSW_UpdateTasks()
 			local PossibleAmount		= ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
 			
 			if PossibleAmount > 0 then
-				PossibleAmount 			= "|cff10C010" .. PossibleAmount .. "|r"
+				PossibleAmount 			= '|cff10C010' .. PossibleAmount .. '|r'
 			end
 			
-			Text = Name .. " |cffB0B0B0[" .. Amount .. "/" .. PossibleAmount .. "|cffB0B0B0]|r"
+			Text = Name .. ' |cffB0B0B0[' .. Amount .. '/' .. PossibleAmount .. '|cffB0B0B0]|r'
 			
 			Button.R 						= tR
 			Button.G 						= tG
@@ -3617,7 +4056,7 @@ function ATSW_UpdateTasks()
 			Button.TaskIndex 			= Index
 			DeleteButton.TaskIndex 	= Index
 			
-			Button:				SetText			(Text .. (ConvertCooldown(Cooldown) or ""))
+			Button:				SetText			(Text .. (ConvertCooldown(Cooldown) or ''))
 			Button:				SetTextColor	(tR, tG, tB)
 			ItemTexture:		SetTexture	(Texture)
 			Button:				SetWidth		(Button:GetTextWidth() + t_xOfs + t_Width + 4)
@@ -3646,7 +4085,7 @@ end
 
 function ATSW_HideTasks()
 	for I = 1, ATSW_TASKS_DISPLAYED do
-		getglobal("ATSWTask" .. I):Hide()
+		_G['ATSWTask' .. I]:Hide()
 	end
 end
 
@@ -3658,13 +4097,11 @@ function ATSW_ShowSearch()
 	ATSW_BlockSearchTextChanged = true
 	ATSWSearchBox:SetText(SearchString())
 	
-	SetVisible(ATSWSearchLabel, SearchString() == "")
-	SetVisible(ATSWSearchIcon,  SearchString() == "")
+	SetVisible(ATSWSearchLabel, SearchString() == '')
+	SetVisible(ATSWSearchIcon,  SearchString() == '')
 	
-	if SearchString() == "" then
+	if SearchString() == '' then
 		ATSWSearchBox:ClearFocus()
-	else
-		ATSWSearchBox:SetFocus()
 	end
 	
 	ATSW_BlockSearchTextChanged = false
@@ -3679,8 +4116,8 @@ function ATSW_ShowSelection()
 	local function FirstCraft()
 		local Name, _, SubName = GetCraftNameType(GetFirstCraft())
 		
-		if SubName and SubName ~= "" then
-			Name = Name .. "   (" .. SubName .. ")"
+		if SubName and SubName ~= '' then
+			Name = Name .. '   (' .. SubName .. ')'
 		end
 		
 		return Name
@@ -3690,8 +4127,6 @@ function ATSW_ShowSelection()
 end
 
 function ATSW_ShowAmount()
-	TransformSettings(ATSW_Amount)
-
 	local Number = ATSW_Amount[realm][player][Profession()]
 	
 	if Number == 0 then
@@ -3743,7 +4178,7 @@ end
 
 function ATSW_SelectRecipe(Name, Type)
 	if Name then
-		if Type == "header" then
+		if Type == 'header' then
 			ATSW_SwitchCategory(Name)
 		else
 			-- Store selected recipe name
@@ -3810,10 +4245,10 @@ function ATSW_ShowRecipe(Name)
 		if Min == Max then
 			ATSWRecipeIconAmount:SetText(Min)
 		else
-			ATSWRecipeIconAmount:SetText(Min .. "-" .. Max)
+			ATSWRecipeIconAmount:SetText(Min .. '-' .. Max)
 		end
 	else
-		ATSWRecipeIconAmount:SetText("")
+		ATSWRecipeIconAmount:SetText('')
 	end
 	
 	-- Cooldown
@@ -3821,7 +4256,7 @@ function ATSW_ShowRecipe(Name)
 	
 	SetVisible(ATSWRecipeCooldown, Cooldown)
 	ATSWRecipeCooldown.Cooldown = Recipe.Cooldown
-	ATSWRecipeCooldown:SetText((Cooldown and COOLDOWN_REMAINING .. " " .. Cooldown) or "")
+	ATSWRecipeCooldown:SetText((Cooldown and COOLDOWN_REMAINING .. ' ' .. Cooldown) or '')
 	
 	local function ToolStringToTable(...)
 		local Table = {}
@@ -3839,28 +4274,28 @@ function ATSW_ShowRecipe(Name)
 	
 	if BeastTraining then
 		-- Requirements
-		local Button 					= getglobal("ATSWTool" .. 1)
-		local ButtonText 			= getglobal("ATSWTool" .. 1 .. "Text")
-		local ButtonTexture 		= getglobal("ATSWTool" .. 1 .. "Texture")
+		local Button 					= _G['ATSWTool' .. 1]
+		local ButtonText 			= _G['ATSWTool' .. 1 .. 'Text']
+		local ButtonTexture 		= _G['ATSWTool' .. 1 .. 'Texture']
 		local ReqLevel				= Recipe.RequiredLevel
 		
 		Required 						= BuildColoredListString(GetCraftRequirements(GamePosition))
 		
 		SetVisible(ATSWToolsLabel, 	Required or ReqLevel and ReqLevel > 0)
 		SetVisible(Button, 				Required or ReqLevel and ReqLevel > 0)
-		ATSWToolsLabel:SetText(REQUIRES_LABEL .. " ")
+		ATSWToolsLabel:SetText(REQUIRES_LABEL .. ' ')
 		
 		if Required then
 			Button:						SetText(Required)
 		else
 			if ReqLevel and ReqLevel > 0 then
-				if UnitLevel("pet") >= ReqLevel then
+				if UnitLevel('pet') >= ReqLevel then
 					Button:SetText(format(RemoveEscapeCharacters(TRAINER_PET_LEVEL), ReqLevel))
 				else
 					Button:SetText(format(TRAINER_PET_LEVEL_RED, ReqLevel))
 				end
 			else
-				Button:SetText("")
+				Button:SetText('')
 			end
 		end
 		
@@ -3876,9 +4311,9 @@ function ATSW_ShowRecipe(Name)
 		ATSWToolsLabel:SetText(ATSW_TOOLS)
 		
 		for I = 1, ATSW_TOOLS_DISPLAYED do
-			local Button 				= getglobal("ATSWTool" .. I)
-			local ButtonText 		= getglobal("ATSWTool" .. I .. "Text")
-			local ButtonTexture 	= getglobal("ATSWTool" .. I .. "Texture")
+			local Button 				= _G['ATSWTool' .. I]
+			local ButtonText 		= _G['ATSWTool' .. I .. 'Text']
+			local ButtonTexture 	= _G['ATSWTool' .. I .. 'Texture']
 			local Exist 					= table.getn(Tools) >= I
 			local R 						= 0
 			local Texture, Name, Available
@@ -3903,7 +4338,7 @@ function ATSW_ShowRecipe(Name)
 				SetEnabled(Button, Position)
 				ButtonTexture:		SetWidth(Texture and 16 or -1)
 				ButtonTexture:		SetTexture(Texture)
-				Button:					SetText(Name .. (I < table.getn(Tools) and "," or ""))
+				Button:					SetText(Name .. (I < table.getn(Tools) and ',' or ''))
 				ButtonText:			SetTextColor(R, 0, 0)
 				Button:					SetWidth(Button:GetTextWidth() + ButtonTexture:GetWidth())
 			end
@@ -3925,15 +4360,15 @@ function ATSW_ShowRecipe(Name)
 			local Usable		 	= Total - Spent
 		
 			if Usable >= Recipe.TrainingCost then
-				ATSWCostText:SetText(Recipe.TrainingCost .. " " .. TRAINING_POINTS_LABEL)
+				ATSWCostText:SetText(Recipe.TrainingCost .. ' ' .. TRAINING_POINTS_LABEL)
 			else
-				ATSWCostText:SetText(RED_FONT_COLOR_CODE .. Recipe.TrainingCost .. FONT_COLOR_CODE_CLOSE .. " " .. TRAINING_POINTS_LABEL)
+				ATSWCostText:SetText(RED_FONT_COLOR_CODE .. Recipe.TrainingCost .. FONT_COLOR_CODE_CLOSE .. ' ' .. TRAINING_POINTS_LABEL)
 			end
 		end
 		
 		SetVisible(ATSWReagentsLabel, 	Recipe.TrainingCost > 0)
 		SetVisible(ATSWCostText, 			Recipe.TrainingCost > 0)
-		ATSWReagentsLabel:SetText(COSTS_LABEL .. " ")
+		ATSWReagentsLabel:SetText(COSTS_LABEL .. ' ')
 		
 		-- Description
 		local Description = GetCraftDescription(GamePosition)
@@ -3951,8 +4386,8 @@ function ATSW_ShowRecipe(Name)
 		ATSWReagentsLabel:SetText(SPELL_REAGENTS)
 		
 		for I = 1, MAX_TRADE_SKILL_REAGENTS do
-			local Button 				= getglobal("ATSWReagent" .. I)
-			local ButtonQuality 	= getglobal("ATSWReagent" .. I .. "QualityTexture")
+			local Button 				= _G['ATSWReagent' .. I]
+			local ButtonQuality 	= _G['ATSWReagent' .. I .. 'QualityTexture']
 			local Exists 				= I <= NumReagents
 			local RName, RTexture, RAmount, RPlayerAmount, RLink, RTotalAmount, Quality, RColor, R, G, B, A, Craftable, Position
 			
@@ -3960,9 +4395,9 @@ function ATSW_ShowRecipe(Name)
 			SetVisible(Button, Exists)
 			
 			if Exists then
-				local ButtonTexture 	= getglobal("ATSWReagent" .. I .. "Texture")
-				local ButtonAmount 	= getglobal("ATSWReagent" .. I .. "Amount")
-				local ButtonTitle 		= getglobal("ATSWReagent" .. I .. "Title")
+				local ButtonTexture 	= _G['ATSWReagent' .. I .. 'Texture']
+				local ButtonAmount 	= _G['ATSWReagent' .. I .. 'Amount']
+				local ButtonTitle 		= _G['ATSWReagent' .. I .. 'Title']
 				local Pos 					= Recipe.Position
 				
 				RName, RTexture, RAmount, RPlayerAmount, RLink = GetReagentData(GamePosition, I)
@@ -3985,10 +4420,10 @@ function ATSW_ShowRecipe(Name)
 					
 					if RPlayerAmount and RAmount then
 						A 						= 0.5 + (RPlayerAmount >= RAmount and 0.45 or 0)
-						RTotalAmount 	= RPlayerAmount .. " /" .. RAmount
+						RTotalAmount 	= RPlayerAmount .. ' /' .. RAmount
 					else
 						A 						= 0.5
-						RTotalAmount 	= ""
+						RTotalAmount 	= ''
 					end
 					
 					-- ButtonTitle:SetTextColor(R, G, B, A) -- Colored title
@@ -4000,7 +4435,7 @@ function ATSW_ShowRecipe(Name)
 				ButtonTexture:		SetTexture		(RTexture)
 				ButtonTexture:		SetVertexColor	(A, A, A, A)
 				ButtonAmount:		SetText				(RTotalAmount)
-				ButtonTitle:			SetText				(RName or "")
+				ButtonTitle:			SetText				(RName or '')
 				ButtonQuality:		SetVertexColor	(R, G, B, 0.5)
 			end
 			
@@ -4051,15 +4486,15 @@ function ATSW_HideRecipe()
 	SetVisible(ATSWCraftDescription,	Visible)
 	
 	for I = 1, ATSW_RECIPES_DISPLAYED do
-		getglobal("ATSWRecipe" .. I):UnlockHighlight()
+		_G['ATSWRecipe' .. I]:UnlockHighlight()
 	end
 	
 	for I = 1, ATSW_TOOLS_DISPLAYED do
-		SetVisible(getglobal("ATSWTool" .. I), 		Visible)
+		SetVisible(_G['ATSWTool' .. I], 		Visible)
 	end
 	
 	for I = 1, MAX_TRADE_SKILL_REAGENTS do
-		SetVisible(getglobal("ATSWReagent" .. I), 	Visible)
+		SetVisible(_G['ATSWReagent' .. I], 	Visible)
 	end
 	
 	-- Task button
@@ -4078,12 +4513,12 @@ function ATSW_SetHighlight(Name)
 	
 	if Name then
 		for I = 1, ATSW_RECIPES_DISPLAYED do
-			local Button = getglobal("ATSWRecipe" .. I)
+			local Button = _G['ATSWRecipe' .. I]
 			
 			if Button.Name == Name then
 				local R, G, B = Button:GetTextColor()
 				
-				ATSWHighlight:SetPoint("TOP", Button)
+				ATSWHighlight:SetPoint('TOP', Button)
 				ATSWHighlightTexture:SetVertexColor(R, G, B, 0.8)
 				
 				HighlightButton = Button
@@ -4116,14 +4551,14 @@ function ATSW_UpdateCreateButton()
 			end
 			
 			if IsBeastTraining() then
-				if UnitName("pet") then
+				if UnitName('pet') then
 					local Total, Spent = GetPetTrainingPoints()
 					local _, _, _, _, _, TrainingCost, ReqLevel = GetCraftInformation(Position)
 					
-					Possible = Type ~= "used" and Total - Spent >= TrainingCost
+					Possible = Type ~= 'used' and Total - Spent >= TrainingCost
 					
 					if ReqLevel and ReqLevel > 0 then
-						if UnitLevel("pet") < ReqLevel then
+						if UnitLevel('pet') < ReqLevel then
 							Possible = false
 						end
 					end
@@ -4135,7 +4570,7 @@ function ATSW_UpdateCreateButton()
 					Amount = 1
 				end
 				
-				Possible = (Position and not GetCraftCooldown(Position)) and (Type ~= "used") and ATSW_HowManyItemsArePossibleToCreate(RecipeSelected()) >= Amount
+				Possible = (Position and not GetCraftCooldown(Position)) and (Type ~= 'used') and ATSW_HowManyItemsArePossibleToCreate(RecipeSelected()) >= Amount
 				
 				for I = 1, TasksSize() do
 					Pos = GetPositionFromGame(Task(I).Name)
@@ -4156,22 +4591,22 @@ function ATSW_UpdateCreateButton()
 		SetEnabled(ATSWCreateButton, Possible)
 	end
 	
-	local Name = getglobal(GetCraftButtonToken())
+	local Name = _G[GetCraftButtonToken()]
 	local Text
 	
-	if Name == "Enchant" then
+	if Name == 'Enchant' then
 		if Position and IsEnchant(Position) then
 			Text = ATSW_ENCHANT
 		else
-			Text = ATSW_CREATE
+			Text = CREATE
 		end
-	elseif Name == "Create" or Name == "Use" then
-		Text = ATSW_CREATE
+	elseif Name == 'Create' or Name == 'Use' then
+		Text = CREATE
 	else
 		Text = Name
 	end
 	
-	ATSWCreateButton:SetText(Text or Name or "")
+	ATSWCreateButton:SetText(Text or Name or '')
 	ATSWCreateButton:SetWidth(math.max(ATSWCreateButton:GetTextWidth() + 25, 82))
 end
 
@@ -4195,7 +4630,7 @@ function ATSW_Craft(Name, Amount)
 	oCBIcon = Processing.Texture
 	oCBName = Name
 	
-	ATSWFrame:RegisterEvent("SPELLCAST_START")
+	ATSWFrame:RegisterEvent('SPELLCAST_START')
 	
 	ATSW_PushCreateButton()
 	Delay(function ()
@@ -4242,47 +4677,47 @@ end
 local function GetSayTooltipString()
 	if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
 		local ChatType, ChatNumber
-		local SayTarget = ""
+		local SayTarget = ''
 		
 		if WIM_EditBoxInFocus ~= nil then
-			ChatType 		= "WHISPER"
+			ChatType 		= 'WHISPER'
 			ChatNumber 	= WIM_EditBoxInFocus:GetParent().theUser
 			
 			SayTarget 		= ATSW_TOOLTIP_TO .. WIM_UserWithClassColor(ChatNumber)
 		else
 			ChatType, ChatNumber = ChatFrameEditBox.chatType
 
-			if ChatType == "WHISPER" then
+			if ChatType == 'WHISPER' then
 					ChatNumber = ChatFrameEditBox.tellTarget
-			elseif ChatType == "CHANNEL" then
+			elseif ChatType == 'CHANNEL' then
 					ChatNumber = ChatFrameEditBox.channelTarget
 					
 					local ChatID, ChatName = GetChannelName(ChatNumber)
 				
-					SayTarget = ATSW_TOOLTIP_TO .. "[" .. ChatID .. ". " .. ChatName .."]"
-			elseif ChatType == "YELL" then
+					SayTarget = ATSW_TOOLTIP_TO .. '[' .. ChatID .. '. ' .. ChatName ..']'
+			elseif ChatType == 'YELL' then
 					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_YELL
-			elseif ChatType == "PARTY" then
+			elseif ChatType == 'PARTY' then
 					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_PARTY
-			elseif ChatType == "GUILD" then
+			elseif ChatType == 'GUILD' then
 					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_GUILD
-			elseif ChatType == "RAID" then
+			elseif ChatType == 'RAID' then
 					SayTarget = ATSW_TOOLTIP_TO .. ATSW_TOOLTIP_RAID
 			end
 		end
 
 		return ATSW_TOOLTIP_SAYREAGENTS .. SayTarget, ChatType, ChatNumber
 	else
-		return ""
+		return ''
 	end
 end
 
 local Lines = {}
-local Message = ""
+local Message = ''
 local TooltipString, ChatType, ChatNumber
 
-StaticPopupDialogs["SAYREAGENTS"] = {
-	text = "",
+StaticPopupDialogs['SAYREAGENTS'] = {
+	text = '',
 	button1 = TEXT(YES),
 	button2 = TEXT(NO),
 	OnAccept = function()
@@ -4306,14 +4741,14 @@ function ATSW_SayReagents(Position)
 	
 	if R.Link then
 		if IsEnchant(Position) then
-			LineStart = ""
+			LineStart = ''
 		else
-			LineStart = ATSW_REAGENTLIST1 .. " "
+			LineStart = ATSW_REAGENTLIST1 .. ' '
 		end
 		
 		local Reagents = GetReagents(R.Name)
 		
-		local S = string.format(TooltipString, "^.*|cffffffff?(%s*)") .. "|r?\n\n" .. LineStart .. R.Link .. " " .. ATSW_REAGENTLIST2
+		local S = string.format(TooltipString, '^.*|cffffffff?(%s*)') .. '|r?\n\n' .. LineStart .. R.Link .. ' ' .. ATSW_REAGENTLIST2
 		
 		Lines = {}
 		
@@ -4321,27 +4756,27 @@ function ATSW_SayReagents(Position)
 			local Line = Reagents[L].Name
 			
 			if Reagents[L].Amount > 1 then
-				Line = Line .. " (" .. Reagents[L].Amount .. ")"
+				Line = Line .. ' (' .. Reagents[L].Amount .. ')'
 			end
 			
-			S = S .. "\n" .. Line
+			S = S .. '\n' .. Line
 			
 			table.insert(Lines, Line)
 		end
 		
-		StaticPopupDialogs["SAYREAGENTS"].text = S .. "\n"
-		Message = LineStart .. R.Link .. " " .. ATSW_REAGENTLIST2
+		StaticPopupDialogs['SAYREAGENTS'].text = S .. '\n'
+		Message = LineStart .. R.Link .. ' ' .. ATSW_REAGENTLIST2
 		
-		StaticPopup_Show("SAYREAGENTS")
+		StaticPopup_Show('SAYREAGENTS')
 	end
 end
 
 function ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
 	return ATSW_HowManyItemsArePossibleToCreate(
 				Name,
-				ATSW_ConsiderBank 			and ATSW_POSSIBLE_BANK,
-				ATSW_ConsiderAlts 			and ATSW_POSSIBLE_ALTS,
-				ATSW_ConsiderMerchants 	and ATSW_POSSIBLE_MERCHANT,
+				ATSW_Options.ConsiderBank 			and ATSW_POSSIBLE_BANK,
+				ATSW_Options.ConsiderAlts 			and ATSW_POSSIBLE_ALTS,
+				ATSW_Options.ConsiderMerchants 	and ATSW_POSSIBLE_MERCHANT,
 				ATSW_POSSIBLE_NOTASK	)
 end
 
@@ -4512,8 +4947,8 @@ function ATSW_AddTask(Name, Amount, Link, Texture, Recursive, NecessaryReagentMo
 			local Bags, Bank, OtherCharacters
 			
 			Bags 					= ATSW_GetBagsAmount(Name)
-			Bank 				= ATSW_ConsiderBank 	and ATSW_GetBankAmount(Name) 	or 0
-			OtherCharacters	= ATSW_ConsiderAlts 	and ATSW_GetAltsAmount(Name) 	or 0
+			Bank 				= ATSW_Options.ConsiderBank 	and ATSW_GetBankAmount(Name) 	or 0
+			OtherCharacters	= ATSW_Options.ConsiderAlts	 	and ATSW_GetAltsAmount(Name) 	or 0
 			
 			return Bags + Bank + OtherCharacters
 		end
@@ -4538,7 +4973,7 @@ function ATSW_AddTask(Name, Amount, Link, Texture, Recursive, NecessaryReagentMo
 					local R = Recipe(Pos, Prof).Reagents[I]
 					local Merchant, Required, InsertBefore = 1, 0
 					
-					Merchant = ATSW_ConsiderMerchants and ATSW_Merchant[R.Name] and 0 or 1
+					Merchant = ATSW_Options.ConsiderMerchants and ATSW_Merchant[R.Name] and 0 or 1
 					
 					if GetRecipePosition(R.Name, Prof) then
 						local Min = GetCraftMinMax(GetRecipePosition(R.Name, Prof))
@@ -4620,7 +5055,7 @@ end
 ATSW_Time = 0
 
 function ATSW_StartProcessing()
-	ATSWFrame:RegisterEvent("SPELLCAST_INTERRUPTED")
+	ATSWFrame:RegisterEvent('SPELLCAST_INTERRUPTED')
 	
 	Processing.Complete			= 0
 	Processing.Stop					= false
@@ -4631,21 +5066,21 @@ end
 
 function ATSW_PushCreateButton(State)
 	if State or (State == nil) then
-		ATSWCreateButton:SetButtonState("PUSHED", true)
-		ATSWCreateButton:SetHighlightTexture("")
+		ATSWCreateButton:SetButtonState('PUSHED', true)
+		ATSWCreateButton:SetHighlightTexture('')
 		ATSWCreateButton:SetTextColor(0.5, 0.5, 0.5)
 		ATSWCreateButton:SetHighlightTextColor(0.5, 0.5, 0.5)
 	elseif State == false then
-		ATSWCreateButton:SetButtonState("NORMAL", false)
-		ATSWCreateButton:SetHighlightTexture("Interface\\Buttons\\UI-Panel-Button-Highlight")
+		ATSWCreateButton:SetButtonState('NORMAL', false)
+		ATSWCreateButton:SetHighlightTexture('Interface\\Buttons\\UI-Panel-Button-Highlight')
 		ATSWCreateButton:SetTextColor(1, 0.82, 0)
 		ATSWCreateButton:SetHighlightTextColor(1, 0.82, 0)
 	end
 end
 
 function ATSW_StopProcessing()
-	ATSWFrame:UnregisterEvent("SPELLCAST_START")
-	ATSWFrame:UnregisterEvent("SPELLCAST_INTERRUPTED")
+	ATSWFrame:UnregisterEvent('SPELLCAST_START')
+	ATSWFrame:UnregisterEvent('SPELLCAST_INTERRUPTED')
 	
 	Processing.Active				= false
 	Processing.Stop					= false
@@ -4680,25 +5115,25 @@ end
 function ATSW_ShowAuctionShoppingList()
     if (AuctionFrame and AuctionFrame:IsVisible() or aux_frame and aux_frame:IsVisible()) and 
 	NecessaryReagentsSize() > 0 and 
-	ATSW_DisplayShoppingList then
+	ATSW_Options.DisplayShoppingList then
 		for A = 1, ATSW_AUCTION_ITEMS_DISPLAYED do -- Create auction shopping frame buttons
-			if not getglobal("ATSWSLFReagent" .. A) then
-				local F = CreateFrame("Frame", "ATSWSLFReagent" .. A, ATSWShoppingListFrame, "ATSWSLFReagentTemplate")
+			if not _G['ATSWSLFReagent' .. A] then
+				local F = CreateFrame('Frame', 'ATSWSLFReagent' .. A, ATSWShoppingListFrame, 'ATSWSLFReagentTemplate')
 				
 				if A == 1 then
-					F:SetPoint("TOPLEFT", 10, -44)
+					F:SetPoint('TOPLEFT', 10, -44)
 				else
-					F:SetPoint("TOPLEFT", "ATSWSLFReagent" .. A - 1, "BOTTOMLEFT")
+					F:SetPoint('TOPLEFT', 'ATSWSLFReagent' .. A - 1, 'BOTTOMLEFT')
 				end
 			end
 		end
 		
 		-- Attach (Compatible with aux)
         if not aux_frame and AuctionFrame then
-            ATSWShoppingListFrame:SetPoint("TOPLEFT", "AuctionFrame", "TOPLEFT", 348, -435.5)
+            ATSWShoppingListFrame:SetPoint('TOPLEFT', 'AuctionFrame', 'TOPLEFT', 348, -435.5)
         else
             ATSWShoppingListFrame:ClearAllPoints()
-            ATSWShoppingListFrame:SetPoint("TOPRIGHT", "aux_frame", "BOTTOMRIGHT", 30, 0)
+            ATSWShoppingListFrame:SetPoint('TOPRIGHT', 'aux_frame', 'BOTTOMRIGHT', 30, 0)
         end
 		
         ATSWShoppingListFrame:Show()
@@ -4713,20 +5148,20 @@ end
 
 local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
 	for I = 1, ButtonsMax do
-		local Button				= getglobal(ButtonName .. I					)
-        local Item 					= getglobal(ButtonName .. I .. "Item"		)
-        local Bags 					= getglobal(ButtonName .. I .. "Bags"		)
-        local Bank 					= getglobal(ButtonName .. I .. "Bank"		)
-		local Alts 					= getglobal(ButtonName .. I .. "Alt"			)
-        local Merchant 			= getglobal(ButtonName .. I .. "Merchant"	)
+		local Button				= _G[ButtonName .. I					]
+        local Item 					= _G[ButtonName .. I .. 'Item'		]
+        local Bags 					= _G[ButtonName .. I .. 'Bags'		]
+        local Bank 					= _G[ButtonName .. I .. 'Bank'		]
+		local Alts 					= _G[ButtonName .. I .. 'Alt'			]
+        local Merchant 			= _G[ButtonName .. I .. 'Merchant'	]
 		
 		local R 						= NecessaryReagent(I + Offset)
 		
-		SetVisible(Button, false) --It is needed for tooltip update if button text is changed
+		SetVisible(Button, false) -- It is needed for tooltip update if button text is changed
 		SetVisible(Button, R)
 		
         if R and Button then
-			local Color				= LinkToColor(R.Link) or "ffffff"
+			local Color				= LinkToColor(R.Link) or 'ffffff'
             local AmountBags 	= ATSW_GetBagsAmount	(R.Name)
             local AmountBank 	= ATSW_GetBankAmount	(R.Name)
             local AmountAlts 	= ATSW_GetAltsAmount		(R.Name)
@@ -4739,12 +5174,12 @@ local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
 			SetEnabled(Bank, 		false)
 			SetEnabled(Merchant,	false)
 			
-			if AmountBags 	==	0 	then AmountBags 	=	GREY 	..	AmountBags 	.. 	"|r" end
-			if AmountBank 	==	0 	then AmountBank 	=	GREY 	.. 	AmountBank 	..	"|r" end
-			if AmountAlts		==   0 	then AmountAlts 	=	GREY 	..	AmountAlts 	.. 	"|r" end
+			if AmountBags 	==	0 	then AmountBags 	=	Color.GREY 	..	AmountBags 	.. 	'|r' end
+			if AmountBank 	==	0 	then AmountBank 	=	Color.GREY 	.. 	AmountBank 	..	'|r' end
+			if AmountAlts		==   0 	then AmountAlts 	=	Color.GREY 	..	AmountAlts 	.. 	'|r' end
 			
 			Item:	SetNormalTexture	(R.Texture)
-            Item:	SetText					("|cff" .. Color .. "[" .. R.Name .. "]|r " .. GREY .. "[" .. R.Amount .. "]|r")
+            Item:	SetText					('|cff' .. Color .. '[' .. R.Name .. ']|r ' .. Color.GREY .. '[' .. R.Amount .. ']|r')
             Bags:		SetText					(AmountBags)
 			Bank:	SetText					(AmountBank)
 			Alts:		SetText					(AmountAlts)
@@ -4757,7 +5192,7 @@ function ATSW_UpdateAuctionList()
 	local ButtonsMax	= ATSW_AUCTION_ITEMS_DISPLAYED
     local Offset			= FauxScrollFrame_GetOffset(ATSWSLScrollFrame)
 	
-	UpdateReagentList	("ATSWSLFReagent", ButtonsMax, Offset)
+	UpdateReagentList	('ATSWSLFReagent', ButtonsMax, Offset)
 	
     FauxScrollFrame_Update(ATSWSLScrollFrame, NecessaryReagentsSize(), ButtonsMax, ATSW_TRADESKILL_HEIGHT)
 end
@@ -4770,14 +5205,14 @@ function ATSW_UpdateNecessaryReagents()
 	if NecessaryReagentsSize() == 0 then
 		ATSWReagentsFrame:Hide()
 	else
-		UpdateReagentList("ATSWRFReagent", ATSW_NECESSARIES_DISPLAYED, 0)
+		UpdateReagentList('ATSWRFReagent', ATSW_NECESSARIES_DISPLAYED, 0)
 		SetVisible(ATSWReagentsFrameAndMore, 	NecessaryReagentsSize() > ATSW_NECESSARIES_DISPLAYED)
 	end
 end
 
 -- Search functions
 
-function ATSWSearchBox_OnTextChanged(Text) --TODO
+function ATSWSearchBox_OnTextChanged(Text)
 	if not ATSW_BlockSearchTextChanged then
 		SetSearchString(Text)
 		
@@ -4787,145 +5222,171 @@ function ATSWSearchBox_OnTextChanged(Text) --TODO
 	end
 end
 
-function ATSW_Filter(Name, Type)
+local function ReplaceMagicCharacters(String)
+	local S = String
+	-- Magic characters are ^$()%.[]*? and maybe + and -
+	
+	S = string.gsub(S, '%%', '%%%%')
+	S = string.gsub(S, '%[', '%%[')
+	S = string.gsub(S, '%^', '%%^')
+	S = string.gsub(S, '%$', '%%$')
+	S = string.gsub(S, '%(', '%%(')
+	S = string.gsub(S, '%)', '%%)')
+	S = string.gsub(S, '%.', '%%.')
+	S = string.gsub(S, '%[', '%%[')
+	S = string.gsub(S, '%]', '%%]')
+	S = string.gsub(S, '%*', '%%*')
+	S = string.gsub(S, '%?', '%%?')
+	
+	return S
+end
+
+local function RemoveSideSpaces(S)
+	if S then
+		_, _, S = string.find(S, '^%s*(.-)%s*$')
+	end
+	
+	return S
+end
+
+local Parameters = {}
+
+function ATSW_Filter(Recipe, Type)
+	local Name = Recipe.Name
+	
 	if not Name then
 		return false
-	else
-		if Name ~= "" then
-			local function ReplaceMagicCharacters(String)
-				local S = String
-				-- Magic characters are ^$()%.[]*? and maybe + and -
-				
-				S = string.gsub(S, "%%", "%%%%")
-				S = string.gsub(S, "%[", "%%[")
-				S = string.gsub(S, "%^", "%%^")
-				S = string.gsub(S, "%$", "%%$")
-				S = string.gsub(S, "%(", "%%(")
-				S = string.gsub(S, "%)", "%%)")
-				S = string.gsub(S, "%.", "%%.")
-				S = string.gsub(S, "%[", "%%[")
-				S = string.gsub(S, "%]", "%%]")
-				S = string.gsub(S, "%*", "%%*")
-				S = string.gsub(S, "%?", "%%?")
-				
-				return S
-			end
-			
-			local function RemoveSideSpaces(S)
-				if S then
-					_, _, S = string.find(S, "^%s*(.-)%s*$")
-				end
-				
-				return S
-			end
-			
-			ParameterString = string.lower(ReplaceMagicCharacters(SearchString()))
-			
-			local _, _, Search = string.find(ParameterString, "^([^:]*)")
-			local Parameters = {}
-			
-			if Search then
-				Search = RemoveSideSpaces(Search)
-				
-				table.insert(Parameters, {Name = "name", Value = Search})
-			end
-			
-			for w in string.gfind(ParameterString, ":[^:]+") do
-				local _, _, Param_Name, Param_Value = string.find(w, ":(%a+)%s([^:]+)")
-				
-				RemoveSideSpaces(Param_Value)
-				
-				if Param_Name then
-					table.insert(Parameters, {Name = Param_Name, Value = Param_Value})
-				end
-			end
-			
-			for I = 1, table.getn(Parameters) do
-				local PName = Parameters[I].Name
-				local PValue = Parameters[I].Value
-				
-				if PName == "name" then
-					if not string.find(string.lower(Name), PValue) then
-						return false
-					end
-				end
-				
-				if PName == "reagent" or PName == "r" then
-					local Index = GetRecipePosition(Name)
-					
-					if Index then
-						local Found = false
-						
-						for J = 1, Recipe(Index).ReagentsSize do
-							if string.find(string.lower(GetReagentData(Index, J) or ""), PValue) then
-								Found = true
-							end
-						end
-						
-						if not Found then
-							return false
-						end
-					else
-						return false
-					end
-				end
-				
-				if	PName == "level"
-				or	PName == "rarity"
-				or	PName == "quality"
-				or PName == "q"
-				or	PName == "possible" 
-				or	PName == "possibletotal" then
-					local PMin, PDirection, PMax
-					
-					if PName == "rarity" or PName == "quality" or PName == "q" then
-						_, _, PMin, PDirection, PMax = string.find(PValue, "^(%a+)%s*([%+%-]?)%s*(%a-)$")
-						
-						PMin	=	QualityNames[PMin]
-						PMax	=	QualityNames[PMax]
-					else
-						_, _, PMin, PDirection, PMax = string.find(PValue, "^(%d+)%s*([%+%-]?)%s*(%d-)$")
-						
-						PMin =	tonumber(PMin)
-						PMax =	tonumber(PMax)
-					end
-					
-					local Param
-					
-					if 			PName == "level" 				then
-								Param = GetItemMinLevel(Recipe(GetRecipePosition(Name)).Position) or 0
-								
-					elseif 	PName == "rarity" or PName == "quality" or PName == "q" then
-								Param = LinkToQuality(Recipe(GetRecipePosition(Name)).Link)
-								
-					elseif 	PName == "possible" 			then
-								Param = ATSW_HowManyItemsArePossibleToCreate(Name)
-								
-					elseif 	PName == "possibletotal" 	then
-								Param = ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
-					end
-					
-					if PMin and not PMax then
-						if PDirection ~= "" then
-							if PDirection == "+" then
-								return Param >= PMin
-							elseif PDirection == "-" then
-								return Param <= PMin
-							end
-						else
-							return Param == PMin
-						end
-					elseif PDirection == "-" then
-						return Param > PMin and Param < PMax
-					elseif PDirection == "+" then
-						return Param == PMin + PMax
-					end
-				end
+	elseif Name == '' then
+		return true
+	end
+	
+	ParameterString = string.lower(ReplaceMagicCharacters(SearchString()))
+	
+	for I in pairs(Parameters) do
+		Parameters[I] = nil
+	end
+	
+	local _, _, Search = string.find(ParameterString, '^([^:]*)')
+	
+	if Search then
+		Parameters['name'] = RemoveSideSpaces(Search)
+	end
+	
+	for w in string.gfind(ParameterString, ':[^:]+') do
+		local _, _, Param_Name, Param_Value = string.find(w, ':(%a+)%s([^:]+)')
+		
+		RemoveSideSpaces(Param_Value)
+		
+		if Param_Name then
+			Parameters[Param_Name] = Param_Value
+		end
+	end
+	
+	for PName, PValue in pairs(Parameters) do
+		if ATSW_ShowAttributes() then
+			Name = GetAttributes(Recipe)
+		end
+		
+		if PName == 'name' then
+			if not string.find(string.lower(Name), PValue) then
+				return false
 			end
 		end
 		
-		return true
+		if PName == 'reagent' or PName == 'r' then
+			local Index = GetRecipePosition(Name)
+			
+			if Index then
+				local Found = false
+				
+				for J = 1, Recipe(Index).ReagentsSize do
+					if string.find(string.lower(GetReagentData(Index, J) or ''), PValue) then
+						Found = true
+					end
+				end
+				
+				if not Found then
+					return false
+				end
+			else
+				return false
+			end
+		end
+		
+		if	PName == 'level'
+		or	PName == 'rarity'
+		or	PName == 'quality'
+		or PName == 'q'
+		or	PName == 'possible' 
+		or	PName == 'possibletotal' then
+			local PMin, PDirection, PMax
+			
+			if PName == 'rarity' or PName == 'quality' or PName == 'q' then
+				_, _, PMin, PDirection, PMax = string.find(PValue, '^(%a+)%s*([%+%-]?)%s*(%a-)$')
+				
+				local QualityNames = {
+					['grey'		] 			= 1,
+					['white'		] 			= 2,
+					['green'		] 			= 3,
+					['blue'		] 			= 4,
+					['purple'		]			= 5,
+					['orange'	]	 		= 6,
+					['gold'		] 			= 7,
+					['cyan'		] 			= 8,
+
+					['poor'		] 			= 1,
+					['common'	] 			= 2,
+					['uncommon'] 		= 3,
+					['rare'		] 			= 4,
+					['epic'		]			= 5,
+					['legendary'] 			= 6,
+					['artifact'	] 			= 7,
+					['heirloom'	] 			= 8
+				}
+				
+				PMin	=	QualityNames[PMin]
+				PMax	=	QualityNames[PMax]
+			else
+				_, _, PMin, PDirection, PMax = string.find(PValue, '^(%d+)%s*([%+%-]?)%s*(%d-)$')
+				
+				PMin =	tonumber(PMin)
+				PMax =	tonumber(PMax)
+			end
+			
+			local Param
+			
+			if 			PName == 'level' 				then
+						Param = GetItemMinLevel(Recipe(GetRecipePosition(Name)).Position) or 0
+						
+			elseif 	PName == 'rarity' or PName == 'quality' or PName == 'q' then
+						Param = LinkToQuality(Recipe(GetRecipePosition(Name)).Link)
+						
+			elseif 	PName == 'possible' 			then
+						Param = ATSW_HowManyItemsArePossibleToCreate(Name)
+						
+			elseif 	PName == 'possibletotal' 	then
+						Param = ATSW_HowManyItemsArePossibleToCreateWithConsidering(Name)
+			end
+			
+			if PMin and not PMax then
+				if PDirection ~= '' then
+					if PDirection == '+' then
+						return Param >= PMin
+					elseif PDirection == '-' then
+						return Param <= PMin
+					end
+				else
+					return Param == PMin
+				end
+			elseif PDirection == '-' then
+				return Param > PMin and Param < PMax
+			elseif PDirection == '+' then
+				return Param == PMin + PMax
+			end
+		end
 	end
+	
+	return true
 end
 
 -- Tooltip functions
@@ -4933,11 +5394,11 @@ end
 function ATSWItemButton_OnEnter()
 	local Link = this:GetParent().Link
 	
-	Link = string.gsub(Link, "|c(%x+)|H(item:%d+:%d+:%d+:%d+)|h%[(.-)%]|h|r", "%2")
+	Link = string.gsub(Link, '|c(%x+)|H(item:%d+:%d+:%d+:%d+)|h%[(.-)%]|h|r', '%2')
 	
     if Link then
-        GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:SetPoint("BOTTOMLEFT", this:GetName(), "TOPLEFT")
+        GameTooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT')
+        GameTooltip:SetPoint('BOTTOMLEFT', this:GetName(), 'TOPLEFT')
         GameTooltip:SetHyperlink(Link)
         GameTooltip:Show()
     end
@@ -4947,147 +5408,370 @@ function ATSWItemButton_OnLeave()
     GameTooltip:Hide()
 end
 
-function ATSW_DisplayRecipeTooltip()
-    if ATSW_RecipeTooltip then
-		local R
+function CreateDynamicTooltip(TooltipName)
+	local Name = TooltipName
+    local Tooltip = CreateFrame('GameTooltip', Name, UIParent, 'GameTooltipTemplate')
+
+    Tooltip:SetBackdrop({
+        bgFile = 'Interface\\Tooltips\\UI-Tooltip-Background',
+        edgeFile = 'Interface\\Tooltips\\UI-Tooltip-Border',
+        tile = true,
+        tileSize = 16,
+        edgeSize = 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    })
+	Tooltip:SetBackdropColor(0.09, 0.09, 0.18, 1)
+
+    Tooltip.NumLines = 0
+	Tooltip.MaxLineWidth = 0
+
+    Tooltip:SetScale(GetCVar('uiscale'))
+	Tooltip:SetFrameStrata('TOOLTIP')
+
+    function ClearFrameObject(Object, IsTexture)
+        if Object then
+            Object:ClearAllPoints()
+
+            if IsTexture then
+                Object:SetTexture(nil)
+            else
+                Object:SetText('')
+            end
+
+            Object:Hide()
+        end
+    end
+
+    function IncrementLineCount()
+        Tooltip.NumLines = Tooltip.NumLines + 1
+
+        return Tooltip.NumLines
+    end
+
+    function SetPointToPrevious(Object, LineIndex, PrevText)
+		Object:ClearAllPoints()
 		
-		if IsBeastTraining() then
-			R = Recipe(GetRecipeSortedPosition(this.Name))
+        if LineIndex == 1 then
+            Object:SetPoint('TOPLEFT', Tooltip, 'TOPLEFT', 10, -10)
+        else
+			Object:SetPoint('TOP', PrevText, 'BOTTOM', 0, -4)
+			Object:SetPoint('LEFT', Tooltip, 'LEFT', 10, 0)
+        end
+    end
+
+    function CreateTooltipLine(IconPath, LeftText, RightText, R, G, B)
+        local LineIndex = IncrementLineCount()
+		local Width = 0
+		local IsHeader = LineIndex == 1
+
+        if LineIndex == 1 then
+            Tooltip:AddLine(' ')
+        end
+
+        local Texture = _G[Name .. 'TextureLeft' .. LineIndex]
+        local LeftFontString = _G[Name .. 'TextLeft' .. LineIndex]
+        local RightFontString = _G[Name .. 'TextRight' .. LineIndex]
+
+        if IconPath then
+            if not Texture then
+                Texture = Tooltip:CreateTexture(Name .. 'TextureLeft' .. LineIndex)
+				Texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+            end
+
+            if IsHeader then
+                SetSize(Texture, 20, 20)
+            else
+                SetSize(Texture, 16, 16)
+            end
 			
-			if R then
-				GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
-				GameTooltip:SetCraftSpell(R.Position)
-			end
-		else
-			ATSWRecipeTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", 0)
-			ATSWRecipeTooltip:SetBackdropColor(0, 0, 0, 1)
+            SetPointToPrevious(Texture, LineIndex, _G[Name .. 'TextLeft' .. (LineIndex - 1)])
+
+            Texture:SetTexture(IconPath)
+            Texture:Show()
+        else
+            if Texture then
+                ClearFrameObject(Texture, true)
+            end
+        end
+
+        if not LeftFontString then
+            LeftFontString = Tooltip:CreateFontString(Name .. 'TextLeft' .. LineIndex, 'ARTWORK', IsHeader and 'GameTooltipHeaderText' or 'GameFontNormal')
+        end
+		
+		if not (R and G and B) then
+			R, G, B = 1, 0.82, 0
+        end
+		
+		LeftFontString:SetTextColor(R, G, B)
+		
+        if IconPath then
+			LeftFontString:ClearAllPoints()
+            LeftFontString:SetPoint('LEFT', Texture, 'RIGHT', 2, 0)
+        else
+            SetPointToPrevious(LeftFontString, LineIndex, _G[Name .. 'TextLeft' .. (LineIndex - 1)])
+        end
+
+		if R and R > 1 then -- Set font
+			LeftFontString:SetFont('Fonts\\FRIZQT__.ttf', R)
+		elseif not IsHeader then
+			LeftFontString:SetFont('Fonts\\FRIZQT__.ttf', 12)
+		end
+		
+        LeftFontString:SetText(LeftText)
+        LeftFontString:Show()
+		
+		if LeftText then
+			Width = Width + string.len(LeftText) * 3.7
+		end
+
+        if RightText then
+            if not RightFontString then
+                RightFontString = Tooltip:CreateFontString(Name .. 'TextRight' .. LineIndex, 'ARTWORK', IsHeader and 'GameTooltipHeaderText' or 'GameTooltipText')
+            end
 			
-			if this.Type ~= "header" then
-				ATSWRecipeTooltipTextureLeft4:SetPoint("TOPLEFT", "$parentTextLeft3", "BOTTOMLEFT", 0, -4)
-				
-				R = Recipe(GetRecipeSortedPosition(this.Name))
-				
-				ATSWRecipeTooltip:AddLine(R.Name)
-				getglobal("ATSWRecipeTooltipTextureLeft1"):SetTexture(R.Texture)
-			   
-				local AtlasLoot, SU2, SU3, SU4 = ATSW_SkillUps(R.Name)
-				
-				if AtlasLoot then
-					ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_SKILLUPS .. ORANGE .. (AtlasLoot or '?') .." " .. YELLOW .. (SU2 or '?') .." " .. GREEN .. (SU3 or '?') .." " .. GREY .. (SU4 or '?'))
-				end
-				
-				local cR, cG, cB
-				
-				if R.Link then
-					cR, cG, cB 						= GetLinkColorRGB(R.Link)
-				else
-					cR, cG, cB = 1, 1, 1
-				end
-				
-				ATSWRecipeTooltipTextLeft1:SetVertexColor(cR, cG, cB)
-				ATSWRecipeTooltip:AddLine(" ")
-				ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_NECESSARY)
-				
-				local Offset
-				
-				if AtlasLoot then
-					Offset = -16
-					ATSWRecipeTooltipTextureLeft4:SetTexture()
-					ATSWRecipeTooltipTextLeft2:SetFont("Fonts\\FRIZQT__.ttf", 11)
-				else
-					Offset = 2
-					ATSWRecipeTooltipTextLeft2:SetFont("Fonts\\FRIZQT__.ttf", 12)
-				end
-				
-				getglobal("ATSWRecipeTooltipTextLeft" .. 4):SetPoint("LEFT", "ATSWRecipeTooltipTextureLeft4", "RIGHT", Offset, 0)
-				
-				local Reagents = GetReagents(R.Name, 1)
-				
-				for I = 1, 19 do
-					local Texture
-					local TooltipTexture = getglobal("ATSWRecipeTooltipTextureLeft" .. 3 + I + ((AtlasLoot and 1) or 0))
-					
-					if I <= table.getn(Reagents) then
-						local R = Reagents[I]
-						local Bags 				= ATSW_GetBagsAmount	(R.Name)
-						local Bank 				= ATSW_GetBankAmount	(R.Name)
-						local Alts 				= ATSW_GetAltsAmount		(R.Name)
-						local Merchant 		= ""
-						
-						if ATSW_IsInMerchant(R.Name) then
-							Merchant 			= " " .. GREY .. ATSW_TOOLTIP_BUYABLE.."|r"
-						end
-						
-						local Amount			= R.Amount
-						local Amountstring 	= ""
-						
-						if Amount > 1 then
-							Amountstring 	= R.Amount
-							Amountstring 	= GREY .. " (" .. Amountstring .. ")|r"
-						end
-						
-						local BagStr, BankStr, AltsStr = Bags, Bank, Alts
-						
-						local function AddSpace(S)
-							if string.len(S) 	== 1 then
-								S = S .. "  "
-							end
-							
-							return S
-						end
-						
-						local function AddColor(S, Amount)
-							if Amount == 0 then
-								S = GREY .. S	.. "|r"
-							else
-								S = "|cffffffff" .. S .. "|r"
-							end
-							
-							return S
-						end
-						
-						BagStr 	= AddSpace	(BagStr				)
-						BankStr	= AddSpace	(BankStr			)
-						AltsStr 	= AddSpace	(AltsStr				)
-						BagStr	= AddColor	(BagStr, 	Bags	)
-						BankStr	= AddColor	(BankStr, 	Bank	)
-						AltsStr	= AddColor	(AltsStr,		Alts	)
-						
-						local cR, cG, cB = GetLinkColorRGB(R.Link)
-						
-						ATSWRecipeTooltip:AddDoubleLine(
-							(R.Name or "") .. Amountstring .. Merchant, 
-							"(" .. ATSW_TOOLTIP_INBAGS 	.. " " .. BagStr 	.. "  " ..
-									ATSW_TOOLTIP_INBANK 	.. " " .. BankStr 	.. "  " ..
-									ATSW_TOOLTIP_ONALTS 	.. " " .. AltsStr 	.. ")",	 cR, cG, cB)
-						
-						Texture 				= R.Texture
-					end
-					
-					TooltipTexture:SetTexture(Texture)
-					TooltipTexture:SetWidth(Texture and 16 or -1)
-				end
-				
-				ATSWRecipeTooltip:Show()
-				ATSWRecipeTooltip:SetHeight(table.getn(Reagents)*18+71+16*((AtlasLoot and 1) or 0))
-				ATSWRecipeTooltip:SetWidth(ATSWRecipeTooltip:GetWidth()+18)
-				
-				local S
-				
-				if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
-					S = GetSayTooltipString()
-				elseif ATSW_HowManyItemsArePossibleToCreate(R.Name) > 0 then
-					S = ATSW_TOOLTIP_ADDITEM
-				end
-				
-				if S then
-					ATSWRecipeTooltip:AddLine(S)
-					ATSWRecipeTooltip:SetHeight(ATSWRecipeTooltip:GetHeight()+21)
-					ATSWRecipeTooltip:SetWidth(math.max(getglobal("ATSWRecipeTooltipTextLeft" .. ATSWRecipeTooltip:NumLines()):GetWidth()+22, ATSWRecipeTooltip:GetWidth()))
-				end
-			end
+			RightFontString:SetTextColor(1, 0.82, 0)
+			RightFontString:ClearAllPoints()
+            RightFontString:SetPoint('TOP', LeftFontString, 'TOP')
+            RightFontString:SetPoint('RIGHT', Tooltip, 'RIGHT', -10, 0)
+            RightFontString:SetText(RightText)
+            RightFontString:Show()
+			
+			Width = Width + string.len(RightText) * 3.5
+        else
+            if RightFontString then
+                ClearFrameObject(RightFontString, false)
+            end
+        end
+		
+		Tooltip.MaxLineWidth = math.max(math.max(Width, Tooltip.MaxLineWidth), 350)
+    end
+
+    function Tooltip:AddIconLine(IconPath, Text, R, G, B)
+        CreateTooltipLine(IconPath, Text, nil, R, G, B)
+    end
+
+    function Tooltip:AddTextLine(Text, R, G, B)
+        CreateTooltipLine(nil, Text, nil, R, G, B)
+    end
+
+    function Tooltip:AddDoubleLine(IconPath, LeftText, RightText, R, G, B)
+        CreateTooltipLine(IconPath, LeftText, RightText, R, G, B)
+    end
+
+    function Tooltip:ClearLines()
+        for I = Tooltip.NumLines, 1, -1 do
+            ClearFrameObject(_G[Name .. 'TextureLeft' .. I], true)
+            ClearFrameObject(_G[Name .. 'TextLeft' .. I], false)
+            ClearFrameObject(_G[Name .. 'TextRight' .. I], false)
+        end
+
+        Tooltip.NumLines = 0
+		Tooltip.MaxLineWidth = 0
+    end
+
+    return Tooltip
+end
+
+ATSWRecipeTooltip = CreateDynamicTooltip('ATSWRecipeTooltip')
+
+local function CreateGameTooltip(TooltipName)
+    local Tooltip = CreateFrame('GameTooltip', TooltipName, UIParent, 'GameTooltipTemplate')
+
+    Tooltip:SetBackdrop(nil)
+    Tooltip:SetScale(GetCVar('uiscale'))
+    Tooltip:Hide()
+
+    return Tooltip
+end
+
+ATSWRecipeItemTooltip = CreateGameTooltip('ATSWRecipeItemTooltip')
+
+local function AddSpace(S)
+	if string.len(S) 	== 0 then
+		S = S .. '    '
+	elseif string.len(S) 	== 1 then
+		S = S .. '  '
+	end
+	
+	return S
+end
+
+local function AddColor(S, Amount)
+	if Amount == 0 then
+		S = Color.GREY .. S	.. '|r'
+	else
+		S = '|cffffffff' .. S .. '|r'
+	end
+	
+	return S
+end
+
+local function WordWrap(Text, Max)
+	if not Text then
+		return ''
+	end
+
+	local Length = string.len(Text)
+	
+	if Length <= Max then
+		return Text
+	end
+
+	local Result = ''
+	local I = 1
+
+	while I <= Length do
+		Result = Result .. string.sub(Text, I, I + Max - 1)
+		I = I + Max
+		
+		if I <= Length then
+			Result = Result .. '\n'
 		end
 	end
+
+	return Result
+end
+
+function ATSW_ShowRecipeTooltip()
+    if not ATSW_Options.RecipeTooltip then
+		return
+	end
+	
+	local R = Recipe(GetRecipeSortedPosition(this.Name))
+	
+	if IsBeastTraining() then
+		if R then
+			GameTooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT')
+			GameTooltip:SetCraftSpell(R.Position)
+		end
+		
+		return
+	end
+	
+	local Tooltip = ATSWRecipeTooltip
+	
+	Tooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT', -4, 5)
+	
+	if this.Type == 'header' then
+		return
+	end
+	
+	local LINE_HEIGHT = 18
+	
+	Tooltip:ClearLines()
+	
+	-- Header
+	
+	local cR, cG, cB = 1, 1, 1
+	
+	if R.Link then
+		cR, cG, cB = GetLinkColorRGB(R.Link)
+	end
+
+	Tooltip:AddIconLine(R.Texture, R.Name, cR, cG, cB)
+	
+	-- Game tooltip information
+	
+	ATSWRecipeItemTooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT')
+	
+	ATSW_TooltipSetSkill(ATSWRecipeItemTooltip, this.Position)
+	
+	ATSWRecipeItemTooltipTextLeft1:SetText(' ')
+	ATSWRecipeItemTooltip:Show()
+	
+	local Height = ATSWRecipeItemTooltip:GetHeight()
+	
+	if Height > LINE_HEIGHT * 2 then
+		for I = 1, Height/LINE_HEIGHT do
+			Tooltip:AddTextLine(' ')
+		end
+	end
+
+	-- Skill ups
+	
+	local AtlasLoot, SU2, SU3, SU4 = ATSW_SkillUps(R.Name)
+	
+	if AtlasLoot then
+		Tooltip:AddTextLine(ATSW_TOOLTIP_SKILLUPS .. Color.ORANGE .. (AtlasLoot or '?') ..' ' .. Color.YELLOW .. (SU2 or '?') ..' ' .. Color.GREEN .. (SU3 or '?') ..' ' .. Color.GREY .. (SU4 or '?'), 11)
+	end
+	
+	-- Required reagents
+	
+	Tooltip:AddTextLine(' ')
+	Tooltip:AddDoubleLine(nil, ATSW_TOOLTIP_NECESSARY,
+		ATSW_TOOLTIP_INBAGS 	.. '   ' .. ATSW_TOOLTIP_INBANK .. '   ' .. ATSW_TOOLTIP_ONALTS)
+	
+	-- Reagents
+	
+	local Reagents = GetReagents(R.Name, 1)
+	
+	for I = 1, 19 do
+		if I <= table.getn(Reagents) then
+			local R = Reagents[I]
+			local Bags 				= ATSW_GetBagsAmount	(R.Name)
+			local Bank 				= ATSW_GetBankAmount	(R.Name)
+			local Alts 				= ATSW_GetAltsAmount		(R.Name)
+			local Merchant 		= ''
+			
+			if ATSW_IsInMerchant(R.Name) then
+				Merchant 			= ' ' .. Color.GREY .. ATSW_TOOLTIP_BUYABLE..'|r'
+			end
+			
+			local Amountstring 	= ''
+			
+			if R.Amount > 1 then
+				Amountstring 	= Color.GREY .. ' (' .. R.Amount .. ')|r'
+			end
+			
+			if Bags == 0 then
+				Bags = ''
+			end
+			
+			if Bank == 0 then
+				Bank = ''
+			end
+			
+			if Alts == 0 then
+				Alts = ''
+			end
+			
+			local BagStr, BankStr, AltsStr = Bags, Bank, Alts
+			
+			BagStr 	= AddSpace	(BagStr				)
+			BankStr	= AddSpace	(BankStr			)
+			AltsStr 	= AddSpace	(AltsStr				)
+			BagStr	= AddColor	(BagStr, 	Bags	)
+			BankStr	= AddColor	(BankStr, 	Bank	)
+			AltsStr	= AddColor	(AltsStr,		Alts	)
+			
+			local cR, cG, cB = GetLinkColorRGB(R.Link)
+			
+			Tooltip:AddDoubleLine(R.Texture, 
+				(R.Name or '') .. Amountstring .. Merchant, 
+				BagStr 	.. '       ' .. BankStr .. '       ' .. AltsStr .. ' ', cR, cG, cB)
+		end
+	end
+	
+	local S
+	
+	if ChatFrameEditBox:IsVisible() or WIM_EditBoxInFocus then
+		S = GetSayTooltipString()
+	elseif ATSW_HowManyItemsArePossibleToCreate(R.Name) > 0 then
+		S = ATSW_TOOLTIP_ADDITEM
+	end
+	
+	Tooltip:Show()
+	Tooltip:SetHeight(Tooltip.NumLines * LINE_HEIGHT + 12 - ATSWRecipeItemTooltip:NumLines() * 2.3)
+	
+	if S then
+		Tooltip:AddTextLine(S)
+		Tooltip:SetHeight(Tooltip:GetHeight() + 24)
+	end
+	
+	Tooltip:SetWidth(Tooltip.MaxLineWidth)
+	
+	ATSWRecipeItemTooltip:ClearAllPoints()
+	ATSWRecipeItemTooltip:SetPoint('TOPLEFT', Tooltip, 'TOPLEFT', 0, -8)
 end
 
 -- Inventory functions
@@ -5271,6 +5955,7 @@ end
 
 function ATSW_GetAltsLocationIntoTooltip(Name)
 	local HeaderAdded = false
+	local Tooltip = ATSWRecipeTooltip
 	
 	local function GetLocation(Table, In)
 		if Name then
@@ -5288,12 +5973,12 @@ function ATSW_GetAltsLocationIntoTooltip(Name)
 							
 							if Amount > 0 then
 								if not HeaderAdded then
-									ATSWRecipeTooltip:AddLine(ATSW_TOOLTIP_POSSESS .. " " .. this:GetParent().Link .. ":")
+									Tooltip:AddTextLine(ATSW_TOOLTIP_POSSESS .. ' ' .. this:GetParent().Link .. ':')
 									
 									HeaderAdded = true
 								end
 								
-								ATSWRecipeTooltip:AddLine(ClassColorize(PName) .. ": " .. "|cffffffff" .. Amount .. "|r " .. In)
+								Tooltip:AddTextLine(ClassColorize(PName) .. ': ' .. '|cffffffff' .. Amount .. '|r ' .. In)
 							end
 						end
 					end
@@ -5302,25 +5987,15 @@ function ATSW_GetAltsLocationIntoTooltip(Name)
 		end
 	end
 	
-	ATSWRecipeTooltip:ClearLines()
-	ATSWRecipeTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", 0)
-	ATSWRecipeTooltip:SetBackdropColor(0, 0, 0, 1)
-	
-	for I = 1, 20 do
-		local TooltipTexture = getglobal("ATSWRecipeTooltipTextureLeft" .. 3 + I)
-		
-		TooltipTexture:SetTexture(nil)
-		TooltipTexture:SetWidth(-1)
-	end
+	Tooltip:ClearLines()
+	Tooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT', 0)
 	
 	GetLocation(ATSW_Bags, ATSW_ALTLIST1)
 	GetLocation(ATSW_Bank, ATSW_ALTLIST2)
 	
-	if ATSWRecipeTooltip:NumLines() > 0 then
-		ATSWRecipeTooltipTextureLeft4:SetPoint("TOPLEFT", "$parentTextLeft3", "BOTTOMLEFT", -1, 0)
-	end
-	
-	ATSWRecipeTooltip:Show()
+	Tooltip:Show()
+	Tooltip:SetWidth(Tooltip.MaxLineWidth)
+	Tooltip:SetHeight(18 + Tooltip.NumLines * 16)
 end
 
 -- Merchant functions
@@ -5399,24 +6074,27 @@ end
 function ATSW_ArmorCraftCompatibility()
 	if AC_Craft and AC_Craft:GetParent() ~= ATSWFrame then
 		AC_Craft:				SetParent			(ATSWFrame)
-		AC_Craft:				SetPoint			("TOPLEFT", "ATSWFrame", "TOPRIGHT", -40, 0)
+		AC_Craft:				SetPoint			('TOPLEFT', 'ATSWFrame', 'TOPRIGHT', 0, 0)
 		AC_Craft:				SetFrameLevel	(0)
 		AC_ToggleButton:	SetParent			(ATSWFrame)
 		AC_ToggleButton:	SetFrameLevel	(ATSWFrame:GetFrameLevel() + 3)
-		AC_ToggleButton:	SetPoint			("RIGHT", "ATSWFrameCloseButton", "LEFT", - AC_ToggleButton:GetWidth() - 80)
+		AC_ToggleButton:	ClearAllPoints()
+		AC_ToggleButton:	SetPoint			('RIGHT', 'ATSWFrameCloseButton', 'LEFT', - AC_ToggleButton:GetWidth() - 80)
+		AC_UseButton:		ClearAllPoints()
 		AC_UseButton:		SetFrameLevel	(ATSWFrame:GetFrameLevel() + 3)
-		AC_UseButton:		SetPoint			("RIGHT", "AC_ToggleButton", "LEFT")
+		AC_UseButton:		SetPoint			('RIGHT', 'AC_ToggleButton', 'LEFT', -2, 0)
 		AC_Craft:				SetAlpha			(1.0)
 		AC_ToggleButton:	SetAlpha			(1.0)
 		AC_UseButton:		SetAlpha			(1.0)
+		AC_ToggleButton:	Show()
 	end
 end
 
 -- AtlasLoot
-ATSW_AtlasLootLoaded 		= nil
+ATSW_AtlasLoot = nil
 
 function ATSW_CheckForAtlasLootLoaded()
-	return AtlasLoot_Data and AtlasLoot_Data["AtlasLootCrafting"]
+	return AtlasLoot_Data and AtlasLoot_Data['AtlasLootCrafting']
 end
 
 ATSWSkillUpCache = {}
@@ -5424,7 +6102,7 @@ ATSWSkillUpCache = {}
 function ATSW_SkillUps(Name)
 	local skill
 	
-	if ATSW_AtlasLootLoaded then
+	if ATSW_AtlasLoot then
 		local Found = false
 		
 		if ATSWSkillUpCache[Name] then
@@ -5434,8 +6112,8 @@ function ATSW_SkillUps(Name)
 		end
 		
 		for _, Item in pairs(ProfessionNamesForAtlasLoot[ATSW_GetProfessionTexture(Profession())]) do
-			if Item ~= "" then
-				for _, Info in pairs(ATSW_AtlasLootLoaded[Item]) do
+			if Item ~= '' then
+				for _, Info in pairs(ATSW_AtlasLoot[Item]) do
 					for N, Param in pairs(Info) do
 						if N == 3 and string.sub(Param, 5, -1) == Name then
 							Found = true
@@ -5443,10 +6121,10 @@ function ATSW_SkillUps(Name)
 						
 						if N == 4 and Found then
 							-- AtlasLoot item example:
-							-- { "s3924", "inv_gizmo_pipe_02", "=q1=Copper Tube", "=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110" },
+							-- { 's3924', 'inv_gizmo_pipe_02', '=q1=Copper Tube', '=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110' },
 							-- =so parameters contain difficulty of the skill
 							
-							local _, _, SU1, SU2, SU3, SU4 = string.find(Param, "=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)")
+							local _, _, SU1, SU2, SU3, SU4 = string.find(Param, '=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)')
 
 							SU1 = tonumber(SU1)
 							SU2 = tonumber(SU2)

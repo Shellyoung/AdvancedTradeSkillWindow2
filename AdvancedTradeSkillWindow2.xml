@@ -1,8 +1,4 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-    <Script file="AdvancedTradeSkillWindow2.lua"/>
-	<Script file="Localization.lua"/>
-	
+﻿<Ui>
 	<Button name="ATSWRecipeButtonTemplate" hidden="true" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -47,7 +43,7 @@
 			</OnClick>
 			<OnEnter>
 				getglobal(this:GetName().."SubText"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-				ATSW_DisplayRecipeTooltip()
+				ATSW_ShowRecipeTooltip()
 				
 				local Texture 	= getglobal(this:GetName().."Texture"):GetTexture()
 				local Highlight 	= getglobal(this:GetName().."Highlight")
@@ -61,7 +57,7 @@
 			<OnLeave>
 				getglobal(this:GetName().."SubText"):SetTextColor(this.R, this.G, this.B)
 				ATSWRecipeTooltip:Hide()
-				GameTooltip:Hide()
+				ATSWRecipeItemTooltip:Hide()
 			</OnLeave>
 		</Scripts>
 		
@@ -84,7 +80,7 @@
 		<ButtonText name="$parentText" inherits="GameFontNormal" justifyH="LEFT">
 			<Anchors>
 				<Anchor point="LEFT" relativeTo="$parentHighlight" relativePoint="RIGHT">
-					<Offset x="2" y="0"/>
+					<Offset x="4" y="0"/>
 				</Anchor>
 			</Anchors>
 		</ButtonText>
@@ -128,11 +124,7 @@
 					
 					GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
 					
-					if ATSW_TradeSkill() then
-						GameTooltip:SetTradeSkillItem	(Index)
-					else
-						GameTooltip:SetCraftSpell		(Index)
-					end
+					ATSW_TooltipSetSkill(GameTooltip, Index)
 				end
 			</OnEnter>
 			<OnLeave>
@@ -1120,7 +1112,7 @@
 			</Button>
 
 			<EditBox name="ATSWSearchBox" letters="100" historyLines="0" autoFocus="false">
-				<Size x="250" y="20"/>
+				<Size x="170" y="20"/>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset x="75" y="-51"/>
@@ -1216,6 +1208,39 @@
 					<Color r="1" g="0.82" b="0"/>
 				</HighlightFont>
 			</Button>
+			
+			<CheckButton name="ATSWAttributesButton" inherits="UICheckButtonTemplate" virtual="true">
+				<Size x="20" y="20"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="ATSWSearchHelpButton" relativePoint="RIGHT">
+						<Offset x="5" y="0"/>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="ATSWAttributesButtonText" inherits="ATSWYellowFontThin" text="ATSW_ATTRIBUTES" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						if this:GetChecked() then
+							PlaySound("igMainMenuOptionCheckBoxOn")
+						else
+							PlaySound("igMainMenuOptionCheckBoxOff")
+						end
+						
+						ATSW_ShowAttributes(this:GetChecked() and true or false)
+						
+						if ATSWFrame:IsVisible() then
+							ATSW_UpdateRecipes()
+						end
+					</OnClick>
+				</Scripts>
+			</CheckButton>
 			
 			<Frame name="ATSWSearchHelpFrame" inherits="ATSWDialogBoxFrame_OnlyOK" frameStrata="HIGH" hidden="true">
 				<Size x="420" y="440"/>
@@ -1391,13 +1416,7 @@
 						if ATSW_RecipeSelected() then
 							GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
 							
-							local RecipeIndex = ATSW_GetPositionFromGame(ATSW_RecipeSelected())
-							
-							if ATSW_TradeSkill() then
-								GameTooltip:SetTradeSkillItem	(RecipeIndex)
-							else
-								GameTooltip:SetCraftSpell		(RecipeIndex)
-							end
+							ATSW_TooltipSetSkill(GameTooltip, ATSW_GetPositionFromGame(ATSW_RecipeSelected()))
 							
 							CursorUpdate()
 						end
@@ -2017,7 +2036,7 @@
 							<OnClick>
 								if this:GetChecked() then
 									PlaySound("igMainMenuOptionCheckBoxOn")
-									ATSW_Unified=true
+									ATSW_Options.Unified=true
 									ATSWOFSeparateButton:SetChecked(false)
 								end
 								
@@ -2061,7 +2080,7 @@
 							<OnClick>
 								if this:GetChecked() then
 									PlaySound("igMainMenuOptionCheckBoxOn")
-									ATSW_Unified=false
+									ATSW_Options.Unified=false
 									ATSWOFUnifiedButton:SetChecked(false)
 								end
 								
@@ -2113,11 +2132,13 @@
 							<OnClick>				
 								if this:GetChecked() then
 									PlaySound("igMainMenuOptionCheckBoxOn")
-									ATSW_ConsiderBank=true
 								else
 									PlaySound("igMainMenuOptionCheckBoxOff")
-									ATSW_ConsiderBank=false
 								end
+								
+								ATSW_Options.ConsiderBank = this:GetChecked() and true or false
+								
+								DEFAULT_CHAT_FRAME:AddMessage("ATSW_Options.ConsiderBank: " .. tostring(ATSW_Options.ConsiderBank))
 								
 								if ATSWFrame:IsVisible() then
 									ATSW_UpdateRecipes()
@@ -2146,11 +2167,11 @@
 							<OnClick>
 								if this:GetChecked() then
 									PlaySound("igMainMenuOptionCheckBoxOn")
-									ATSW_ConsiderAlts=true
 								else
 									PlaySound("igMainMenuOptionCheckBoxOff")
-									ATSW_ConsiderAlts=false
 								end
+								
+								ATSW_Options.ConsiderAlts = this:GetChecked() and true or false
 								
 								if ATSWFrame:IsVisible() then
 									ATSW_UpdateRecipes()
@@ -2179,11 +2200,11 @@
 							<OnClick>
 								if this:GetChecked() then
 									PlaySound("igMainMenuOptionCheckBoxOn")
-									ATSW_ConsiderMerchants=true
 								else
 									PlaySound("igMainMenuOptionCheckBoxOff")
-									ATSW_ConsiderMerchants=false
 								end
+								
+								ATSW_Options.ConsiderMerchants = this:GetChecked() and true or false
 								
 								if ATSWFrame:IsVisible() then
 									ATSW_UpdateRecipes()
@@ -2223,11 +2244,11 @@
 					<OnClick>
 						if this:GetChecked() then
 							PlaySound("igMainMenuOptionCheckBoxOn")
-							ATSW_AutoBuy=true
 						else
 							PlaySound("igMainMenuOptionCheckBoxOff")
-							ATSW_AutoBuy=false
 						end
+						
+						ATSW_Options.AutoBuy = this:GetChecked() and true or false
 						
 						if ATSWFrame:IsVisible() then
 							ATSW_UpdateRecipes()
@@ -2258,11 +2279,11 @@
 					<OnClick>
 						if this:GetChecked() then
 							PlaySound("igMainMenuOptionCheckBoxOn")
-							ATSW_RecipeTooltip=true
 						else
 							PlaySound("igMainMenuOptionCheckBoxOff")
-							ATSW_RecipeTooltip=false
 						end
+						
+						ATSW_Options.RecipeTooltip = this:GetChecked() and true or false
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -2289,11 +2310,11 @@
 					<OnClick>
 						if this:GetChecked() then
 							PlaySound("igMainMenuOptionCheckBoxOn")
-							ATSW_DisplayShoppingList=true
 						else
 							PlaySound("igMainMenuOptionCheckBoxOff")
-							ATSW_DisplayShoppingList=false
 						end
+						
+						ATSW_Options.DisplayShoppingList = this:GetChecked() and true or false
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -2440,515 +2461,6 @@
 			</OnHide>
 		</Scripts>
     </Frame>
-	
-	<GameTooltip name="ATSWRecipeTooltipTemplate" frameStrata="TOOLTIP" hidden="true" virtual="true">
-		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize val="16"/>
-			<TileSize val="16"/>
-			<BackgroundInsets>
-				<AbsInset left="4" right="4" top="4" bottom="4"/>
-			</BackgroundInsets>
-		</Backdrop>
-		<Layers>
-			<Layer level="ARTWORK">
-				<Texture name="$parentTextureLeft1">
-					<Size x="20" y="20"/>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="10" y="-10"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.07" right="0.93" top="0.07" bottom="0.93"/>
-				</Texture>
-				<FontString name="$parentTextLeft1" inherits="GameTooltipHeaderText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft1" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight1" inherits="GameTooltipHeaderText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft1" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextLeft2" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft1" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight2" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft2" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextLeft3" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft2" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight3" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft3" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft4">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextLeft3" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-4"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft4" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft4" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight4" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft4" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft5">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft4" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft5" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft5" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight5" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft5" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft6">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft5" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft6" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft6" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight6" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft6" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft7">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft6" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft7" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft7" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight7" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft7" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft8">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft7" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft8" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft8" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight8" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft8" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft9">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft8" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft9" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft9" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight9" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft9" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft10">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft9" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft10" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft10" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight10" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft10" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft11">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft10" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft11" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft11" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight11" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft11" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft12">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft11" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft12" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft12" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight12" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft12" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft13">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft12" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft13" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft13" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight13" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft13" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft14">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft13" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft14" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft14" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight14" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft14" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft15">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft14" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft15" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft15" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight15" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft15" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft16">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft15" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft16" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft16" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight16" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft16" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft17">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft16" relativePoint="RIGHT"/>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft17" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft17" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight17" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft17" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft18">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft17" relativePoint="RIGHT"/>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft18" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft18" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight18" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft18" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft19">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft18" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft19" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft19" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight19" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft19" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft20">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft19" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft20" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft20" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight20" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft20" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft21">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft20" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft21" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft21" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight21" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft21" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft22">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft21" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft22" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft22" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight22" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft22" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<Texture name="$parentTextureLeft23">
-					<Size x="16" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parentTextureLeft22" relativePoint="BOTTOMLEFT">
-							<Offset x="0" y="-2"/>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<FontString name="$parentTextLeft23" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentTextureLeft23" relativePoint="RIGHT">
-							<Offset x="2" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentTextRight23" inherits="GameTooltipText" hidden="true">
-					<Anchors>
-						<Anchor point="RIGHT" relativeTo="$parentTextLeft23" relativePoint="LEFT">
-							<Offset x="30" y="0"/>
-						</Anchor>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-	</GameTooltip>
-
-	<GameTooltip name="ATSWRecipeTooltip" frameStrata="TOOLTIP" hidden="true" parent="UIParent" inherits="ATSWRecipeTooltipTemplate">
-		<Scripts>
-			<OnLoad>
-				this:SetScale(GetCVar("uiscale"))
-			</OnLoad>
-		</Scripts>
-	</GameTooltip>
 	
 	<Frame name="ATSWSmallMoneyFrameTemplate" virtual="true">
 		<Size x="128" y="13"/>

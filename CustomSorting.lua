@@ -1,4 +1,4 @@
-local player	= UnitName("player")
+local player	= UnitName('player')
 local realm 	= GetRealmName()
 
 ATSW_CUSTOM_RECIPES_DISPLAYED 			= 23
@@ -16,30 +16,20 @@ ATSW_CustomCategories[realm][player] 		= {}
 
 ATSWCS_PreviousSkill 									= nil
 
-local function TransformSettings(Table)
-	ATSW_TransformSettings(Table)
-end
-
 local function Profession()
 	return ATSW_Profession[realm][player]
 end
 
 local function RecipesSize()
-	TransformSettings(ATSW_RecipesSize)
-	
-	return ATSW_RecipesSize[realm][player][Profession()] or 0
+	return ATSW.RecipesSize[realm][player][Profession()] or 0
 end
 
 local function CategorySelected()
-	TransformSettings(ATSW_CSOpenCategory)
-
 	return ATSW_CSOpenCategory[realm][player][Profession()]
 end
 
 local function GetSelected()
-	TransformSettings(ATSW_CSSelected)
-
-	return ATSW_CSSelected[realm][player][Profession()] or ""
+	return ATSW_CSSelected[realm][player][Profession()] or ''
 end
 
 local function SetSelected(Value)
@@ -47,7 +37,7 @@ local function SetSelected(Value)
 		return
 	end
 	
-	ATSW_CSSelected[realm][player][Profession()] = Value or ""
+	ATSW_CSSelected[realm][player][Profession()] = Value or ''
 end
 
 ATSW_CustomRecipes 								= {}
@@ -57,14 +47,12 @@ local function CustomRecipes()
 	return ATSW_CustomRecipes
 end
 
-local function CustomRecipesSize()
-	return ATSW_CustomRecipesSize or 0
-end
-
-local function SetCustomRecipesSize(Value)
-	if Profession() then
+local function CustomRecipesSize(Value)
+	if Value and Profession() then
 		ATSW_CustomRecipesSize = Value
 	end
+	
+	return ATSW_CustomRecipesSize or 0
 end
 
 local function CustomRecipe(I)
@@ -82,7 +70,7 @@ local function AddCustomRecipe(Index)
 	
 	CustomRecipes()[Size] = ATSW_Recipe(Index)
 	
-	SetCustomRecipesSize(Size)
+	CustomRecipesSize(Size)
 end
 
 local function SetVisible(Frame, State)
@@ -104,7 +92,7 @@ local function SetEnabled(Frame, State)
 end
 
 local function GetCategoryTexture(Expanded)
-	return "Interface\\Buttons\\UI-" .. (Expanded and "Min" or "Pl") .. "usButton-Up"
+	return 'Interface\\Buttons\\UI-' .. (Expanded and 'Min' or 'Pl') .. 'usButton-Up'
 end
 
 local function IsExpanded(Name)
@@ -112,8 +100,6 @@ local function IsExpanded(Name)
 end
 
 local function Categories()
-	TransformSettings(ATSW_CustomCategories)
-
 	return ATSW_CustomCategories[realm][player][Profession()]
 end
 
@@ -168,12 +154,12 @@ local function CategoryExist(Name)
 end
 
 local function GetItemType(Name)
-	local Type = "item"
+	local Type = 'item'
 	local Name = Name or GetSelected()
 	
 	for I = 1, CategoriesSize() do
 		if Category(I).Name == Name then
-			Type = "header"
+			Type = 'header'
 			
 			break
 		end
@@ -183,7 +169,7 @@ local function GetItemType(Name)
 end
 
 local function IsFirst(Name)
-	if GetItemType(Name) == "header" then
+	if GetItemType(Name) == 'header' then
 		return Category(1).Name == Name
 	else
 		local C = GetCategoryItemByItemName(Name)
@@ -195,7 +181,7 @@ local function IsFirst(Name)
 end
 
 local function IsLast(Name)
-	if GetItemType(Name) == "header" then
+	if GetItemType(Name) == 'header' then
 		return Category(CategoriesSize()).Name == Name
 	else
 		local C = GetCategoryItemByItemName(Name)
@@ -208,36 +194,36 @@ end
 
 function ATSWCS_OnLoad()
 	for R = 1, ATSW_CUSTOM_RECIPES_DISPLAYED do
-		local B = CreateFrame("Button", "ATSWCSRecipe" .. R, ATSWCSFrame, "ATSWCSRecipeButtonTemplate")
+		local B = CreateFrame('Button', 'ATSWCSRecipe' .. R, ATSWCSFrame, 'ATSWCSRecipeButtonTemplate')
 		
 		if R == 1 then
-			B:SetPoint("TOPLEFT", ATSWCSRecipesListScrollFrame, "TOPLEFT", 0, -2)
+			B:SetPoint('TOPLEFT', ATSWCSRecipesListScrollFrame, 'TOPLEFT', 0, -2)
 		else
-			B:SetPoint("TOPLEFT", "ATSWCSRecipe" .. R - 1, "BOTTOMLEFT")
+			B:SetPoint('TOPLEFT', 'ATSWCSRecipe' .. R - 1, 'BOTTOMLEFT')
 		end
 	end
 	
 	for C = 1, ATSW_CUSTOM_CATEGORIES_DISPLAYED do
-		local F = CreateFrame("Frame", "ATSWCSCategory" .. C, ATSWCSFrame, "ATSWCSCategoryFrame")
+		local F = CreateFrame('Frame', 'ATSWCSCategory' .. C, ATSWCSFrame, 'ATSWCSCategoryFrame')
 		
 		if C == 1 then
-			F:SetPoint("TOPLEFT", ATSWCSCategoriesListScrollFrame, "TOPLEFT")
+			F:SetPoint('TOPLEFT', ATSWCSCategoriesListScrollFrame, 'TOPLEFT')
 		else
-			F:SetPoint("TOPLEFT", "ATSWCSCategory" .. C - 1, "BOTTOMLEFT")
+			F:SetPoint('TOPLEFT', 'ATSWCSCategory' .. C - 1, 'BOTTOMLEFT')
 		end
 	end
 	
 	ATSWCSFrameCloseButton:GetNormalTexture():SetTexCoord(0.20, 0.8, 0.2, 0.8)
 	ATSWCSFrameCloseButton:GetPushedTexture():SetTexCoord(0.20, 0.8, 0.2, 0.8)
 	
-	getglobal("ATSWCSFrameDelete"):GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
-	getglobal("ATSWCSFrameDelete"):GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
+	getglobal('ATSWCSFrameDelete'):GetNormalTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
+	getglobal('ATSWCSFrameDelete'):GetPushedTexture():SetTexCoord(0.2, 0.8, 0.2, 0.8)
 	
 	for I = 1, ATSW_CUSTOM_RECIPES_DISPLAYED do
-		getglobal("ATSWCSRecipe"..I.."Highlight"):SetDesaturated(true)
+		getglobal('ATSWCSRecipe'..I..'Highlight'):SetDesaturated(true)
 	end
 	
-	local Color = ATSWTypeColor["header"]
+	local Color = ATSWTypeColor['header']
 	
 	ATSWCSHighlightTexture:SetVertexColor(Color.R, Color.G, Color.B, 0.8)
 end
@@ -246,7 +232,7 @@ function ATSWCS_OnShow()
 	Name = Profession()
 	
 	if Name then
-		ATSWCSFrameTitleText:SetText(ATSWCS_TITLE .. " (" .. Name .. ")")
+		ATSWCSFrameTitleText:SetText(ATSWCS_TITLE .. ' (' .. Name .. ')')
 		
 		--Set Skill Portrait
 		SetPortraitToTexture(ATSWCSFramePortrait, ATSW_GetProfessionTexture(Name))
@@ -266,7 +252,7 @@ end
 function ATSWCSAddButton_OnClick()
 	local Text = ATSWCSNewCategoryBox:GetText()
 	
-	if Text ~= "" then
+	if Text ~= '' then
 		ATSWCS_AddCategory(Text)
 	end
 end
@@ -276,7 +262,7 @@ function ATSWCSNewCategoryBox_OnTextChanged()
 	local Text = ATSWCSNewCategoryBox:GetText()
 	local Exist = false
 	
-	if Text ~= "" then
+	if Text ~= '' then
 		for I = 1, CategoriesSize() do
 			if Category(I).Name == Text then
 				Exist = true
@@ -303,7 +289,7 @@ function ATSWCSRenameButton_OnClick()
 	Category(CatIndex).Name = Text
 	SetSelected(Text)
 	
-	ATSWCSNewCategoryBox:SetText("")
+	ATSWCSNewCategoryBox:SetText('')
 	
 	ATSWCS_Update()
 	ATSWCS_UpdateATSWFrame()
@@ -344,7 +330,7 @@ function ATSWCSCategoryButton_OnClick(Name, Type, Index, CatIndex)
 		return
 	end
 	
-	local PrevCategory = ""
+	local PrevCategory = ''
 	
 	if CategorySelected() > 0 then
 		PrevCategory = Category(CategorySelected()).Name
@@ -354,7 +340,7 @@ function ATSWCSCategoryButton_OnClick(Name, Type, Index, CatIndex)
 		SetCategorySelected(CatIndex)
 	end
 	
-	if Type == "header" then
+	if Type == 'header' then
 		if CatIndex == CategorySelected() and Name == PrevCategory and Name == GetSelected() then
 			ATSW_SwitchCategory(Category(CatIndex).Name)
 		else
@@ -363,7 +349,7 @@ function ATSWCSCategoryButton_OnClick(Name, Type, Index, CatIndex)
 	else
 		if Name ==  GetSelected() then
 			table.remove(Category(CatIndex).Items, Index)
-			SetSelected("")
+			SetSelected('')
 		else
 			SetSelected(Name)
 		end
@@ -378,7 +364,7 @@ local function PrepareForMove()
 	local Type = GetItemType(GetSelected())
 	local Index
 	
-	if Type == "header" then
+	if Type == 'header' then
 		Index = CatIndex
 	else
 		_, Index = GetCategoryItemByItemName(GetSelected())
@@ -400,7 +386,7 @@ function ATSWCSFrameMoveDown_OnClick()
 end
 
 function ATSWCS_Move(CatIndex, From, To, Type)
-	if Type == "header" then
+	if Type == 'header' then
 		ATSW_CustomCategories[realm][player][Profession()][To], ATSW_CustomCategories[realm][player][Profession()][From] =
 		ATSW_CustomCategories[realm][player][Profession()][From], ATSW_CustomCategories[realm][player][Profession()][To]
 		
@@ -438,7 +424,7 @@ function ATSWCS_AddCategory(Name)
 							{
 								Name = Name,
 								SubName = nil,
-								Type = "header",
+								Type = 'header',
 								Items = {}
 							})
 							
@@ -452,7 +438,7 @@ end
 function ATSWCSFrameDelete_OnClick()
 	local Index
 	
-	if GetItemType() == "header" then
+	if GetItemType() == 'header' then
 		Index = CategorySelected()
 		
 		local ItemsCount = ItemsSize(Index)
@@ -506,10 +492,10 @@ local function CompareDifficultyUsingExternalData(Left, Right)
 end
 
 function ATSWCS_FillAllRecipes()
-    SetCustomRecipesSize(0)
+    CustomRecipesSize(0)
 	
     for I = 1, RecipesSize() do
-		if ATSW_Recipe(I).Type ~= "header" then
+		if ATSW_Recipe(I).Type ~= 'header' then
 			AddCustomRecipe(I)
 		end
     end
@@ -528,7 +514,7 @@ function ATSWCS_IsCategorized(Name, SubName)
 			
 			local LSubName = SubName
 			
-			if LSubName == "" then
+			if LSubName == '' then
 				LSubName = nil
 			end
 			
@@ -540,7 +526,7 @@ function ATSWCS_IsCategorized(Name, SubName)
 end
 
 function ATSWCS_UpdateATSWFrame()
-	if ATSW_SortBy[realm][player][Profession()] == "Custom" then
+	if ATSW_SortBy[realm][player][Profession()] == 'Custom' then
 		ATSW_GetRecipesSorted(true)
 		ATSW_UpdateRecipes()
 	end
@@ -557,9 +543,9 @@ function ATSWCS_UpdateRecipes()
     local ScrollOffset 				= FauxScrollFrame_GetOffset(ATSWCSRecipesListScrollFrame)
 	
     for I = 1, ATSW_CUSTOM_RECIPES_DISPLAYED do
-        local Button 					= getglobal("ATSWCSRecipe" .. I)
-		local ButtonText			= getglobal("ATSWCSRecipe" .. I .. "Text")
-		local ButtonTexture 		= getglobal("ATSWCSRecipe" .. I .. "Texture")
+        local Button 					= getglobal('ATSWCSRecipe' .. I)
+		local ButtonText			= getglobal('ATSWCSRecipe' .. I .. 'Text')
+		local ButtonTexture 		= getglobal('ATSWCSRecipe' .. I .. 'Texture')
 		
 		local Index 					= I + ScrollOffset
 		local ItemExists 				= Index <= ListSize
@@ -605,10 +591,10 @@ function ATSWCS_UpdateCategories()
     local ScrollOffset					= FauxScrollFrame_GetOffset(ATSWCSCategoriesListScrollFrame)
 	
     for I = 1, ATSW_CUSTOM_CATEGORIES_DISPLAYED do
-        local Button 					= getglobal("ATSWCSCategory" .. I .. "SkillButton")
-        local ButtonText			= getglobal("ATSWCSCategory" .. I .. "SkillButtonText")
-		local ButtonTexture		= getglobal("ATSWCSCategory" .. I .. "SkillButtonTexture")
-		local ButtonHighlight 		= getglobal("ATSWCSCategory" .. I .. "SkillButtonHighlight")
+        local Button 					= getglobal('ATSWCSCategory' .. I .. 'SkillButton')
+        local ButtonText			= getglobal('ATSWCSCategory' .. I .. 'SkillButtonText')
+		local ButtonTexture		= getglobal('ATSWCSCategory' .. I .. 'SkillButtonTexture')
+		local ButtonHighlight 		= getglobal('ATSWCSCategory' .. I .. 'SkillButtonHighlight')
 		
 		local Index = I + ScrollOffset
 		local Name, SubName, Type, Texture, Expanded
@@ -629,15 +615,15 @@ function ATSWCS_UpdateCategories()
 			local BorderSize 			= 0.071
 			local Color 				= ATSWTypeColor[Type]
 			
-			xOfs = (Type == "header" and 0 or 20)
+			xOfs = (Type == 'header' and 0 or 20)
 			
-			if Type == "header" then
+			if Type == 'header' then
 				HighlightSize = 0
 				BorderSize = 0
 			end
 			
 			if Name .. ATSW_SubNameToString(SubName) == GetSelected() then
-				ATSWCSHighlight:SetPoint("TOP", Button:GetName(), "TOP", 0, 0)
+				ATSWCSHighlight:SetPoint('TOP', Button:GetName(), 'TOP', 0, 0)
 				ATSWCSHighlightTexture:SetVertexColor(Color.R, Color.G, Color.B, 0.7)
 				Button:LockHighlight()
 				IsHighlightSet = true
@@ -659,7 +645,7 @@ function ATSWCS_UpdateCategories()
 			ButtonTexture:	SetTexture		(Texture)
 			ButtonTexture:	SetTexCoord		(0+BorderSize+0.025,	1-BorderSize,		0+BorderSize,	1-BorderSize)
 			ButtonHighlight:	SetTexCoord		(0+HighlightSize, 		1-HighlightSize,	0+HighlightSize,	1-HighlightSize)
-			ButtonHighlight:	SetDesaturated	(Type ~= "header")
+			ButtonHighlight:	SetDesaturated	(Type ~= 'header')
 			
 			local Width = math.min(Button:GetTextWidth() + 20, 280)
 			
@@ -677,7 +663,7 @@ function ATSWCS_UpdateCategories()
 end
 
 local function SetLabelColor(Button)
-	local Label = getglobal(Button:GetName() .. "Label")
+	local Label = getglobal(Button:GetName() .. 'Label')
 	
 	if Button:IsEnabled() == 1 then
 		Label:SetTextColor(1, 1, 1)
@@ -687,15 +673,15 @@ local function SetLabelColor(Button)
 end
 
 function ATSWCS_UpdateButtons()
-	local Parent 		= "ATSWCSFrame"
-	local Delete		= getglobal(Parent .. "Delete")
-	local MoveDown	= getglobal(Parent .. "MoveDown")
-	local MoveUp		= getglobal(Parent .. "MoveUp")
-	local Rename		= getglobal(Parent .. "Rename")
+	local Parent 		= 'ATSWCSFrame'
+	local Delete		= getglobal(Parent .. 'Delete')
+	local MoveDown	= getglobal(Parent .. 'MoveDown')
+	local MoveUp		= getglobal(Parent .. 'MoveUp')
+	local Rename		= getglobal(Parent .. 'Rename')
 	
-	SetEnabled(Delete, GetSelected() ~= "")
-	SetEnabled(MoveDown, GetSelected() ~= "" and not IsLast(GetSelected()))
-	SetEnabled(MoveUp, GetSelected() ~= "" and not IsFirst(GetSelected()))
+	SetEnabled(Delete, GetSelected() ~= '')
+	SetEnabled(MoveDown, GetSelected() ~= '' and not IsLast(GetSelected()))
+	SetEnabled(MoveUp, GetSelected() ~= '' and not IsFirst(GetSelected()))
 	SetEnabled(Rename, CategorySelected() > 0 and GetSelected() == Category(CategorySelected()).Name)
 	
 	SetLabelColor(Delete)
