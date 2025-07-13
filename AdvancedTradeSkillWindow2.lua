@@ -5161,7 +5161,7 @@ local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
 		SetVisible(Button, R)
 		
         if R and Button then
-			local Color				= LinkToColor(R.Link) or 'ffffff'
+			local C				= LinkToColor(R.Link) or 'ffffff'
             local AmountBags 	= ATSW_GetBagsAmount	(R.Name)
             local AmountBank 	= ATSW_GetBankAmount	(R.Name)
             local AmountAlts 	= ATSW_GetAltsAmount		(R.Name)
@@ -5179,7 +5179,7 @@ local function UpdateReagentList(ButtonName, ButtonsMax, Offset)
 			if AmountAlts		==   0 	then AmountAlts 	=	Color.GREY 	..	AmountAlts 	.. 	'|r' end
 			
 			Item:	SetNormalTexture	(R.Texture)
-            Item:	SetText					('|cff' .. Color .. '[' .. R.Name .. ']|r ' .. Color.GREY .. '[' .. R.Amount .. ']|r')
+            Item:	SetText					('|cff' .. C .. '[' .. R.Name .. ']|r ' .. Color.GREY .. '[' .. R.Amount .. ']|r')
             Bags:		SetText					(AmountBags)
 			Bank:	SetText					(AmountBank)
 			Alts:		SetText					(AmountAlts)
