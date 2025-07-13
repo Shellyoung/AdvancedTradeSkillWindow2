@@ -3774,11 +3774,6 @@ local function GetAttributes(Recipe)
 							Similar = Item.Similar
 						end
 						
-						if (cR == 1 and cG == 1 and cB == 1)
-						or	string.len(Text) - (PEnd-PStart+1) < 11 then -- Optimization: detection of full pattern match
-							break
-						end
-
 						if string.find(Return, 'str')
 						and string.find(Return, 'agi')
 						and string.find(Return, 'sta')
@@ -3813,6 +3808,11 @@ local function GetAttributes(Recipe)
 							local StrRight = string.sub(Return, End+1, string.len(Return))
 							
 							Return = StrLeft .. Amount .. Color.LIGHTGREY .. ' all resist' .. StrRight
+						end
+						
+						if (cR == 1 and cG == 1 and cB == 1)
+						or	string.len(Text) - (PEnd-PStart+1) < 11 then -- Optimization: detection of full pattern match
+							break
 						end
 						
 						if string.find(string.sub(Text, 1, 26), 'enchant[s]* ') then
@@ -6100,7 +6100,7 @@ end
 ATSWSkillUpCache = {}
 
 function ATSW_SkillUps(Name)
-	local skill
+	local Skill
 	
 	if ATSW_AtlasLoot then
 		local Found = false
@@ -6141,7 +6141,7 @@ function ATSW_SkillUps(Name)
 		end
 	end
 	
-	return skill
+	return Skill
 end
 
 function ATSW_CompareSkill(Name)
