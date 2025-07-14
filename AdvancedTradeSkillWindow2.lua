@@ -3753,7 +3753,7 @@ local function GetAttributes(Recipe)
 						if Return ~= '' then
 							Return = Return .. Color.WHITE .. ',|r '
 						end
-					
+
 						if Item.Return then
 							local Minus = ''
 							
@@ -3834,7 +3834,15 @@ local function GetAttributes(Recipe)
 			and not string.find(Text, 'tools: ') 
 			and not string.find(Text, 'reagents: ') then
 				if not (cR == 1 and cG == 1 and cB == 1) then
-					Text = string.sub(Text, (string.find(Text, ': ') or 0)+2, string.len(Text))
+					local Pos = string.find(Text, ': ')
+					
+					if not Pos then
+						Pos = 0
+					else
+						Pos = Pos + 2
+					end
+					
+					Text = string.sub(Text, Pos, string.len(Text))
 
 					if string.len(Text) > 47 then
 						Text = string.sub(Text, 1, 47) .. '...'
