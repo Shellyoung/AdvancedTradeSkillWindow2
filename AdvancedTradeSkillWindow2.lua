@@ -734,7 +734,7 @@ local function CraftIDtoAtlasID(ID, Enchants)
 		for I, Value in pairs(Table) do
 			local Item = Value.craftItem or Value.item
 			
-			if Item == ID then
+			if Item and ID and Item == ID then
 				ATSW_AtlasIDCache[ID] = I
 				
 				return I
