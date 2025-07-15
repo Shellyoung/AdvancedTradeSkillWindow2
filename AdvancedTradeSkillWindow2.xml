@@ -56,8 +56,13 @@
 			</OnEnter>
 			<OnLeave>
 				getglobal(this:GetName().."SubText"):SetTextColor(this.R, this.G, this.B)
-				ATSWRecipeTooltip:Hide()
-				ATSWRecipeItemTooltip:Hide()
+				
+				if ATSWRecipeTooltip:IsVisible() then
+					ATSWRecipeTooltip:Hide()
+					ATSWRecipeItemTooltip:Hide()
+				else
+					GameTooltip:Hide()
+				end
 			</OnLeave>
 		</Scripts>
 		
