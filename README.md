@@ -80,6 +80,13 @@ Improved window for your professions for World of Warcraft vanilla
   ### Localization
   Supported languages: English, Русский, Español, Français, Deutsch, 简体中文
 
+  ### Additional add-ons
+  ATSW can be enchanced with several additional addons:
+  
+  [BlizzMo](https://github.com/Dyaxler/BlizzMo_Vanilla) can make ATSW window movable.
+
+  [MissingCrafts](https://github.com/refaim/MissingCrafts) adds a small button that can show what crafting recipes are able to learn.
+
   ## Installation
   1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.12/AdvancedTradeSkillWindow2.rar)
   
