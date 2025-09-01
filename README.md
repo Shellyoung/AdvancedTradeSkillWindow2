@@ -1,7 +1,7 @@
 # Advanced Trade Skill Window 2
 Improved window for your professions for World of Warcraft vanilla
 
-<sub>version 2.1.12</sub>
+<sub>version 2.1.13</sub>
 
 ![face](https://github.com/user-attachments/assets/cffb06ff-b310-4fb7-ba07-a04caf6e34a3)
 
@@ -88,7 +88,7 @@ Improved window for your professions for World of Warcraft vanilla
   [MissingCrafts](https://github.com/refaim/MissingCrafts) adds a small button that can show what crafting recipes are able to learn.
 
   ## Installation
-  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.12/AdvancedTradeSkillWindow2.rar)
+  1. Download the following archive: [AdvancedTradeSkillWindow2.rar](https://github.com/Shellyoung/Advanced-Trade-Skill-Window/releases/download/2.1.13/AdvancedTradeSkillWindow2.rar)
   
   2. Extract the folder	**AdvancedTradeSkillWindow2** from the archive and place it into the folder **World of Warcraft\Interface\AddOns**.
   
