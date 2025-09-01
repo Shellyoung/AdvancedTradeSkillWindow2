@@ -1436,6 +1436,7 @@ function ATSW_CreateListButtons()
 	
 	-- Set highlight frame
 	ATSWHighlight:SetHeight(ATSW_TRADESKILL_HEIGHT)
+	ATSWHighlightMouseOver:SetHeight(ATSW_TRADESKILL_HEIGHT)
 	
 	-- Create tool buttons
 	for T = 1, ATSW_TOOLS_DISPLAYED do
@@ -1657,12 +1658,6 @@ local function WhatReagentIsLackingData()
 	return false
 end
 
-local function SetButtonCooldown(Button)
-	if Button:IsVisible() and Button.Position then
-		Button:SetText(Button.Text .. (ConvertCooldown(Recipe(Button.Position).Cooldown) or ''))
-	end
-end
-
 function ATSW_OnUpdate(TimePassed)
 	-- Loading recipes
 	
@@ -1765,12 +1760,21 @@ function ATSW_OnUpdate(TimePassed)
 		if GetTime() - 1 >= CooldownUpdateTime then
 			-- Set cooldowns for recipe buttons
 			for I = 1, ATSW_RECIPES_DISPLAYED do
-				SetButtonCooldown(_G['ATSWRecipe' .. I])
+				local Button = _G['ATSWRecipe' .. I]
+				local ButtonSubText = _G['ATSWRecipe' .. I .. 'SubText']
+				
+				if Button:IsVisible() and Button.Position then
+					ButtonSubText:SetText(ConvertCooldown(Recipe(Button.Position).Cooldown) or '')
+				end
 			end
 			
 			-- Set cooldowns for task buttons
 			for I = 1, ATSW_TASKS_DISPLAYED do
-				SetButtonCooldown(_G['ATSWTask' .. I])
+				local Button = _G['ATSWTask' .. I]
+				
+				if Button:IsVisible() and Button.Position then
+					Button:SetText(Button.Text .. (ConvertCooldown(Recipe(Button.Position).Cooldown) or ''))
+				end
 			end
 			
 			-- Set cooldown for schematic
@@ -2745,7 +2749,7 @@ function ATSW_OnEvent()
 			ATSWOptionsMenuHeader:SetTexture('Interface\\AddOns\\AdvancedTradeSkillWindow2\\Textures\\UI-DialogBox-Header')
 		end
 	elseif 	event == 'UI_ERROR_MESSAGE' 						then
-		if Processing.Active and (string.find(arg1, ERR_INV_FULL) or string.find(arg1, sRequires)) then
+		if Processing.Active and (string.find(arg1, ERR_INV_FULL) or string.find(arg1, ERR_ITEM_MAX_COUNT) or string.find(arg1, sRequires)) then
 			ATSW_StopProcessing()
 		end
 	elseif 	event == 'TRADE_SKILL_SHOW' 						then
@@ -3083,7 +3087,7 @@ function ATSWSubClassDropDown_OnLoad()
 end
 
 function ATSWSubClassDropDown_OnShow()
-	UIDropDownMenu_Initialize(this, ATSWSubClassDropDown_Initialize())
+	UIDropDownMenu_Initialize(this, ATSWSubClassDropDown_Initialize)
 	UIDropDownMenu_SetWidth(120)
 end
 
@@ -3154,7 +3158,7 @@ function ATSWInvSlotDropDown_OnLoad()
 end
 
 function ATSWInvSlotDropDown_OnShow()
-	UIDropDownMenu_Initialize(this, ATSWInvSlotDropDown_Initialize())
+	UIDropDownMenu_Initialize(this, ATSWInvSlotDropDown_Initialize)
 	UIDropDownMenu_SetWidth(120)
 end
 
@@ -3951,7 +3955,7 @@ function ATSW_UpdateRecipes()
 				Button:SetFont('Fonts\\FRIZQT__.ttf', 12)
 			end
 			
-			Text = Text .. (Possible or '') .. (ConvertCooldown(R.Cooldown) or '')
+			Text = Text .. (Possible or '')
 
 			if TP and TP > 0 then
 				SubText = format(TRAINER_LIST_TP, TP)
@@ -3960,7 +3964,7 @@ function ATSW_UpdateRecipes()
 					SubText = Color.GREY .. SubText .. '|r'
 				end
 			else
-				SubText = ''
+				SubText = ConvertCooldown(R.Cooldown) or ''
 			end
 			
 			Button:SetText(RemoveColorTags(Text))
@@ -4119,8 +4123,8 @@ function ATSW_ShowSearch()
 end
 
 function ATSW_ShowDropDown()
-	UIDropDownMenu_Initialize(ATSWSubClassDropDown, 	ATSWSubClassDropDown_Initialize())
-	UIDropDownMenu_Initialize(ATSWInvSlotDropDown, 	ATSWInvSlotDropDown_Initialize())
+	UIDropDownMenu_Initialize(ATSWSubClassDropDown, 	ATSWSubClassDropDown_Initialize)
+	UIDropDownMenu_Initialize(ATSWInvSlotDropDown, 	ATSWInvSlotDropDown_Initialize)
 end
 
 function ATSW_ShowSelection()
@@ -5262,8 +5266,8 @@ end
 
 local Parameters = {}
 
-function ATSW_Filter(Recipe, Type)
-	local Name = Recipe.Name
+function ATSW_Filter(R, Type)
+	local Name = R.Name
 	
 	if not Name then
 		return false
@@ -5295,7 +5299,7 @@ function ATSW_Filter(Recipe, Type)
 	
 	for PName, PValue in pairs(Parameters) do
 		if ATSW_ShowAttributes() then
-			Name = GetAttributes(Recipe)
+			Name = GetAttributes(R)
 		end
 		
 		if PName == 'name' then

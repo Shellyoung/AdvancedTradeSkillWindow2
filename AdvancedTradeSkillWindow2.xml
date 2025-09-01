@@ -53,6 +53,14 @@
 				else
 					Highlight:Hide()
 				end
+				
+				local Button = _G[this:GetName()]
+			
+				local R, G, B = Button:GetTextColor()
+				
+				ATSWHighlightMouseOver:SetPoint('TOP', Button)
+				ATSWHighlightMouseOverTexture:SetVertexColor(R, G, B, 0.8)
+				ATSWHighlightMouseOver:Show()
 			</OnEnter>
 			<OnLeave>
 				getglobal(this:GetName().."SubText"):SetTextColor(this.R, this.G, this.B)
@@ -63,6 +71,8 @@
 				else
 					GameTooltip:Hide()
 				end
+				
+				ATSWHighlightMouseOver:Hide()
 			</OnLeave>
 		</Scripts>
 		
@@ -1359,6 +1369,27 @@
 						<Texture name="$parentTexture" file="Interface\Buttons\UI-Listbox-Highlight2"/>
 					</Layer>
 				</Layers>
+			</Frame>
+			
+			<Frame name="ATSWHighlightMouseOver" hidden="true" frameLevel="1">
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset x="20" y="0"/>
+					</Anchor>
+					<Anchor point="RIGHT" relativeTo="ATSWScrollBackgroundTop" relativePoint="LEFT">
+						<Offset x="3" y="0"/>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentTexture" file="Interface\Buttons\UI-Listbox-Highlight2"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						this:SetAlpha(0.7)
+					</OnLoad>
+				</Scripts>
 			</Frame>
 			
 			<ScrollFrame name="ATSWListScrollFrame" inherits="FauxScrollFrameTemplate" hidden="true">
