@@ -706,7 +706,7 @@ local function GetCraftNameType		(Index)
 	if TradeSkill	then	Name, Type = GetTradeSkillInfo(Index)
 						else	Name, SubName, Type = GetCraftInfo(Index) end
 	
-	return Name, Type, SubName
+	return Name, SubName, Type
 end
 
 local function GetCraftLink					(Index)
@@ -1270,7 +1270,7 @@ local function GetPositionFromGame(Name)
 		I = I + 1
 		
 		GName, GSubName = GetCraftNameType(I)
-		
+
 		if GName and GName == Name and (SubName and GSubName == SubName or SubName == nil) then
 			return I
 		end
@@ -1763,7 +1763,7 @@ function ATSW_OnUpdate(TimePassed)
 				local Button = _G['ATSWRecipe' .. I]
 				local ButtonSubText = _G['ATSWRecipe' .. I .. 'SubText']
 				
-				if Button:IsVisible() and Button.Position then
+				if Button:IsVisible() and Button.Position and not IsBeastTraining() then
 					ButtonSubText:SetText(ConvertCooldown(Recipe(Button.Position).Cooldown) or '')
 				end
 			end
@@ -2189,6 +2189,7 @@ local function ATSW_Show()
 		InitializedOnShow = true
 	end
 	
+	ATSW_InitializeFrame					()
 	ATSW_UpdateCaption					()
 	ATSW_ShowSort						()
 	ATSW_ShowSearch					()
@@ -2333,7 +2334,7 @@ function ATSW_UpdateStatusBarRank()
 	end
 end
 
-local function InitializeFrame()
+function ATSW_InitializeFrame()
 	local SameProfession = GetCraftCaption() == Profession()
 	
 	if not SameProfession or RecipesSize() == 0 then
@@ -2344,8 +2345,13 @@ local function InitializeFrame()
 		if RecipesSize() == 0 then
 			ATSW_HideRecipes			()
 			ATSW_HideRecipe			()
+
 			ATSW_HideTasks			()
 		end
+	end
+	
+	if IsBeastTraining() then -- This is an easy and quick fix of an issue, not a solid complete solution
+		ATSW_HideRecipe()
 	end
 end
 
@@ -2359,8 +2365,7 @@ function ATSW_UpdateBackground()
 	end
 end
 
-function ATSW_UpdateCaption()
-	local function FindSpecialization()
+function ATSW_FindSpecialization()
 		local I = 0
 		local STexture
 		local Specs = ATSW_Specializations[GetProfessionTexture(Profession())]
@@ -2383,14 +2388,13 @@ function ATSW_UpdateCaption()
 		
 		return ''
 	end
-	
-	InitializeFrame()
-	
+
+function ATSW_UpdateCaption()
 	local Name = GetCraftCaption()
 	
 	-- Set status bar info
 	
-	ATSWFrameTitleText:SetText(format(TEXT(TRADE_SKILL_TITLE), Name) .. FindSpecialization())
+	ATSWFrameTitleText:SetText(format(TEXT(TRADE_SKILL_TITLE), Name) .. ATSW_FindSpecialization())
 	ATSW_UpdateStatusBarRank()
 	
 	-- Set skill portrait
@@ -2398,7 +2402,7 @@ function ATSW_UpdateCaption()
 end
 
 function ATSW_UpdateFrame()
-	InitializeFrame()
+	ATSW_InitializeFrame()
 	ATSW_GetRecipes(true)
 	ATSW_ShowSelection()
 	
@@ -3956,7 +3960,7 @@ function ATSW_UpdateRecipes()
 			end
 			
 			Text = Text .. (Possible or '')
-
+			
 			if TP and TP > 0 then
 				SubText = format(TRAINER_LIST_TP, TP)
 				
@@ -4129,7 +4133,7 @@ end
 
 function ATSW_ShowSelection()
 	local function FirstCraft()
-		local Name, _, SubName = GetCraftNameType(GetFirstCraft())
+		local Name, SubName = GetCraftNameType(GetFirstCraft())
 		
 		if SubName and SubName ~= '' then
 			Name = Name .. '   (' .. SubName .. ')'
@@ -4155,7 +4159,7 @@ function ATSW_ShowTrainingPoints()
 	if IsBeastTraining() then
 		local Total, Spent = GetPetTrainingPoints()
 		
-		ATSWTrainingPointsText:SetText(Total - Spent)
+		ATSWTrainingPointsText:SetText(math.max(Total - Spent, 0))
 		ATSWTrainingPointsFrame:SetWidth(ATSWTrainingPointsLabel:GetWidth()+ATSWTrainingPointsText:GetWidth()+20)
 	end
 end
@@ -4372,7 +4376,7 @@ function ATSW_ShowRecipe(Name)
 		-- Training cost
 		if Recipe.TrainingCost > 0 then
 			local Total, Spent 	= GetPetTrainingPoints()
-			local Usable		 	= Total - Spent
+			local Usable		 	= math.max(Total - Spent, 0)
 		
 			if Usable >= Recipe.TrainingCost then
 				ATSWCostText:SetText(Recipe.TrainingCost .. ' ' .. TRAINING_POINTS_LABEL)
@@ -4406,9 +4410,9 @@ function ATSW_ShowRecipe(Name)
 			local Exists 				= I <= NumReagents
 			local RName, RTexture, RAmount, RPlayerAmount, RLink, RTotalAmount, Quality, RColor, R, G, B, A, Craftable, Position
 			
-			SetVisible(Button, false) -- Needed for tooltip update if schematic is changed
+			SetVisible(Button, false) -- It is needed for tooltip update if schematic is changed
 			SetVisible(Button, Exists)
-			
+
 			if Exists then
 				local ButtonTexture 	= _G['ATSWReagent' .. I .. 'Texture']
 				local ButtonAmount 	= _G['ATSWReagent' .. I .. 'Amount']
@@ -4562,15 +4566,15 @@ function ATSW_UpdateCreateButton()
 			local Type
 			
 			if Position then
-				_, Type		= GetCraftNameType(Position)
+				_, _, Type		= GetCraftNameType(Position)
 			end
 			
 			if IsBeastTraining() then
 				if UnitName('pet') then
 					local Total, Spent = GetPetTrainingPoints()
 					local _, _, _, _, _, TrainingCost, ReqLevel = GetCraftInformation(Position)
-					
-					Possible = Type ~= 'used' and Total - Spent >= TrainingCost
+
+					Possible = Type ~= 'used' and (math.max(Total - Spent, 0) >= TrainingCost or TrainingCost == 0)
 					
 					if ReqLevel and ReqLevel > 0 then
 						if UnitLevel('pet') < ReqLevel then

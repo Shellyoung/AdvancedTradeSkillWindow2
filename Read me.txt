@@ -423,3 +423,9 @@ v2.1.13
 	- Hovering a mouse over a recipe shows a highlight
 • Graphical error fixes:
 	- Recipe cooldown was showing doubled
+
+v2.1.14
+• Control fixes:
+	- Fix of issue #36: Train button in Beast Training was unselectable
+• Graphical error fixes:
+	- Fix of issue #36: Reagents were not hiding after selection of Beast Training
