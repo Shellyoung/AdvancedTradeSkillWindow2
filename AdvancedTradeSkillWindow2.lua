@@ -6130,29 +6130,33 @@ function ATSW_SkillUps(Name)
 			return C[1], C[2], C[3], C[4]
 		end
 		
-		for _, Item in pairs(ProfessionNamesForAtlasLoot[ATSW_GetProfessionTexture(Profession())]) do
-			if Item ~= '' then
-				for _, Info in pairs(ATSW_AtlasLoot[Item]) do
-					for N, Param in pairs(Info) do
-						if N == 3 and string.sub(Param, 5, -1) == Name then
-							Found = true
-						end
-						
-						if N == 4 and Found then
-							-- AtlasLoot item example:
-							-- { 's3924', 'inv_gizmo_pipe_02', '=q1=Copper Tube', '=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110' },
-							-- =so parameters contain difficulty of the skill
+		local ProfessionTexture = ATSW_GetProfessionTexture(Profession())
+		
+		if ProfessionTexture then
+			for _, Item in pairs(ProfessionNamesForAtlasLoot[ProfessionTexture]) do
+				if Item ~= '' then
+					for _, Info in pairs(ATSW_AtlasLoot[Item]) do
+						for N, Param in pairs(Info) do
+							if N == 3 and string.sub(Param, 5, -1) == Name then
+								Found = true
+							end
 							
-							local _, _, SU1, SU2, SU3, SU4 = string.find(Param, '=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)')
+							if N == 4 and Found then
+								-- AtlasLoot item example:
+								-- { 's3924', 'inv_gizmo_pipe_02', '=q1=Copper Tube', '=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110' },
+								-- =so parameters contain difficulty of the skill
+								
+								local _, _, SU1, SU2, SU3, SU4 = string.find(Param, '=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)')
 
-							SU1 = tonumber(SU1)
-							SU2 = tonumber(SU2)
-							SU3 = tonumber(SU3)
-							SU4 = tonumber(SU4)
-							
-							ATSWSkillUpCache[Name] = {SU1, SU2, SU3, SU4}
+								SU1 = tonumber(SU1)
+								SU2 = tonumber(SU2)
+								SU3 = tonumber(SU3)
+								SU4 = tonumber(SU4)
+								
+								ATSWSkillUpCache[Name] = {SU1, SU2, SU3, SU4}
 
-							return SU1, SU2, SU3, SU4
+								return SU1, SU2, SU3, SU4
+							end
 						end
 					end
 				end

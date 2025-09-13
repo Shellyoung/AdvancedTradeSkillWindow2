@@ -429,3 +429,7 @@ v2.1.14
 	- Fix of issue #36: Train button in Beast Training was unselectable
 • Graphical error fixes:
 	- Fix of issue #36: Reagents were not hiding after selection of Beast Training
+
+v2.1.15
+• Data flow fixes:
+	- Fix of issue #37.
