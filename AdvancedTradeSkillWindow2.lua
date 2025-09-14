@@ -6130,10 +6130,10 @@ function ATSW_SkillUps(Name)
 			return C[1], C[2], C[3], C[4]
 		end
 		
-		local ProfessionTexture = ATSW_GetProfessionTexture(Profession())
+		local Texture = ATSW_GetProfessionTexture(Profession())
 		
-		if ProfessionTexture then
-			for _, Item in pairs(ProfessionNamesForAtlasLoot[ProfessionTexture]) do
+		if Texture then
+			for _, Item in pairs(ProfessionNamesForAtlasLoot[Texture]) do
 				if Item ~= '' then
 					for _, Info in pairs(ATSW_AtlasLoot[Item]) do
 						for N, Param in pairs(Info) do
