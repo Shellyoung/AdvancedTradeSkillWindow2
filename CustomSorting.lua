@@ -226,27 +226,39 @@ function ATSWCS_OnLoad()
 	local Color = ATSWTypeColor['header']
 	
 	ATSWCSHighlightTexture:SetVertexColor(Color.R, Color.G, Color.B, 0.8)
+	
+	ATSWCSFrame:SetMovable(true)
+	ATSWCSFrame:EnableMouse(true)
+	ATSWCSFrame:RegisterForDrag('LeftButton')
+	ATSWCSFrame:SetScript('OnDragStart', function() this:StartMoving() end)
+	ATSWCSFrame:SetScript('OnDragStop',
+		function()
+			this:StopMovingOrSizing()
+		end
+	)
 end
 
 function ATSWCS_OnShow()
 	Name = Profession()
 	
-	if Name then
-		ATSWCSFrameTitleText:SetText(ATSWCS_TITLE .. ' (' .. Name .. ')')
-		
-		--Set Skill Portrait
-		SetPortraitToTexture(ATSWCSFramePortrait, ATSW_GetProfessionTexture(Name))
-		
-		--Fill items list
-		if ATSWCS_PreviousSkill ~= Profession() then
-			ATSWCS_FillAllRecipes()
-			
-			ATSWCS_PreviousSkill = Profession()
-		end
-		
-		ATSWCSFrame:SetPoint(ATSWFrame:GetPoint())
-		ATSWCS_Update()
+	if not Name then
+		return
 	end
+	
+	ATSWCSFrameTitleText:SetText(ATSWCS_TITLE .. ' (' .. Name .. ')')
+	
+	--Set Skill Portrait
+	SetPortraitToTexture(ATSWCSFramePortrait, ATSW_GetProfessionTexture(Name))
+	
+	--Fill items list
+	if ATSWCS_PreviousSkill ~= Profession() then
+		ATSWCS_FillAllRecipes()
+		
+		ATSWCS_PreviousSkill = Profession()
+	end
+	
+	ATSWCS_Update()
+	ATSWUpdaterFrame:Show()
 end
 
 function ATSWCSAddButton_OnClick()

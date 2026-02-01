@@ -746,17 +746,6 @@
                 </Texture>
 	      	</Layer>
 			<Layer level="ARTWORK">
-				<Texture name="ATSWBackground">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset x="20" y="-75"/>
-						</Anchor>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset x="-446" y="19"/>
-						</Anchor>
-					</Anchors>
-					<TexCoords left="0.126" right="0.846" top="0.002" bottom="0.998"/>
-				</Texture>
 				<Texture name="ATSWParchment" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\Parchment">
 					<Anchors>
 						<Anchor point="TOPRIGHT">
@@ -805,6 +794,32 @@
 						</Anchor>
 					</Anchors>
 					<TexCoords left="0.064" right="0.935" top="0.289" bottom="0.71"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture name="ATSWBackground">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="20" y="-75"/>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset x="-446" y="19"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.126" right="0.846" top="0.002" bottom="0.998"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="ATSWBackgroundShadow" file="Interface\AddOns\AdvancedTradeSkillWindow2\Textures\Background\Shadow">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="20" y="-75"/>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset x="-446" y="19"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.126" right="0.846" top="0.002" bottom="0.998"/>
 				</Texture>
 			</Layer>
 			<Layer level="OVERLAY">

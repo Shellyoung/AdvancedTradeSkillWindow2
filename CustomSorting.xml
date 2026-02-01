@@ -631,7 +631,6 @@
 			</OnLoad>
 			<OnShow>
 				ATSWCS_OnShow()
-				ATSWUpdaterFrame:Show()
 			</OnShow>
 			<OnHide>
 				ATSWUpdaterFrame:Hide()

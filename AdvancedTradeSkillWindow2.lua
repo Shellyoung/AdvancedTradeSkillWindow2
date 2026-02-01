@@ -1597,6 +1597,16 @@ function ATSW_OnLoad()
 	
 	-- Fix a bug which shows error 'skillOffset is nil' on line 171 of Blizzard_TradeSkillUI.lua (modified by Turtle-WoW team)
 	FauxScrollFrame_SetOffset(TradeSkillListScrollFrame, 0)
+	
+	ATSWFrame:SetMovable(true)
+	ATSWFrame:EnableMouse(true)
+	ATSWFrame:RegisterForDrag('LeftButton')
+	ATSWFrame:SetScript('OnDragStart', function() this:StartMoving() end)
+	ATSWFrame:SetScript('OnDragStop',
+		function()
+			this:StopMovingOrSizing()
+		end
+	)
 end
 
 local function SetDropDownFilter(SubClass, InvSlot)
@@ -2135,9 +2145,8 @@ local function LoadAllProfessionsOnce()
 		ATSWFrame:	UnregisterEvent(	'CRAFT_SHOW'				)
 		ATSWFrame:	UnregisterEvent(	'CRAFT_CLOSE'				)
 		
-		local function Stub() end
 		local OldSound 				= PlaySound
-		PlaySound 						= Stub
+		PlaySound 					= Stub
 		
 		for I in ipairs(Professions) do
 			local ProfessionTexture = Icon(Professions[I])
@@ -2626,21 +2635,20 @@ function ATSW_OnEvent()
 		ATSW_SaveBag(0)
 		ATSW_Hide()
 		
-		local function InitializeTable(Table, Value, Prof)
-			if Table == nil then
-				Table = {}
-			end
-			
-			if Table[realm] == nil then
-				Table[realm] = {}
-			end
-			
-			if Table[realm][player] == nil then
-				Table[realm][player] = Value
-			end
+		-- Initialize Table
+		local Table = ATSW_NecessaryReagents
+
+		if Table == nil then
+			Table = {}
 		end
 		
-		InitializeTable(ATSW_NecessaryReagents, {})
+		if Table[realm] == nil then
+			Table[realm] = {}
+		end
+		
+		if Table[realm][player] == nil then
+			Table[realm][player] = {}
+		end
 		
 		if ATSW_Characters then 
 			if ATSW_Characters[realm] then
@@ -5972,39 +5980,39 @@ function ATSW_GetAltsAmount(Name)
     return GetAltsAmountInBags(Name) + GetAltsAmountInBank(Name)
 end
 
-function ATSW_GetAltsLocationIntoTooltip(Name)
-	local HeaderAdded = false
-	local Tooltip = ATSWRecipeTooltip
-	
-	local function GetLocation(Table, In)
-		if Name then
-			for RName in pairs(Table) do
-				if RName == realm then
-					for PName in pairs(Table[RName]) do
-						if PName ~= player then
-							local Amount = 0
-							
-							if Table == ATSW_Bags then
-								Amount = Amount + GetAltsAmountInBags(Name, PName)
-							elseif Table == ATSW_Bank then
-								Amount = Amount + GetAltsAmountInBank(Name, PName)
-							end
-							
-							if Amount > 0 then
-								if not HeaderAdded then
-									Tooltip:AddTextLine(ATSW_TOOLTIP_POSSESS .. ' ' .. this:GetParent().Link .. ':')
-									
-									HeaderAdded = true
-								end
+local function GetLocation(Table, In)
+	if Name then
+		for RName in pairs(Table) do
+			if RName == realm then
+				for PName in pairs(Table[RName]) do
+					if PName ~= player then
+						local Amount = 0
+						
+						if Table == ATSW_Bags then
+							Amount = Amount + GetAltsAmountInBags(Name, PName)
+						elseif Table == ATSW_Bank then
+							Amount = Amount + GetAltsAmountInBank(Name, PName)
+						end
+						
+						if Amount > 0 then
+							if not HeaderAdded then
+								Tooltip:AddTextLine(ATSW_TOOLTIP_POSSESS .. ' ' .. this:GetParent().Link .. ':')
 								
-								Tooltip:AddTextLine(ClassColorize(PName) .. ': ' .. '|cffffffff' .. Amount .. '|r ' .. In)
+								HeaderAdded = true
 							end
+							
+							Tooltip:AddTextLine(ClassColorize(PName) .. ': ' .. '|cffffffff' .. Amount .. '|r ' .. In)
 						end
 					end
 				end
 			end
 		end
 	end
+end
+
+function ATSW_GetAltsLocationIntoTooltip(Name)
+	local HeaderAdded = false
+	local Tooltip = ATSWRecipeTooltip
 	
 	Tooltip:ClearLines()
 	Tooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT', 0)
@@ -6038,37 +6046,42 @@ function ATSW_IsInMerchant(Name)
 end
 
 local function GetMerchantReagentsPrice(Buy)
-	if MerchantFrame:IsVisible() and NecessaryReagentsSize() > 0 then
-		local TotalPrice = 0
+	if not (MerchantFrame:IsVisible() and NecessaryReagentsSize() > 0) then
+		return
+	end
+	
+	local TotalPrice = 0
+	
+	for N = 1, NecessaryReagentsSize() do
+		-- Calculate total price
+		local Item = NecessaryReagent(N)
 		
-		local function GetTotalPrice(Item)
-			for M = 1, GetMerchantNumItems() do
-				local MName, _, MPrice, MQuantity, MAvailable = GetMerchantItemInfo(M)
+		for M = 1, GetMerchantNumItems() do
+			local MName, _, MPrice, MQuantity, MAvailable = GetMerchantItemInfo(M)
+			
+			if Item.Name == MName then
+				local HaveQuantity	= ATSW_GetBagsAmount(Item.Name) + (ATSW_ConsigerBank and ATSW_GetBankAmount(Item.Name) or 0)
+				local NeedQuantity	= Item.Amount - HaveQuantity
+				local BuyQuantity = math.ceil(NeedQuantity / MQuantity)
 				
-				if Item.Name == MName then
-					local HaveQuantity	= ATSW_GetBagsAmount(Item.Name) + (ATSW_ConsigerBank and ATSW_GetBankAmount(Item.Name) or 0)
-					local NeedQuantity	= Item.Amount - HaveQuantity
-					local BuyQuantity = math.ceil(NeedQuantity / MQuantity)
-					
-					if BuyQuantity > MAvailable and MAvailable > 0 then
-						BuyQuantity = MAvailable
-					end
-					
-					if BuyQuantity < 0 then BuyQuantity = 0 end
-					
-					TotalPrice = TotalPrice + BuyQuantity * MPrice
-					
-					if Buy and BuyQuantity > 0 then BuyMerchantItem(M, BuyQuantity) end
+				if BuyQuantity > MAvailable and MAvailable > 0 then
+					BuyQuantity = MAvailable
+				end
+				
+				if BuyQuantity < 0 then
+					BuyQuantity = 0
+				end
+				
+				TotalPrice = TotalPrice + BuyQuantity * MPrice
+				
+				if Buy and BuyQuantity > 0 then
+					BuyMerchantItem(M, BuyQuantity)
 				end
 			end
 		end
-		
-		for N = 1, NecessaryReagentsSize() do
-			GetTotalPrice(NecessaryReagent(N))
-		end
-		
-		return TotalPrice
 	end
+	
+	return TotalPrice
 end
 
 function ATSW_SetBuyFrameVisible()
@@ -6119,52 +6132,52 @@ end
 ATSWSkillUpCache = {}
 
 function ATSW_SkillUps(Name)
-	local Skill
+	if not ATSW_AtlasLoot then
+		return
+	end
+
+	if ATSWSkillUpCache[Name] then
+		local C = ATSWSkillUpCache[Name]
+		
+		return C[1], C[2], C[3], C[4]
+	end
 	
-	if ATSW_AtlasLoot then
-		local Found = false
-		
-		if ATSWSkillUpCache[Name] then
-			local C = ATSWSkillUpCache[Name]
-			
-			return C[1], C[2], C[3], C[4]
-		end
-		
-		local Texture = ATSW_GetProfessionTexture(Profession())
-		
-		if Texture then
-			for _, Item in pairs(ProfessionNamesForAtlasLoot[Texture]) do
-				if Item ~= '' then
-					for _, Info in pairs(ATSW_AtlasLoot[Item]) do
-						for N, Param in pairs(Info) do
-							if N == 3 and string.sub(Param, 5, -1) == Name then
-								Found = true
-							end
-							
-							if N == 4 and Found then
-								-- AtlasLoot item example:
-								-- { 's3924', 'inv_gizmo_pipe_02', '=q1=Copper Tube', '=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110' },
-								-- =so parameters contain difficulty of the skill
-								
-								local _, _, SU1, SU2, SU3, SU4 = string.find(Param, '=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)')
+	local Texture = ATSW_GetProfessionTexture(Profession())
+	
+	if not (Texture and ProfessionNamesForAtlasLoot[Texture]) then
+		return
+	end
+	
+	local Found = false
+	
+	for _, Item in pairs(ProfessionNamesForAtlasLoot[Texture]) do
+		if Item ~= '' and ATSW_AtlasLoot[Item] then
+			for _, Info in pairs(ATSW_AtlasLoot[Item]) do
+				for N, Param in pairs(Info) do
+					if N == 3 and string.sub(Param, 5, -1) == Name then
+						Found = true
+					end
+					
+					if N == 4 and Found then
+						-- AtlasLoot item example:
+						-- { 's3924', 'inv_gizmo_pipe_02', '=q1=Copper Tube', '=ds=#sr# =so1=50 =so2=80 =so3=95 =so4=110' },
+						-- =so parameters contain difficulty of the skill
+						
+						local _, _, SU1, SU2, SU3, SU4 = string.find(Param, '=so1=(.+)%s*=so2=(.+)%s*=so3=(.+)%s*=so4=(.+)')
 
-								SU1 = tonumber(SU1)
-								SU2 = tonumber(SU2)
-								SU3 = tonumber(SU3)
-								SU4 = tonumber(SU4)
-								
-								ATSWSkillUpCache[Name] = {SU1, SU2, SU3, SU4}
+						SU1 = tonumber(SU1)
+						SU2 = tonumber(SU2)
+						SU3 = tonumber(SU3)
+						SU4 = tonumber(SU4)
+						
+						ATSWSkillUpCache[Name] = ATSWSkillUpCache[Name] or {SU1, SU2, SU3, SU4}
 
-								return SU1, SU2, SU3, SU4
-							end
-						end
+						return SU1, SU2, SU3, SU4
 					end
 				end
 			end
 		end
 	end
-	
-	return Skill
 end
 
 function ATSW_CompareSkill(Name)
