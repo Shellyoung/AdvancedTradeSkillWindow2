@@ -82,8 +82,6 @@ Improved window for your professions for World of Warcraft vanilla
 
   ### Additional add-ons
   ATSW can be enchanced with several additional addons:
-  
-  [BlizzMo](https://github.com/Dyaxler/BlizzMo_Vanilla) can make ATSW window movable.
 
   [MissingCrafts](https://github.com/refaim/MissingCrafts) adds a small button that can show what crafting recipes are able to learn.
 
