@@ -54,11 +54,19 @@
 					Highlight:Hide()
 				end
 				
-				local Button = _G[this:GetName()]
-			
-				local R, G, B = Button:GetTextColor()
 				
+<!-- old code disabled. cant see local _G var from ATDK2.lua (attempt to index global '_G' a nil value)
+				local Button = _G[this:GetName()]
+				local R, G, B = Button:GetTextColor()
 				ATSWHighlightMouseOver:SetPoint('TOP', Button)
+				-->
+				
+				
+<!-- new code. we use 'this' directly -->
+				local R, G, B = this:GetTextColor()
+				ATSWHighlightMouseOver:SetPoint('TOP', this)
+				
+				
 				ATSWHighlightMouseOverTexture:SetVertexColor(R, G, B, 0.8)
 				ATSWHighlightMouseOver:Show()
 			</OnEnter>
@@ -2896,4 +2904,5 @@
 			</OnLoad>
 		</Scripts>
 	</GameTooltip>
+
 </Ui>
