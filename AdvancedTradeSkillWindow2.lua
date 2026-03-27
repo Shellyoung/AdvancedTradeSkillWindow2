@@ -4826,7 +4826,7 @@ end
 function ATSW_HowManyItemsArePossibleToCreate(Name, ...)
 	local Pos 					= GetPositionFromGame(Name)
 	
-	if not Pos then
+	if Pos then
 		local I = 0
 		local Possible, PossibleAmountTotal
 		local MaxReagents 		= GetReagentCount(Pos)
