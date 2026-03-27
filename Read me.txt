@@ -437,3 +437,8 @@ v2.1.15
 	- Fix of issue #41: Clicking on disguise caused an error
 • Graphical changes:
 	- A shadow has been added to profession's background
+
+v2.1.16
+• Data flow fixes:
+	- Fix of issue #45: Transfering Runecloth from guild bank to bag for Heavy Runecloth Bandage caused an error in the function ATSW_TooltipSetSkill
+	- Fix of issue #47: Showing a recipe for non-existent skill caused an error in the function SelectCraftItem

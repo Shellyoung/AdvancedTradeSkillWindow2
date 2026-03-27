@@ -1360,6 +1360,10 @@ end
 ATSW_TEST = 9000
 
 function ATSW_TooltipSetSkill(Tooltip, Index)
+	if not Index then
+		return
+	end
+	
 	if ATSW_TradeSkill() then
 		Tooltip:SetTradeSkillItem(Index)
 	else
@@ -2066,6 +2070,7 @@ end
 function ATSW_AttachTabsTo(Frame)
 	if ATSWFrameSideTabsFrame:GetParent() ~= Frame then
 		ATSWFrameSideTabsFrame:SetParent(Frame)
+		ATSWFrameSideTabsFrame:ClearAllPoints()
 		ATSWFrameSideTabsFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', -59, -28)
 		ATSWFrameSideTabsFrame:Show()
 	end
@@ -3711,7 +3716,14 @@ local function GetAttributes(Recipe)
 	end
 	
 	ATSWRecipeItemTooltip:SetOwner(this, 'ANCHOR_BOTTOMRIGHT')
-	ATSW_TooltipSetSkill(ATSWRecipeItemTooltip, GetPositionFromGame(Recipe.Name))
+	
+	local GamePosition = GetPositionFromGame(Recipe.Name)
+	
+	if GamePosition then
+		ATSW_TooltipSetSkill(ATSWRecipeItemTooltip, GamePosition)
+	else
+		return
+	end
 	
 	local I, Text, TextRight = 0
 	local Return = ''
@@ -4232,6 +4244,10 @@ end
 
 function ATSW_ShowRecipe(Name)
 	local GamePosition = GetPositionFromGame(Name)
+	
+	if not GamePosition then
+		return
+	end
 	
 	SelectCraftItem(GamePosition)
 	
@@ -4810,7 +4826,7 @@ end
 function ATSW_HowManyItemsArePossibleToCreate(Name, ...)
 	local Pos 					= GetPositionFromGame(Name)
 	
-	if Pos then
+	if not Pos then
 		local I = 0
 		local Possible, PossibleAmountTotal
 		local MaxReagents 		= GetReagentCount(Pos)
