@@ -3,6 +3,9 @@ Improved window for your professions for World of Warcraft vanilla
 
 <sub>version 2.1.16</sub>
 
+### ⚠️Development suspended because of the closure of TurtleWoW by Blizzard.⚠️
+This means that I can not test any possible issues with the addon.
+
 ![face](https://github.com/user-attachments/assets/cffb06ff-b310-4fb7-ba07-a04caf6e34a3)
 
 
